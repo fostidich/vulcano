@@ -1,0 +1,28 @@
+# Editors
+.vscode
+.idea
+.vim
+.zed
+
+# Misc
+.DS_Store
+.typos.toml
+.agents
+
+# Secrets
+.env
+.env.*
+*.pem
+
+# Dev
+*.local
+logs
+
+# Output
+build
+.cache
+*.out
+*.out.*
+out
+*.spv
+

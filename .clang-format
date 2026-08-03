@@ -1,0 +1,11 @@
+BasedOnStyle: LLVM
+ColumnLimit: 0
+IndentWidth: 4
+AccessModifierOffset: -2
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortBlocksOnASingleLine: Always
+AlignConsecutiveAssignments: Consecutive
+MaxEmptyLinesToKeep: 1
+SeparateDefinitionBlocks: Always
+

@@ -1,0 +1,4 @@
+Checks: "bugprone-*,clang-analyzer-*,cert-*,performance-*,-bugprone-easily-swappable-parameters,-bugprone-reserved-identifier,-cert-dcl37-c,-cert-dcl51-cpp,-bugprone-branch-clone,-bugprone-invalid-enum-default-initialization,-bugprone-unchecked-string-to-number-conversion,-cert-err33-c,-cert-err34-c,-bugprone-narrowing-conversions,-bugprone-implicit-widening-of-multiplication-result,-bugprone-unchecked-optional-access,-clang-analyzer-optin.performance.Padding,-bugprone-throwing-static-initialization,-cert-err58-cpp,-performance-enum-size,-clang-analyzer-deadcode.DeadStores,-bugprone-exception-escape"
+
+FormatStyle: 'none'
+
