@@ -214,6 +214,9 @@ class Vulcano : public BaseProject {
     // Initialize the textual output and show FPS count in top-left corner.
     void textMakerInit();
 
+    // Set initial window settings, such as hide and lock mouse inside window.
+    void windowSettingsInit();
+
     // Compute time delta between last frame and current.
     float getDeltaT();
 

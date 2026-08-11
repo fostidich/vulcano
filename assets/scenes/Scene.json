@@ -5,12 +5,23 @@
             "VD": "VDposUV",
             "model": "assets/models/Plane.gltf",
             "format": "GLTF"
+        },
+        {
+            "id": "tree",
+            "VD": "VDposUV",
+            "model": "assets/models/Tree.mgcg",
+            "format": "MGCG"
         }
     ],
     "textures": [
         {
-            "id": "tex",
+            "id": "floor",
             "texture": "assets/textures/Floor.jpg",
+            "format": "C"
+        },
+        {
+            "id": "colors",
+            "texture": "assets/textures/Colors.png",
             "format": "C"
         }
     ],
@@ -22,12 +33,36 @@
                     "id": "floor",
                     "model": "floor",
                     "texture": [
-                        "tex"
+                        "floor"
                     ],
                     "scale": [
                         100.0,
                         100.0,
                         100.0
+                    ]
+                },
+                {
+                    "id": "tree1",
+                    "model": "tree",
+                    "texture": [
+                        "colors"
+                    ],
+                    "translate": [
+                        -10.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "tree2",
+                    "model": "tree",
+                    "texture": [
+                        "colors"
+                    ],
+                    "translate": [
+                        0.0,
+                        0.0,
+                        -10.0
                     ]
                 }
             ]

@@ -124,6 +124,12 @@ void Vulcano::localInit() {
     this->loadScene();
     this->commandBuffersInit();
     this->textMakerInit();
+    this->windowSettingsInit();
+}
+
+void Vulcano::windowSettingsInit() {
+    // Hide cursor and lock it inside window
+    glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Vulcano::descriptorsInit() {
@@ -235,6 +241,7 @@ void Vulcano::pipelinesAndRenderPassesInit() {
                  "shaders/BlinnFromPos.frag.spv",    // Fragment shader: compiled shader file path
                  {&this->DSLglobal, &this->DSLlocal} // Descriptor set layouts: ordered by set ID (set 0, set 1...)
     );
+    this->P.setCullMode(VK_CULL_MODE_NONE); // Enable double side rendering
 }
 
 void Vulcano::loadScene() {
