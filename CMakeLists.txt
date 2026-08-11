@@ -142,7 +142,6 @@ file(GLOB_RECURSE SHADER_FILES CONFIGURE_DEPENDS "${SHADER_SRC_DIR}/*.vert" "${S
   # cp(spirv, final_shader_dir)
   # mkdir("{cmake_current_binary_dir}/shader_copy_stamps/{shader_rel_dir}")
   # touch(copy_stamp)
-  # print(...)
   # spirv_outputs.append(spirv)
   # spirv_copied_stamps.append(copy_stamp)
 set(SPIRV_OUTPUTS "")

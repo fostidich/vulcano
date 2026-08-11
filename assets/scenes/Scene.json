@@ -1,10 +1,10 @@
 {
     "models": [
         {
-            "id": "floor",
+            "id": "plane",
             "VD": "VDposUV",
-            "model": "assets/models/Plane.gltf",
-            "format": "GLTF"
+            "model": "assets/models/Grid128x128.obj",
+            "format": "OBJ"
         },
         {
             "id": "tree",
@@ -15,8 +15,8 @@
     ],
     "textures": [
         {
-            "id": "floor",
-            "texture": "assets/textures/Floor.jpg",
+            "id": "grass",
+            "texture": "assets/textures/Grass.png",
             "format": "C"
         },
         {
@@ -30,10 +30,10 @@
             "technique": "BlinnPos",
             "elements": [
                 {
-                    "id": "floor",
-                    "model": "floor",
+                    "id": "grass",
+                    "model": "plane",
                     "texture": [
-                        "floor"
+                        "grass"
                     ],
                     "scale": [
                         100.0,

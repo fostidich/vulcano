@@ -13,9 +13,20 @@ build: init
     cmake --build --preset default
 alias b := build
 
-# Run the compiled Vulkan application from the build directory
+# Force build the project by cleaning build targets first
+force-build: init
+    cmake --build --preset default --clean-first
+alias fb := force-build
+
+# Run the compiled Vulkan application
 run: build
     cd build && ./{{ APP_NAME }}
+alias r := run
+
+# Update assets for the current build
+copy-assets: build
+    cp -r assets build
+alias ca := copy-assets
 
 # Run static analysis and shader linting
 lint: init
