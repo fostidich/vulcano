@@ -3,6 +3,7 @@
 #include "Descriptors.hpp"
 #include "Logs.hpp"
 #include "modules/Starter.hpp"
+#include <sstream>
 
 void Vulcano::frameLogic(float deltaT) {
     this->cameraUpdate(deltaT);
