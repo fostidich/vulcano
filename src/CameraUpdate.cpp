@@ -28,8 +28,12 @@ void Vulcano::cameraUpdate(float deltaT) {
     if (glfwGetKey(this->window, GLFW_KEY_A)) mv.x -= 1.0f;
     if (glfwGetKey(this->window, GLFW_KEY_S)) mv.z += 1.0f;
     if (glfwGetKey(this->window, GLFW_KEY_W)) mv.z -= 1.0f;
-    if (glfwGetKey(this->window, GLFW_KEY_SPACE)) mv.y += 1.0f;
-    if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 1.0f;
+    if (state.flightMode) {
+        if (glfwGetKey(this->window, GLFW_KEY_SPACE)) mv.y += 2.0f;
+        if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 2.0f;
+    } else {
+        mv.y -= 1.0f;
+    }
 
     // Speed multiplier (running player with CTRL)
     const bool speeding = glfwGetKey(this->window, GLFW_KEY_LEFT_CONTROL);
@@ -54,10 +58,13 @@ void Vulcano::cameraUpdate(float deltaT) {
     const vec3 flatForward = vec3(sin(yaw), 0.0f, -cos(yaw));
     const vec3 flatRight   = vec3(cos(yaw), 0.0f, sin(yaw));
     const vec3 straightUp  = vec3(0.0f, 1.0f, 0.0f);
-    const vec3 moveDir     = (flatForward * -mv.z) + (flatRight * mv.x) + (straightUp * mv.y);
+    const vec3 moveDirZ    = flatForward * -mv.z * (speeding ? state.runMultiplier : 1);
+    const vec3 moveDirX    = flatRight * mv.x * (speeding ? state.runMultiplier : 1);
+    const vec3 moveDirY    = straightUp * mv.y;
+    const vec3 moveDir     = moveDirZ + moveDirX + moveDirY;
 
     // Compute translation delta
-    const vec3 displacement = moveDir * state.moveSpeed * (speeding ? state.runMultiplier : 1) * deltaT;
+    const vec3 displacement = moveDir * state.moveSpeed * deltaT;
     vec3 newPos             = this->state.eyePosition;
     slideAgainsWall(newPos, displacement);
 

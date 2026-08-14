@@ -157,6 +157,9 @@ void Vulcano::windowSettingsInit() {
         if (key == GLFW_KEY_H) { // Toggle colliders
             app->state.showColliders = !app->state.showColliders;
         }
+        if (key == GLFW_KEY_F) { // Toggle creative
+            app->state.flightMode = !app->state.flightMode;
+        }
     });
 
     // Set mouse button callback
