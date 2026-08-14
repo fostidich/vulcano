@@ -162,10 +162,6 @@ class Vulcano : public BaseProject {
     // binding render passes, pipelines, scene objects, and descriptor sets.
     void populateCommandBuffer(VkCommandBuffer commandBuffer, int currentImage);
 
-    // Execute main frame logic (possibly requiring frame time delta seconds
-    // between current and previous frame).
-    void frameLogic(u32 currentImage, float deltaT);
-
   private:
     // Initialize all required descriptor layouts.
     void descriptorsInit();
@@ -221,7 +217,7 @@ class Vulcano : public BaseProject {
     // Set initial window settings, such as hide and lock mouse inside window.
     // Map each available key press event to the callback function it activates.
     // These callbacks are registered once at startup.
-    void windowSettingsInit();
+    void keypressCallbacksInit();
 
     // Initialization of player in the world (e.g. collision hatbox).
     void playerInit();
@@ -252,5 +248,12 @@ class Vulcano : public BaseProject {
     bool checkCollision(const glm::vec3 &testPos);
 
     // Axis-aligned movement with wall sliding.
-    void slideAgainsWall(glm::vec3 &newPos, const glm::vec3 &displacement);
+    // Exists early if collisions are disabled.
+    void processCollisions(glm::vec3 &newPos, const glm::vec3 &displacement);
+
+    // Map key-presses to the action they execute.
+    void switchKeys(int key);
+
+    // Map mouse button presses to the action they execute.
+    void switchMouseButtons(int key);
 };

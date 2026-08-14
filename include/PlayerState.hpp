@@ -20,7 +20,8 @@ struct PlayerState {
     const float mouseSensitivity = glm::radians(0.1f); // rad / pixel
     const float runMultiplier    = 3.0f;
 
-    bool flightMode     = false; // Whether the player can fly
     bool cursorCaptured = true;  // Whether the window has focus
+    bool flightMode     = false; // Whether the player can fly
+    bool collisions     = true;  // Collisions with objects
     bool showColliders  = false; // Object hitboxes
 };

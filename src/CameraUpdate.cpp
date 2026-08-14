@@ -1,4 +1,5 @@
 #include "Vulcano.hpp"
+
 using namespace glm;
 
 void Vulcano::cameraUpdate(float deltaT) {
@@ -58,42 +59,19 @@ void Vulcano::cameraUpdate(float deltaT) {
     const vec3 flatForward = vec3(sin(yaw), 0.0f, -cos(yaw));
     const vec3 flatRight   = vec3(cos(yaw), 0.0f, sin(yaw));
     const vec3 straightUp  = vec3(0.0f, 1.0f, 0.0f);
-    const vec3 moveDirZ    = flatForward * -mv.z * (speeding ? state.runMultiplier : 1);
-    const vec3 moveDirX    = flatRight * mv.x * (speeding ? state.runMultiplier : 1);
-    const vec3 moveDirY    = straightUp * mv.y;
-    const vec3 moveDir     = moveDirZ + moveDirX + moveDirY;
 
     // Compute translation delta
+    const vec3 moveDirZ     = flatForward * -mv.z * (speeding ? state.runMultiplier : 1);
+    const vec3 moveDirX     = flatRight * mv.x * (speeding ? state.runMultiplier : 1);
+    const vec3 moveDirY     = straightUp * mv.y;
+    const vec3 moveDir      = moveDirZ + moveDirX + moveDirY;
     const vec3 displacement = moveDir * state.moveSpeed * deltaT;
-    vec3 newPos             = this->state.eyePosition;
-    slideAgainsWall(newPos, displacement);
+
+    // Compute collisions
+    vec3 newPos = this->state.eyePosition;
+    processCollisions(newPos, displacement);
 
     // Update camera
     this->state.eyePosition = newPos;
     this->state.lookAtPoint = state.eyePosition + forward;
 }
-
-void Vulcano::slideAgainsWall(vec3 &newPos, const vec3 &displacement) {
-    if (!checkCollision(newPos + vec3(displacement.x, 0.0f, 0.0f))) { // Try moving in X
-        newPos.x += displacement.x;
-    }
-    if (!checkCollision(newPos + vec3(0.0f, displacement.y, 0.0f))) { // Try moving in Y
-        newPos.y += displacement.y;
-    }
-    if (!checkCollision(newPos + vec3(0.0f, 0.0f, displacement.z))) { // Try moving in Z
-        newPos.z += displacement.z;
-    }
-}
-
-bool Vulcano::checkCollision(const vec3 &testPos) {
-    // Update player collider's world position
-    this->playerCollider.setWorldMatrix(translate(mat4(1.0f), testPos));
-
-    // Test against all colliders created by the scene
-    for (Collider *objCollider : this->SC.GlobalColliders) {
-        if (objCollider && this->playerCollider.collidesWith(*objCollider)) {
-            return true; // Collision detected
-        }
-    }
-    return false;
-};

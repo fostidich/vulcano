@@ -15,5 +15,6 @@ just run
 - **Control**: sprint
 - **ESC**: unfocus
 - **F**: toggle flight
+- **G**: toggle collisions
 - **H**: toggle hitboxes
 
