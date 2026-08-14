@@ -20,6 +20,7 @@ logs
 
 # Output
 build
+cmake-build-*
 .cache
 *.out
 *.out.*
