@@ -1,36 +1,26 @@
 #include "Vulcano.hpp"
-#include "Camera.hpp"
 #include "Descriptors.hpp"
+#include "GLFW/glfw3.h"
 #include "Logs.hpp"
 #include "modules/Starter.hpp"
 #include <sstream>
 
 void Vulcano::frameLogic(float deltaT) {
     this->cameraUpdate(deltaT);
-    this->keypressCallbacks(deltaT);
-}
-
-void Vulcano::keypressCallbacks(float deltaT) {
-    // Handle the ESC and Q key to exit the app
-    if (glfwGetKey(this->window, GLFW_KEY_ESCAPE))
-        glfwSetWindowShouldClose(this->window, GL_TRUE);
-    if (glfwGetKey(this->window, GLFW_KEY_Q))
-        glfwSetWindowShouldClose(this->window, GL_TRUE);
 }
 
 void Vulcano::computeViewProj() {
-    const float FOVy      = glm::radians(45.0f);
-    const float nearPlane = 0.1f;
-    const float farPlane  = 100.f;
-
     // Projection matrix
-    this->Prj = glm::perspective(FOVy, this->Ar, nearPlane, farPlane);
+    this->Prj = glm::perspective(this->state.FOVy,
+                                 this->Ar,
+                                 this->state.nearPlane,
+                                 this->state.farPlane);
     this->Prj[1][1] *= -1;
 
     // View matrix
-    this->View = glm::lookAt(this->camera.eyePosition,
-                             this->camera.lookAtPoint,
-                             this->camera.upVector);
+    this->View = glm::lookAt(this->state.eyePosition,
+                             this->state.lookAtPoint,
+                             this->state.upVector);
 
     // View projection matrix
     this->ViewPrj = this->Prj * this->View;
@@ -131,6 +121,35 @@ void Vulcano::localInit() {
 void Vulcano::windowSettingsInit() {
     // Hide cursor and lock it inside window
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Store instance pointer on window
+    glfwSetWindowUserPointer(this->window, this);
+
+    // Set keys callback
+    glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+        auto *app = static_cast<Vulcano *>(glfwGetWindowUserPointer(window));
+        if (action != GLFW_PRESS) return;
+
+        if (key == GLFW_KEY_Q) { // Close application
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        } else if (key == GLFW_KEY_ESCAPE) { // Defocus window
+            app->state.cursorCaptured = false;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+    });
+
+    // Set mouse button callback
+    glfwSetMouseButtonCallback(this->window, [](GLFWwindow *window, int button, int action, int mods) {
+        auto *app = static_cast<Vulcano *>(glfwGetWindowUserPointer(window));
+        if (action != GLFW_PRESS) return;
+
+        if (button == GLFW_MOUSE_BUTTON_LEFT) { // Refocus window
+            if (!app->state.cursorCaptured) {
+                app->state.cursorCaptured = true;
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
+        }
+    });
 }
 
 void Vulcano::descriptorsInit() {

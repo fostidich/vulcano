@@ -106,6 +106,7 @@ FetchContent_Declare(
   EXCLUDE_FROM_ALL
 
 )
+
 # Deactivate non-essential components to speed up the build
 set(GLM_BUILD_LIBRARY OFF CACHE BOOL "" FORCE)
 set(GLM_BUILD_TESTS OFF CACHE BOOL "" FORCE)

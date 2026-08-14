@@ -18,7 +18,9 @@ layout(location = 0) in vec3 fragPos; // World space
 layout(location = 1) in vec2 fragUV; // Texture space
 layout(location = 0) out vec4 outColor; // Display color space
 
-const float PI = 3.14159265359;
+const float specularStrength = 0.005;
+const float shininess = 10;
+const float ambience = 0.015;
 
 void main() {
     vec3 X = dFdx(fragPos); // Coordinates difference between this pixel and the one on its right
@@ -34,9 +36,12 @@ void main() {
 
     float NdotL = max(dot(N, L), 0.0); // Clipped cosine of angle between vectors
     float HdotN = max(dot(H, N), 0.0); // Clipped cosine of angle between vectors
-    vec3 Lo = (albedo * NdotL + vec3(pow(HdotN, 100.0))) * radiance; // Fragment direct color lights (diffuse + specular)
 
-    vec3 ambient = 0.015 * albedo; // Base ambience lower threshold light
+    vec3 specular = vec3(specularStrength * pow(HdotN, shininess)); // Intensity of reflected light
+    vec3 diffuse = albedo * NdotL; // Intensity of object reflection
+    vec3 Lo = (diffuse + specular) * radiance; // Fragment direct color lights
+
+    vec3 ambient = ambience * albedo; // Base ambience lower threshold light
     vec3 color = ambient + Lo; // Total light (ambience + direct)
     color = color / (color + vec3(1.0)); // Compression of high dynamic range to (0, 1)
     color = pow(color, vec3(1.0 / 2.2)); // Gamma correction: conversion of linear colors back to display space

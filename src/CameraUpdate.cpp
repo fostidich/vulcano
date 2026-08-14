@@ -1,8 +1,25 @@
 #include "Vulcano.hpp"
 
 void Vulcano::cameraUpdate(float deltaT) {
-    const float MOVE_SPEED        = 20.0f;              // meters / second
-    const float MOUSE_SENSITIVITY = glm::radians(0.1f); // rad / pixel
+    // When first focusing window, delay camera change to avoid flickers
+    static u8 stillFrames = 5;
+    if (!state.cursorCaptured) {
+        stillFrames = 5;
+        return;
+    }
+
+    // Compute mouse rotation difference from last frame
+    double xpos, ypos;
+    glfwGetCursorPos(this->window, &xpos, &ypos);
+    static double old_xpos = xpos, old_ypos = ypos;
+    const double m_dx = xpos - old_xpos;
+    const double m_dy = ypos - old_ypos;
+    old_xpos          = xpos;
+    old_ypos          = ypos;
+    if (stillFrames != 0) {
+        stillFrames--;
+        return;
+    }
 
     // Compute player movement (WASD, SHIFT, SPACE)
     glm::vec3 mv = glm::vec3(0.0f);
@@ -14,27 +31,16 @@ void Vulcano::cameraUpdate(float deltaT) {
     if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 1.0f;
 
     // Speed multiplier (running player with CTRL)
-    float speed_mul = 1;
-    if (glfwGetKey(this->window, GLFW_KEY_LEFT_CONTROL))
-        speed_mul = 5;
-
-    // Compute mouse rotation difference from last frame
-    double xpos, ypos;
-    glfwGetCursorPos(this->window, &xpos, &ypos);
-    static double old_xpos = xpos, old_ypos = ypos;
-    double m_dx = xpos - old_xpos;
-    double m_dy = ypos - old_ypos;
-    old_xpos    = xpos;
-    old_ypos    = ypos;
+    const bool speeding = glfwGetKey(this->window, GLFW_KEY_LEFT_CONTROL);
 
     // Compute current yaw and pitch
-    glm::vec3 dir = glm::normalize(this->camera.lookAtPoint - this->camera.eyePosition);
-    float yaw     = std::atan2(dir.x, -dir.z);
-    float pitch   = std::asin(dir.y);
+    const glm::vec3 dir = glm::normalize(state.lookAtPoint - state.eyePosition);
+    float yaw           = std::atan2(dir.x, -dir.z);
+    float pitch         = std::asin(dir.y);
 
     // Accumulate rotation (clamp pitch to prevent camera flipping)
-    yaw += m_dx * MOUSE_SENSITIVITY;
-    pitch -= m_dy * MOUSE_SENSITIVITY;
+    yaw += m_dx * state.mouseSensitivity;
+    pitch -= m_dy * state.mouseSensitivity;
     pitch = glm::clamp(pitch, glm::radians(-89.0f), glm::radians(89.0f));
 
     // Compute camera looking direction
@@ -44,11 +50,12 @@ void Vulcano::cameraUpdate(float deltaT) {
     forward.z = -cos(pitch) * cos(yaw);
 
     // Flat forward vector (ignore pitch: strictly horizontal walking)
-    glm::vec3 flatForward = glm::vec3(sin(yaw), 0.0f, -cos(yaw));
-    glm::vec3 flatRight   = glm::vec3(cos(yaw), 0.0f, sin(yaw));
-    glm::vec3 moveDir     = (flatForward * -mv.z) + (flatRight * mv.x) + (glm::vec3(0.0f, 1.0f, 0.0f) * mv.y);
+    const glm::vec3 flatForward = glm::vec3(sin(yaw), 0.0f, -cos(yaw));
+    const glm::vec3 flatRight   = glm::vec3(cos(yaw), 0.0f, sin(yaw));
+    const glm::vec3 straightUp  = glm::vec3(0.0f, 1.0f, 0.0f);
+    const glm::vec3 moveDir     = (flatForward * -mv.z) + (flatRight * mv.x) + (straightUp * mv.y);
 
     // Update camera
-    this->camera.eyePosition += moveDir * MOVE_SPEED * speed_mul * deltaT;
-    this->camera.lookAtPoint = this->camera.eyePosition + forward;
+    this->state.eyePosition += moveDir * state.moveSpeed * (speeding ? state.runMultiplier : 1) * deltaT;
+    this->state.lookAtPoint = state.eyePosition + forward;
 }

@@ -1,0 +1,25 @@
+#pragma once
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+
+// Main struct containing player specific settings and state.
+struct PlayerState {
+    // Camera position and rotation state
+    glm::vec3 eyePosition = glm::vec3(0.0f, 20.0f, 20.0f);
+    glm::vec3 lookAtPoint = glm::vec3(0.0f, 5.0f, 0.0f);
+    glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    // Frustum shape
+    const float FOVy      = glm::radians(60.0f);
+    const float nearPlane = 0.1f;
+    const float farPlane  = 1000.f;
+
+    // Player camera and movement speed
+    const float moveSpeed        = 20.0f;              // meters / second
+    const float mouseSensitivity = glm::radians(0.1f); // rad / pixel
+    const float runMultiplier    = 5.0f;
+
+    // Whether the window has focus
+    bool cursorCaptured = true;
+};

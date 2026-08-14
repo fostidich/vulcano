@@ -1,14 +1,14 @@
 #pragma once
-#include "Camera.hpp"
 #include "Descriptors.hpp"
+#include "PlayerState.hpp"
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
 #include "modules/TextMaker.hpp"
 
 class Vulcano : public BaseProject {
   protected:
-    // Player's camera position and looking direction.
-    Camera camera;
+    // Player's camera information, settings and actions state.
+    PlayerState state;
 
     // These objects are used to define which set/binding layouts a shader is
     // able to declare.
@@ -215,14 +215,12 @@ class Vulcano : public BaseProject {
     void textMakerInit();
 
     // Set initial window settings, such as hide and lock mouse inside window.
+    // Map each available key press event to the callback function it activates.
+    // These callbacks are registered once at startup.
     void windowSettingsInit();
 
     // Compute time delta between last frame and current.
     float getDeltaT();
-
-    // Map each available key press event to the callback function it activates.
-    // Excluded player movements and mouse pointing direction.
-    void keypressCallbacks(float deltaT);
 
     // Map keys and mouse events to movement and rotation vectors.
     void cameraUpdate(float deltaT);

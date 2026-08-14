@@ -31,16 +31,16 @@ alias ca := copy-assets
 # Run static analysis and shader linting
 lint: init
     # Linting C++ files with clang-tidy
-    @git ls-files --others --cached --exclude-standard | grep -E '^(src|include)/.*\.cpp$' | xargs \
-        clang-tidy -p build --quiet -header-filter="^{{justfile_directory()}}/(src|include)/.*" || true
+    @git ls-files --others --cached --exclude-standard | grep -E '^src/.*\.cpp$' | xargs \
+        clang-tidy -p build --quiet -header-filter="^include/.*\.hpp" || true
     # Validating GLSL shaders with glslc
-    @git ls-files --others --cached --exclude-standard | grep -E '\.(vert|frag)$' | xargs -n 1 \
+    @git ls-files --others --cached --exclude-standard | grep -E '^shaders/.*\.(vert|frag)$' | xargs -n 1 \
         glslc -c --target-env=vulkan -o /dev/null || true
 
 # Format C++ files
 format:
     # Formatting C++ files with clang-format
-    @git ls-files --others --cached --exclude-standard | grep -E '\.(cpp|hpp)$' | xargs \
+    @git ls-files --others --cached --exclude-standard | grep -E '^(src|include)/.*\.(cpp|hpp)$' | xargs \
         clang-format -i || true
 alias fmt := format
 
