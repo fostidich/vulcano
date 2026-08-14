@@ -22,4 +22,7 @@ struct PlayerState {
 
     // Whether the window has focus
     bool cursorCaptured = true;
+
+    // Object hitboxes
+    bool showColliders = false;
 };

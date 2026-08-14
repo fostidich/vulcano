@@ -1,6 +1,7 @@
 #pragma once
 #include "Descriptors.hpp"
 #include "PlayerState.hpp"
+#include "modules/Colliders.hpp"
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
 #include "modules/TextMaker.hpp"
@@ -9,6 +10,9 @@ class Vulcano : public BaseProject {
   protected:
     // Player's camera information, settings and actions state.
     PlayerState state;
+
+    // Player's collisions shape (1x1x2 rectangle with eye at h1.5)
+    Collider playerCollider;
 
     // These objects are used to define which set/binding layouts a shader is
     // able to declare.
@@ -160,7 +164,7 @@ class Vulcano : public BaseProject {
 
     // Execute main frame logic (possibly requiring frame time delta seconds
     // between current and previous frame).
-    void frameLogic(const float deltaT);
+    void frameLogic(u32 currentImage, float deltaT);
 
   private:
     // Initialize all required descriptor layouts.
@@ -219,11 +223,17 @@ class Vulcano : public BaseProject {
     // These callbacks are registered once at startup.
     void windowSettingsInit();
 
+    // Initialization of player in the world (e.g. collision hatbox).
+    void playerInit();
+
     // Compute time delta between last frame and current.
     float getDeltaT();
 
     // Map keys and mouse events to movement and rotation vectors.
     void cameraUpdate(float deltaT);
+
+    // If key H is pressed, it toggles collider hitbox show render.
+    void toggleColliders(u32 currentImage);
 
     // Compute projection matrix, view matrix from camera and combine them.
     void computeViewProj();
@@ -233,8 +243,14 @@ class Vulcano : public BaseProject {
     void updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, int currentImage);
 
     // Update UBO and GUBO for each instance.
-    void updateSceneInstances(GlobalUniformBufferObject gubo, int currentImage);
+    void updateSceneInstances(const GlobalUniformBufferObject &gubo, int currentImage);
 
     // Update FPS on-screen counter each second.
     void updateFPS(float deltaT);
+
+    // Helper lambda to check if a test position collides with anything in the scene
+    bool checkCollision(const glm::vec3 &testPos);
+
+    // Axis-aligned movement with wall sliding.
+    void slideAgainsWall(glm::vec3 &newPos, const glm::vec3 &displacement);
 };

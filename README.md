@@ -8,9 +8,11 @@ just run
 
 ## Controls
 
-- **WASD**: move the player horizontally
+- **WASD**: move the player
 - **Mouse**: rotate camera
 - **Shift**: go down
 - **Space**: go up
 - **Control**: sprint
+- **ESC**: unfocus
+- **H**: toggle hitboxes
 

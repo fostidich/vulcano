@@ -5,8 +5,17 @@
 #include "modules/Starter.hpp"
 #include <sstream>
 
-void Vulcano::frameLogic(float deltaT) {
+void Vulcano::frameLogic(u32 currentImage, float deltaT) {
     this->cameraUpdate(deltaT);
+    this->toggleColliders(currentImage);
+}
+
+void Vulcano::toggleColliders(u32 currentImage) {
+    if (this->state.showColliders)
+        this->SC.updateColliderVisualizer(currentImage, this->ViewPrj);
+    else
+        // Feed zero matrix to clip/discard all collider vertices
+        this->SC.updateColliderVisualizer(currentImage, glm::mat4(0.0f));
 }
 
 void Vulcano::computeViewProj() {
@@ -30,16 +39,16 @@ float Vulcano::getDeltaT() {
     static auto startTime = std::chrono::high_resolution_clock::now();
     static float lastTime = 0.0f;
 
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time       = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-    float deltaT     = time - lastTime;
-    lastTime         = time;
+    const auto currentTime = std::chrono::high_resolution_clock::now();
+    const float time       = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+    const float deltaT     = time - lastTime;
+    lastTime               = time;
     return deltaT;
 }
 
 void Vulcano::updateUniformBuffer(u32 currentImage) {
-    float deltaT = this->getDeltaT();
-    this->frameLogic(deltaT);
+    const float deltaT = this->getDeltaT();
+    this->frameLogic(currentImage, deltaT);
     this->computeViewProj();
     GlobalUniformBufferObject gubo;
     this->updateGlobalLight(gubo, deltaT, currentImage);
@@ -68,13 +77,13 @@ void Vulcano::updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, i
     this->DSglobal.map(currentImage, &gubo, 0);
 }
 
-void Vulcano::updateSceneInstances(GlobalUniformBufferObject gubo, int currentImage) {
+void Vulcano::updateSceneInstances(const GlobalUniformBufferObject &gubo, int currentImage) {
     UniformBufferObject ubo;
     for (int instanceId = 0; instanceId < this->SC.TI[0].InstanceCount; instanceId++) {
         ubo.mMat   = this->SC.TI[0].I[instanceId].Wm;
         ubo.mvpMat = this->ViewPrj * ubo.mMat;
-        this->SC.TI[0].I[instanceId].DS[0][0]->map(currentImage, &gubo, 0); // Global lighting
-        this->SC.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0);  // Camera MVP matrix
+        this->SC.TI[0].I[instanceId].DS[0][0]->map(currentImage, (void *)&gubo, 0); // Global lighting
+        this->SC.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0);          // Camera MVP matrix
     }
 }
 
@@ -87,7 +96,7 @@ void Vulcano::updateFPS(float deltaT) {
 
     // If another full second has passed
     if (elapsedT > 1.0f) {
-        float fps = (float)countedFrames / (float)elapsedT;
+        const float fps = (float)countedFrames / (float)elapsedT;
 
         std::ostringstream oss;
         oss << "FPS: " << fps << "\n";
@@ -116,6 +125,14 @@ void Vulcano::localInit() {
     this->commandBuffersInit();
     this->textMakerInit();
     this->windowSettingsInit();
+    this->playerInit();
+}
+
+void Vulcano::playerInit() {
+    this->playerCollider.initAABB(
+        -0.5f, -1.5f, -0.5f, // min (x1, y1, z1)
+        0.5f, 0.5f, 0.5f     // max (x2, y2, z2)
+    );
 }
 
 void Vulcano::windowSettingsInit() {
@@ -132,9 +149,13 @@ void Vulcano::windowSettingsInit() {
 
         if (key == GLFW_KEY_Q) { // Close application
             glfwSetWindowShouldClose(window, GLFW_TRUE);
-        } else if (key == GLFW_KEY_ESCAPE) { // Defocus window
+        }
+        if (key == GLFW_KEY_ESCAPE) { // Defocus window
             app->state.cursorCaptured = false;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+        if (key == GLFW_KEY_H) { // Toggle colliders
+            app->state.showColliders = !app->state.showColliders;
         }
     });
 
@@ -265,13 +286,13 @@ void Vulcano::pipelinesAndRenderPassesInit() {
 }
 
 void Vulcano::loadScene() {
-    std::string scenePath = "assets/scenes/Scene.json";
+    const std::string scenePath = "assets/scenes/Scene.json";
     logs::info("Loading scene ", scenePath);
-    int err = this->SC.init(this,
-                            1,          // Number of render passes (1 for single main pass rendering)
-                            this->VDRs, // Vector of Vertex Descriptor References available for model loading
-                            this->PRs,  // Vector of Technique/Pipeline References available for material binding
-                            scenePath   // Filepath to the scene.json definition file
+    const int err = this->SC.init(this,
+                                  1,          // Number of render passes (1 for single main pass rendering)
+                                  this->VDRs, // Vector of Vertex Descriptor References available for model loading
+                                  this->PRs,  // Vector of Technique/Pipeline References available for material binding
+                                  scenePath   // Filepath to the scene.json definition file
     );
     if (err) {
         logs::error("Error loading scene ", scenePath);

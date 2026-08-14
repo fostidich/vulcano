@@ -4,69 +4,112 @@
             "id": "plane",
             "VD": "VDposUV",
             "model": "assets/models/Grid128x128.obj",
-            "format": "OBJ"
+            "format": "OBJ",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
         },
         {
             "id": "CastleEntry",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Castle_01.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CastleGate",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Castle_02.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CastleTower",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Castle_Tower.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CastleWallTall",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Castle_Wall_01.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CastleWallShort",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Castle_Wall_02.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CastleBridge",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Bridge_02.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CornerHouse",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Bldg_06.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "WatchTower",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Bldg_07.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "Well",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Props_01.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         },
         {
             "id": "CircusTent",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Tent_01.mgcg",
-            "format": "MGCG"
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB",
+                "visible": true
+            }
         }
-
     ],
     "textures": [
         {
@@ -129,12 +172,28 @@
             "texture": "assets/textures/SPW_Medieval_Tent_01.png",
             "format": "C"
         }
-
     ],
     "instances": [
         {
             "technique": "BlinnPos",
             "elements": [
+                {
+                    "id": "slide",
+                    "model": "plane",
+                    "texture": [
+                        "grass"
+                    ],
+                    "scale": [
+                        10.0,
+                        10.0,
+                        10.0
+                    ],
+                    "eulerAngles": [
+                        30.0,
+                        45.0,
+                        0.0
+                    ]
+                },
                 {
                     "id": "grass",
                     "model": "plane",
@@ -142,9 +201,9 @@
                         "grass"
                     ],
                     "scale": [
-                        200.0,
-                        200.0,
-                        200.0
+                        128.0,
+                        128.0,
+                        128.0
                     ]
                 },
                 {
@@ -349,9 +408,7 @@
                         1.5
                     ]
                 }
-
             ]
         }
     ]
 }
-
