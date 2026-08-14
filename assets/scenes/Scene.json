@@ -59,6 +59,12 @@
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Props_01.mgcg",
             "format": "MGCG"
+        },
+        {
+            "id": "CircusTent",
+            "VD": "VDposUV",
+            "model": "assets/models/SPW_Medieval_Tent_01.mgcg",
+            "format": "MGCG"
         }
 
     ],
@@ -114,8 +120,13 @@
             "format": "C"
         },
         {
-            "id": "WatchTower",
+            "id": "Well",
             "texture": "assets/textures/SPW_Medieval_Props_01.png",
+            "format": "C"
+        },
+        {
+            "id": "CircusTent",
+            "texture": "assets/textures/SPW_Medieval_Tent_01.png",
             "format": "C"
         }
 
@@ -314,6 +325,28 @@
                         2.0,
                         2.0,
                         2.0
+                    ]
+                },
+                {
+                    "id": "circustent",
+                    "model": "CircusTent",
+                    "texture": [
+                        "CircusTent"
+                    ],
+                    "translate": [
+                        8.0,
+                        0.0,
+                        60.0
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        190.0,
+                        0.0
+                    ],
+                    "scale": [
+                        1.5,
+                        1.5,
+                        1.5
                     ]
                 }
 
