@@ -30,11 +30,12 @@ void Vulcano::cameraUpdate(float deltaT) {
     if (glfwGetKey(this->window, GLFW_KEY_S)) mv.z += 1.0f;
     if (glfwGetKey(this->window, GLFW_KEY_W)) mv.z -= 1.0f;
     if (state.flightMode) {
-        if (glfwGetKey(this->window, GLFW_KEY_SPACE)) mv.y += 2.0f;
-        if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 2.0f;
+        if (glfwGetKey(this->window, GLFW_KEY_SPACE)) mv.y += 0.5f;
+        if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 0.5f;
     } else {
-        mv.y -= 1.0f;
+        mv.y = state.gravity;
     }
+    if (state.flightMode) mv *= 5.0f;
 
     // Speed multiplier (running player with CTRL)
     const bool speeding = glfwGetKey(this->window, GLFW_KEY_LEFT_CONTROL);

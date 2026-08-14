@@ -3,17 +3,11 @@
 using namespace glm;
 
 namespace {
-string vec3str(vec3 v) {
-    return std::format("({:.2f}, {:.2f}, {:.2f})", v.x, v.y, v.z);
-}
+string vec3str(vec3 v) { return std::format("({:.2f}, {:.2f}, {:.2f})", v.x, v.y, v.z); }
 
-string ftoistr(float f) {
-    return std::to_string(static_cast<int>(f));
-}
+string ftoistr(float f) { return std::to_string(static_cast<int>(f)); }
 
-string boolstr(bool b) {
-    return b ? "on" : "off";
-}
+string boolstr(bool b) { return b ? "on" : "off"; }
 
 string radtodegstr(float f) {
     float deg = std::fmod(glm::degrees(f) + 180.0f, 360.0f);
