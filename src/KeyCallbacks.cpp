@@ -1,5 +1,7 @@
 #include "Vulcano.hpp"
 
+void toggle(bool &b) { b = !b; }
+
 void Vulcano::switchKeys(int key) {
     switch (key) {
     case GLFW_KEY_Q: // Close application
@@ -9,15 +11,18 @@ void Vulcano::switchKeys(int key) {
         state.cursorCaptured = false;
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         break;
-    case GLFW_KEY_H: // Toggle colliders
-        state.showColliders = !state.showColliders;
+    case GLFW_KEY_I: // Toggle debug screen
+        toggle(state.debugScreen);
         break;
-    case GLFW_KEY_G: // Toggle collisions
-        state.collisions = !state.collisions;
+    case GLFW_KEY_H: // Toggle colliders
+        toggle(state.showColliders);
+        break;
+    case GLFW_KEY_C: // Toggle collisions
+        toggle(state.collisions);
         if (!state.collisions) state.flightMode = true;
         break;
     case GLFW_KEY_F: // Toggle creative
-        state.flightMode = !state.flightMode;
+        toggle(state.flightMode);
         break;
     default:
         logs::debug("Unknown key: ", key);

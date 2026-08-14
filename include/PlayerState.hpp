@@ -10,6 +10,10 @@ struct PlayerState {
     glm::vec3 lookAtPoint = glm::vec3(0.0f, 5.0f, 0.0f);
     glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
 
+    // Looking directions
+    float pitch = 0.0f;
+    float yaw   = 0.0f;
+
     // Frustum shape
     const float FOVy      = glm::radians(60.0f);
     const float nearPlane = 0.1f;
@@ -24,4 +28,5 @@ struct PlayerState {
     bool flightMode     = false; // Whether the player can fly
     bool collisions     = true;  // Collisions with objects
     bool showColliders  = false; // Object hitboxes
+    bool debugScreen    = false; // Show debug screen
 };

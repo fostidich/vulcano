@@ -1,6 +1,7 @@
 #pragma once
 #include "Descriptors.hpp"
 #include "PlayerState.hpp"
+#include "Types.hpp"
 #include "modules/Colliders.hpp"
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
@@ -241,8 +242,8 @@ class Vulcano : public BaseProject {
     // Update UBO and GUBO for each instance.
     void updateSceneInstances(const GlobalUniformBufferObject &gubo, int currentImage);
 
-    // Update FPS on-screen counter each second.
-    void updateFPS(float deltaT);
+    // Update settings, performance and debug data on-screen.
+    void updateDebugScreen(float deltaT);
 
     // Helper lambda to check if a test position collides with anything in the scene
     bool checkCollision(const glm::vec3 &testPos);

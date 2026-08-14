@@ -2,7 +2,7 @@ BasedOnStyle: LLVM
 ColumnLimit: 0
 IndentWidth: 4
 AccessModifierOffset: -2
-AllowShortFunctionsOnASingleLine: Inline
+AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: WithoutElse
 AllowShortBlocksOnASingleLine: Always
 AlignConsecutiveAssignments: Consecutive

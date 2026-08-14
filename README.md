@@ -15,6 +15,8 @@ just run
 - **Control**: sprint
 - **ESC**: unfocus
 - **F**: toggle flight
-- **G**: toggle collisions
+- **C**: toggle collisions
 - **H**: toggle hitboxes
+- **I**: info/debug screen
+- **Q**: quit
 
