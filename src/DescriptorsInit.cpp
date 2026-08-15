@@ -71,9 +71,10 @@ void Vulcano::VDInit() {
 
 void Vulcano::setDSPoolSize() {
     // [Inherited from BaseProject: this->DPSZs]
-    this->DPSZs.uniformBlocksInPool = 2; // GUBO (in set 0) and UBO (in set 1)
-    this->DPSZs.texturesInPool      = 1; // The texture in set 0
-    this->DPSZs.setsInPool          = 2; // Set 0 (GUBO), set 1 (UBO, texture)
+    //Sized generously to scale with scene's object count
+    this->DPSZs.uniformBlocksInPool = 300;
+    this->DPSZs.texturesInPool      = 300;
+    this->DPSZs.setsInPool          = 300;
 }
 
 void Vulcano::referencesInit() {

@@ -7,7 +7,27 @@
             "format": "OBJ",
             "collider": {
                 "type": "OOBB",
-                "visible": true
+                "visible": false
+            }
+        },
+        {
+            "id": "RiverStraight",
+            "VD": "VDposUV",
+            "model": "assets/models/SPW_Terrain_River_Mid.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": false
+            }
+        },
+        {
+            "id": "RiverCorner",
+            "VD": "VDposUV",
+            "model": "assets/models/SPW_Terrain_River_Corner.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": false
             }
         },
         {
@@ -17,7 +37,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -27,7 +47,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -37,7 +57,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -47,7 +67,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -57,7 +77,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -67,7 +87,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -77,7 +97,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -87,7 +107,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -97,7 +117,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         },
         {
@@ -107,7 +127,7 @@
             "format": "MGCG",
             "collider": {
                 "type": "AABB",
-                "visible": true
+                "visible": false
             }
         }
     ],
@@ -125,6 +145,21 @@
         {
             "id": "colors",
             "texture": "assets/textures/Colors.png",
+            "format": "C"
+        },
+        {
+            "id": "RiverStraight",
+            "texture": "assets/textures/SPW_Terrain_River_Mid.png",
+            "format": "C"
+        },
+        {
+            "id": "RiverCorner",
+            "texture": "assets/textures/SPW_Terrain_River_Corner.png",
+            "format": "C"
+        },
+        {
+            "id": "Water",
+            "texture": "assets/textures/SPW_Terrain_Water.png",
             "format": "C"
         },
         {
@@ -205,6 +240,67 @@
                     ]
                 },
                 {
+                    "id": "moatFront",
+                    "model": "plane",
+                    "texture": [
+                        "Water"
+                    ],
+                    "translate": [
+                        0.0,
+                        0.1,
+                        18.0
+                    ],
+                    "scale": [
+                        22.0,
+                        1.0,
+                        4.0
+                    ]
+                },
+                {
+                    "id": "moatLeft",
+                    "model": "plane",
+                    "texture": [
+                        "Water"
+                    ],
+                    "translate": [
+                        -22.0,
+                        0.1,
+                        32.0
+                    ],
+                    "scale": [
+                        10.0,
+                        1.0,
+                        4.0
+                    ],
+                    "eulerAngles": [
+                        0.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "moatRight",
+                    "model": "plane",
+                    "texture": [
+                        "Water"
+                    ],
+                    "translate": [
+                        22.0,
+                        0.1,
+                        32.0
+                    ],
+                    "scale": [
+                        10.0,
+                        1.0,
+                        4.0
+                    ],
+                    "eulerAngles": [
+                        0.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
                     "id": "grass",
                     "model": "plane",
                     "texture": [
@@ -251,74 +347,6 @@
                     ]
                 },
                 {
-                    "id": "walltallLeft",
-                    "model": "CastleWallTall",
-                    "texture": [
-                        "CastleWallTall"
-                    ],
-                    "translate": [
-                        -10.0,
-                        0.0,
-                        25.5
-                    ],
-                    "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "id": "walltallRight",
-                    "model": "CastleWallTall",
-                    "texture": [
-                        "CastleWallTall"
-                    ],
-                    "translate": [
-                        10.0,
-                        0.0,
-                        25.5
-                    ],
-                    "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "id": "towerLeft",
-                    "model": "CastleTower",
-                    "texture": [
-                        "CastleTower"
-                    ],
-                    "translate": [
-                        -17.0,
-                        0.0,
-                        25.5
-                    ],
-                    "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "id": "towerRight",
-                    "model": "CastleTower",
-                    "texture": [
-                        "CastleTower"
-                    ],
-                    "translate": [
-                        17.0,
-                        0.0,
-                        25.5
-                    ],
-                    "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
                     "id": "entry",
                     "model": "CastleEntry",
                     "texture": [
@@ -327,7 +355,7 @@
                     "translate": [
                         0.0,
                         0.0,
-                        85.0
+                        70.0
                     ],
                     "eulerAngles": [
                         90.0,
@@ -341,40 +369,6 @@
                     ]
                 },
                 {
-                    "id": "cornerHouse1",
-                    "model": "CornerHouse",
-                    "texture": [
-                        "CornerHouse"
-                    ],
-                    "translate": [
-                        -20.0,
-                        0.0,
-                        55.0
-                    ],
-                    "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
-                    "id": "watchtower1",
-                    "model": "WatchTower",
-                    "texture": [
-                        "WatchTower"
-                    ],
-                    "translate": [
-                        20.0,
-                        0.0,
-                        55.0
-                    ],
-                    "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
-                    ]
-                },
-                {
                     "id": "well",
                     "model": "Well",
                     "texture": [
@@ -383,7 +377,7 @@
                     "translate": [
                         0.0,
                         0.0,
-                        55.0
+                        40.0
                     ],
                     "eulerAngles": [
                         90.0,
@@ -405,7 +399,7 @@
                     "translate": [
                         8.0,
                         0.0,
-                        60.0
+                        45.0
                     ],
                     "eulerAngles": [
                         90.0,
@@ -416,6 +410,346 @@
                         1.5,
                         1.5,
                         1.5
+                    ]
+                },
+                {
+                    "id": "wallInnerLeft",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -10.0,
+                        0.0,
+                        25.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallInnerRight",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        10.0,
+                        0.0,
+                        25.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallOuterLeft",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -17.0,
+                        0.0,
+                        25.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallOuterRight",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        17.0,
+                        0.0,
+                        25.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "towerLeft",
+                    "model": "CastleTower",
+                    "texture": [
+                        "CastleTower"
+                    ],
+                    "translate": [
+                        -24.0,
+                        0.0,
+                        25.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "towerRight",
+                    "model": "CastleTower",
+                    "texture": [
+                        "CastleTower"
+                    ],
+                    "translate": [
+                        24.0,
+                        0.0,
+                        25.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideLeft1",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -25.0,
+                        0.0,
+                        32.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideRight1",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        25.0,
+                        0.0,
+                        32.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideLeft2",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -25.0,
+                        0.0,
+                        39.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideRight2",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        25.0,
+                        0.0,
+                        39.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideLeft3",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -25.0,
+                        0.0,
+                        46.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideRight3",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        25.0,
+                        0.0,
+                        46.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideLeft4",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -25.0,
+                        0.0,
+                        53.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideRight4",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        25.0,
+                        0.0,
+                        53.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallSideLeft4",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -25.0,
+                        0.0,
+                        60.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallBackRight1",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        25.0,
+                        0.0,
+                        60.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        90.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallBackLeft1",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        -18.0,
+                        0.0,
+                        63.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "wallBackRight1",
+                    "model": "CastleWallTall",
+                    "texture": [
+                        "CastleWallTall"
+                    ],
+                    "translate": [
+                        18.0,
+                        0.0,
+                        63.5
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "watchtowerRight",
+                    "model": "WatchTower",
+                    "texture": [
+                        "WatchTower"
+                    ],
+                    "translate": [
+                        25.0,
+                        0.0,
+                        65.0
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "id": "watchtowerLeft",
+                    "model": "WatchTower",
+                    "texture": [
+                        "WatchTower"
+                    ],
+                    "translate": [
+                        -25.0,
+                        0.0,
+                        65.0
+                    ],
+                    "eulerAngles": [
+                        90.0,
+                        0.0,
+                        0.0
                     ]
                 }
             ]
