@@ -51,6 +51,8 @@ void Vulcano::updateDebugScreen(float deltaT) {
         oss << "Pitch: " << radtodegstr(state.pitch) << "\n";
         oss << "Yaw: " << radtodegstr(state.yaw) << "\n";
         oss << "Direction: " << compass(state.yaw) << "\n";
+        oss << "[ctrl] Running: " << boolstr(state.running) << "\n";
+        oss << "[esc] Focus: " << boolstr(state.cursorCaptured) << "\n";
         oss << "[F] Flight: " << boolstr(state.flightMode) << "\n";
         oss << "[C] Collisions: " << boolstr(state.collisions) << "\n";
         oss << "[H] Hitboxes: " << boolstr(state.showColliders) << "\n";

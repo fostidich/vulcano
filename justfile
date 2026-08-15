@@ -18,14 +18,14 @@ force-build: init
     cmake --build --preset default --clean-first
 alias fb := force-build
 
-# Run the compiled Vulkan application
-run: build
+# Run the compiled Vulkan application (syncs assets if changed)
+run: build copy-assets
     cd build && ./{{ APP_NAME }}
 alias r := run
 
 # Update assets for the current build
 copy-assets: build
-    cp -r assets build
+    cmake -E copy_directory_if_different assets build/assets
 alias ca := copy-assets
 
 # Run static analysis and shader linting
@@ -47,4 +47,8 @@ alias fmt := format
 # Clean build artifacts
 clean:
     rm -rf build .cache
+
+# Open scene JSON editor
+scene-builder:
+    open .scene-builder/index.html
 

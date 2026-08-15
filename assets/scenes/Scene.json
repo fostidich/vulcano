@@ -6,8 +6,29 @@
             "model": "assets/models/Grid128x128.obj",
             "format": "OBJ",
             "collider": {
-                "type": "OOBB",
-                "visible": false
+                "type": "OOBB"
+            }
+        },
+        {
+            "id": "tree",
+            "VD": "VDposUV",
+            "model": "assets/models/Tree.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "BVH",
+                "visible": true,
+                "children": [
+                    {
+                        "type": "Sphere",
+                        "visible": true,
+                        "params": [
+                            0,
+                            1,
+                            0,
+                            1
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -16,8 +37,7 @@
             "model": "assets/models/SPW_Medieval_Castle_01.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -26,8 +46,7 @@
             "model": "assets/models/SPW_Medieval_Castle_02.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -36,8 +55,7 @@
             "model": "assets/models/SPW_Medieval_Castle_Tower.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -46,8 +64,7 @@
             "model": "assets/models/SPW_Medieval_Castle_Wall_01.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -56,8 +73,7 @@
             "model": "assets/models/SPW_Medieval_Castle_Wall_02.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -66,8 +82,7 @@
             "model": "assets/models/SPW_Medieval_Bridge_02.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -76,8 +91,7 @@
             "model": "assets/models/SPW_Medieval_Bldg_06.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -86,8 +100,7 @@
             "model": "assets/models/SPW_Medieval_Bldg_07.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -96,8 +109,7 @@
             "model": "assets/models/SPW_Medieval_Props_01.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -106,8 +118,7 @@
             "model": "assets/models/SPW_Medieval_Tent_01.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "AABB",
-                "visible": false
+                "type": "AABB"
             }
         },
         {
@@ -117,13 +128,12 @@
             "format": "OBJ",
             "collider": {
                 "type": "OOBB",
-                "visible": false,
                 "params": [
                     -0.5,
-                    -1.0,
+                    -1,
                     -0.5,
                     0.5,
-                    1.0,
+                    1,
                     0.5
                 ]
             }
@@ -206,25 +216,71 @@
             "technique": "BlinnPos",
             "elements": [
                 {
+                    "id": "grass1",
+                    "model": "plane",
+                    "texture": [
+                        "grass"
+                    ],
+                    "scale": [
+                        128,
+                        128,
+                        128
+                    ]
+                },
+                {
+                    "id": "grass2",
+                    "model": "plane",
+                    "texture": [
+                        "grass"
+                    ],
+                    "translate": [
+                        0,
+                        0,
+                        128
+                    ],
+                    "scale": [
+                        128,
+                        128,
+                        128
+                    ]
+                },
+                {
                     "id": "slide",
                     "model": "plane",
                     "texture": [
                         "marble"
                     ],
-                    "scale": [
-                        30.0,
-                        30.0,
-                        30.0
-                    ],
                     "translate": [
-                        0.0,
-                        5.0,
-                        -20.0
+                        0,
+                        5,
+                        -20
                     ],
                     "eulerAngles": [
-                        30.0,
-                        45.0,
-                        0.0
+                        30,
+                        45,
+                        0
+                    ],
+                    "scale": [
+                        30,
+                        30,
+                        30
+                    ]
+                },
+                {
+                    "id": "tree",
+                    "model": "tree",
+                    "texture": [
+                        "colors"
+                    ],
+                    "translate": [
+                        30,
+                        0,
+                        -10
+                    ],
+                    "scale": [
+                        2,
+                        2,
+                        2
                     ]
                 },
                 {
@@ -234,14 +290,14 @@
                         "Water"
                     ],
                     "translate": [
-                        0.0,
+                        0,
                         0.1,
-                        20.0
+                        20
                     ],
                     "scale": [
-                        75.0,
-                        1.0,
-                        5.0
+                        75,
+                        1,
+                        5
                     ]
                 },
                 {
@@ -251,19 +307,19 @@
                         "Water"
                     ],
                     "translate": [
-                        -35.0,
+                        -35,
                         0.1,
-                        52.0
+                        52
+                    ],
+                    "eulerAngles": [
+                        0,
+                        90,
+                        0
                     ],
                     "scale": [
                         65.5,
-                        1.0,
-                        5.0
-                    ],
-                    "eulerAngles": [
-                        0.0,
-                        90.0,
-                        0.0
+                        1,
+                        5
                     ]
                 },
                 {
@@ -273,19 +329,19 @@
                         "Water"
                     ],
                     "translate": [
-                        35.0,
+                        35,
                         0.1,
                         52.5
                     ],
+                    "eulerAngles": [
+                        0,
+                        90,
+                        0
+                    ],
                     "scale": [
                         65.5,
-                        1.0,
-                        5.0
-                    ],
-                    "eulerAngles": [
-                        0.0,
-                        90.0,
-                        0.0
+                        1,
+                        5
                     ]
                 },
                 {
@@ -295,26 +351,14 @@
                         "Water"
                     ],
                     "translate": [
-                        0.0,
+                        0,
                         0.1,
-                        85.0
+                        85
                     ],
                     "scale": [
-                        75.0,
-                        1.0,
-                        5.0
-                    ]
-                },
-                {
-                    "id": "grass",
-                    "model": "plane",
-                    "texture": [
-                        "grass"
-                    ],
-                    "scale": [
-                        128.0,
-                        128.0,
-                        128.0
+                        75,
+                        1,
+                        5
                     ]
                 },
                 {
@@ -324,14 +368,14 @@
                         "CastleBridge"
                     ],
                     "translate": [
-                        0.0,
-                        -6.0,
-                        15.0
+                        0,
+                        -6,
+                        15
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -341,14 +385,14 @@
                         "CastleGate"
                     ],
                     "translate": [
-                        0.0,
-                        0.0,
+                        0,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -358,14 +402,14 @@
                         "CastleEntry"
                     ],
                     "translate": [
-                        0.0,
-                        0.0,
-                        70.0
+                        0,
+                        0,
+                        70
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        180.0
+                        90,
+                        0,
+                        180
                     ],
                     "scale": [
                         1.3,
@@ -380,19 +424,19 @@
                         "Well"
                     ],
                     "translate": [
-                        0.0,
-                        0.0,
-                        40.0
+                        0,
+                        0,
+                        40
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ],
                     "scale": [
-                        2.0,
-                        2.0,
-                        2.0
+                        2,
+                        2,
+                        2
                     ]
                 },
                 {
@@ -402,14 +446,14 @@
                         "CircusTent"
                     ],
                     "translate": [
-                        8.0,
-                        0.0,
-                        45.0
+                        8,
+                        0,
+                        45
                     ],
                     "eulerAngles": [
-                        90.0,
-                        190.0,
-                        0.0
+                        90,
+                        190,
+                        0
                     ],
                     "scale": [
                         1.5,
@@ -424,14 +468,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -10.0,
-                        0.0,
+                        -10,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -441,14 +485,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        10.0,
-                        0.0,
+                        10,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -458,14 +502,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -17.0,
-                        0.0,
+                        -17,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -475,14 +519,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        17.0,
-                        0.0,
+                        17,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -492,14 +536,14 @@
                         "CastleTower"
                     ],
                     "translate": [
-                        -24.0,
-                        0.0,
+                        -24,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -509,14 +553,14 @@
                         "CastleTower"
                     ],
                     "translate": [
-                        24.0,
-                        0.0,
+                        24,
+                        0,
                         25.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -526,14 +570,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -25.0,
-                        0.0,
+                        -25,
+                        0,
                         32.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -543,14 +587,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        25.0,
-                        0.0,
+                        25,
+                        0,
                         32.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -560,14 +604,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -25.0,
-                        0.0,
+                        -25,
+                        0,
                         39.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -577,14 +621,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        25.0,
-                        0.0,
+                        25,
+                        0,
                         39.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -594,14 +638,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -25.0,
-                        0.0,
+                        -25,
+                        0,
                         46.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -611,14 +655,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        25.0,
-                        0.0,
+                        25,
+                        0,
                         46.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -628,14 +672,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -25.0,
-                        0.0,
+                        -25,
+                        0,
                         53.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -645,14 +689,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        25.0,
-                        0.0,
+                        25,
+                        0,
                         53.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -662,14 +706,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -25.0,
-                        0.0,
+                        -25,
+                        0,
                         60.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -679,14 +723,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        25.0,
-                        0.0,
+                        25,
+                        0,
                         60.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        90.0,
-                        0.0
+                        90,
+                        90,
+                        0
                     ]
                 },
                 {
@@ -696,14 +740,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        -18.0,
-                        0.0,
+                        -18,
+                        0,
                         63.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -713,14 +757,14 @@
                         "CastleWallTall"
                     ],
                     "translate": [
-                        18.0,
-                        0.0,
+                        18,
+                        0,
                         63.5
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -730,14 +774,14 @@
                         "WatchTower"
                     ],
                     "translate": [
-                        25.0,
-                        0.0,
-                        65.0
+                        25,
+                        0,
+                        65
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -747,14 +791,26 @@
                         "WatchTower"
                     ],
                     "translate": [
-                        -25.0,
-                        0.0,
-                        65.0
+                        -25,
+                        0,
+                        65
                     ],
                     "eulerAngles": [
-                        90.0,
-                        0.0,
-                        0.0
+                        90,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "id": "tree2",
+                    "model": "tree",
+                    "texture": [
+                        "colors"
+                    ],
+                    "translate": [
+                        20,
+                        0,
+                        -30
                     ]
                 }
             ]

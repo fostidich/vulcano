@@ -77,4 +77,5 @@ void Vulcano::cameraUpdate(float deltaT) {
     this->state.lookAtPoint = state.eyePosition + forward;
     this->state.pitch       = pitch;
     this->state.yaw         = yaw;
+    this->state.running     = speeding;
 }

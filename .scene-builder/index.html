@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scene.json Builder</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: monospace; font-size: 13px; background: #1a1a1a; color: #ddd; padding: 0; }
+
+  /* ── Sticky toolbar ── */
+  .toolbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; gap: 8px; padding: 8px 12px; flex-wrap: wrap; align-items: center;
+    background: #111; border-bottom: 1px solid #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,.5);
+  }
+  .toolbar h1 { font-size: 15px; color: #fff; margin-right: 8px; }
+
+  button {
+    font-family: monospace; font-size: 12px; padding: 4px 10px;
+    background: #333; color: #ddd; border: 1px solid #555; cursor: pointer;
+  }
+  button:hover { background: #444; }
+  button.primary { background: #265; border-color: #3a8; color: #cfc; }
+  button.primary:hover { background: #376; }
+  button.danger { background: #633; border-color: #a55; color: #fcc; }
+  button.danger:hover { background: #744; }
+  button.sm { padding: 2px 6px; font-size: 11px; }
+
+  .status { padding: 4px 8px; font-size: 12px; color: #8f8; margin-left: auto; }
+  .status.error { color: #f88; }
+
+  #editor { padding: 12px; }
+
+  /* ── Collapsible sections ── */
+  .section { border: 1px solid #333; margin-bottom: 8px; background: #222; }
+  .section-header {
+    padding: 6px 8px; background: #2a2a2a; display: flex; justify-content: space-between;
+    align-items: center; cursor: pointer; user-select: none;
+  }
+  .section-header:hover { background: #303030; }
+  .section-header h2 { font-size: 14px; color: #adf; margin: 0; }
+  .section-header .chevron { color: #666; margin-right: 6px; display: inline-block; transition: transform .15s; }
+  .section-header .chevron.collapsed { transform: rotate(-90deg); }
+  .section-body { padding: 8px; }
+  .section-body.collapsed { display: none; }
+
+  /* ── Items (models, textures, instance groups, elements) ── */
+  .item { border: 1px solid #383838; margin-bottom: 6px; background: #252525; }
+  .item-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 6px; cursor: pointer; user-select: none;
+  }
+  .item-header:hover { background: #2c2c2c; }
+  .item-header .header-btns { display: flex; gap: 4px; align-items: center; }
+  .item-title { font-weight: bold; color: #8cf; display: flex; align-items: center; gap: 6px; }
+  .item-title .chevron { color: #555; font-size: 11px; display: inline-block; transition: transform .15s; }
+  .item-title .chevron.collapsed { transform: rotate(-90deg); }
+  .item-body { padding: 6px; }
+  .item-body.collapsed { display: none; }
+
+  .instance-item .item-title { color: #fd8; }
+
+  /* ── Form rows ── */
+  .row { display: flex; gap: 6px; margin-bottom: 4px; align-items: center; flex-wrap: wrap; }
+  label { min-width: 90px; color: #999; font-size: 12px; }
+  input, select { font-family: monospace; font-size: 12px; padding: 2px 4px; background: #1a1a1a; color: #ddd; border: 1px solid #444; }
+  input[type="text"] { width: 220px; }
+  input[type="number"] { width: 70px; }
+  input[type="checkbox"] { width: auto; }
+  select { min-width: 80px; }
+
+  .vec3 { display: flex; gap: 4px; }
+  .vec3 input { width: 65px; }
+  .vec4 { display: flex; gap: 4px; }
+  .vec4 input { width: 65px; }
+
+  .texture-list { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+  .texture-list input { width: 120px; }
+
+  /* ── Collider tree ── */
+  .collider-node { margin: 4px 0; }
+  .collider-node-header {
+    display: flex; align-items: center; gap: 6px; padding: 3px 6px;
+    background: #2a2a2a; border: 1px solid #3a3a3a; cursor: pointer; user-select: none;
+  }
+  .collider-node-header:hover { background: #333; }
+  .collider-node-header .tag {
+    font-size: 11px; padding: 1px 5px; border-radius: 2px;
+    font-weight: bold;
+  }
+  .collider-node-header .tag.AABB   { background: #345; color: #8cf; }
+  .collider-node-header .tag.OOBB   { background: #354; color: #8fc; }
+  .collider-node-header .tag.Sphere { background: #543; color: #fc8; }
+  .collider-node-header .tag.Point  { background: #534; color: #f8c; }
+  .collider-node-header .tag.BVH    { background: #453; color: #cf8; }
+  .collider-node-header .chevron { color: #555; font-size: 10px; display: inline-block; transition: transform .15s; }
+  .collider-node-header .chevron.collapsed { transform: rotate(-90deg); }
+  .collider-node-body { padding: 4px 4px 4px 16px; border-left: 2px solid #3a3a3a; margin-left: 8px; }
+  .collider-node-body.collapsed { display: none; }
+
+  .collider-children { margin-top: 4px; }
+  .collider-children-label { font-size: 11px; color: #888; margin-bottom: 2px; }
+
+  .param-fields label { min-width: 50px; }
+  .param-fields input { width: 70px; }
+
+  /* ── Preview ── */
+  .preview { padding: 0 12px 12px; }
+  .preview pre {
+    background: #111; padding: 8px; max-height: 400px; overflow: auto;
+    border: 1px solid #333; font-size: 11px; white-space: pre; color: #9d9;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>Scene.json Builder</h1>
+  <button onclick="loadFile()">Load</button>
+  <button onclick="newScene()">New</button>
+  <button class="primary" onclick="saveFile()">Save</button>
+  <button onclick="reorderScene()">Reorder</button>
+  <button onclick="togglePreview()">Preview</button>
+  <button onclick="expandAll()">Expand All</button>
+  <button onclick="collapseAll()">Collapse All</button>
+  <span id="status" class="status"></span>
+</div>
+
+<div id="preview-section" class="preview" style="display:none;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+    <h2 style="font-size:13px; color:#adf; margin:0;">JSON Preview</h2>
+    <button class="sm" onclick="togglePreview()">Close</button>
+  </div>
+  <pre id="preview"></pre>
+</div>
+
+<div id="editor"></div>
+
+<script>
+// ── State ──
+let scene = { models: [], textures: [], instances: [] };
+const collapsedState = {};
+let allPaths = [];
+
+const MODEL_FORMATS = ['OBJ', 'MGCG', 'GLTF', 'ASSET'];
+const TEXTURE_FORMATS = ['C', 'D'];
+const COLLIDER_TYPES = ['AABB', 'OOBB', 'Sphere', 'Point', 'BVH'];
+
+// Per-type param definitions
+const COLLIDER_PARAM_DEFS = {
+  AABB:   [{n:'xMin'},{n:'yMin'},{n:'zMin'},{n:'xMax'},{n:'yMax'},{n:'zMax'}],
+  OOBB:   [{n:'xMin'},{n:'yMin'},{n:'zMin'},{n:'xMax'},{n:'yMax'},{n:'zMax'}],
+  Sphere: [{n:'x'},{n:'y'},{n:'z'},{n:'r'}],
+  Point:  [{n:'x'},{n:'y'},{n:'z'}],
+  BVH:    []
+};
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status' + (isError ? ' error' : '');
+}
+
+// ── Collapse helpers ──
+function registerPath(path) { allPaths.push(path); }
+function isCollapsed(path) { return collapsedState[path] === true; }
+function toggleCollapse(path) {
+  collapsedState[path] = !isCollapsed(path);
+  const body = document.querySelector(`[data-path="${path}"]`);
+  const chev = document.querySelector(`[data-chev="${path}"]`);
+  if (body) body.classList.toggle('collapsed', isCollapsed(path));
+  if (chev) chev.classList.toggle('collapsed', isCollapsed(path));
+}
+function expandAll() { allPaths.forEach(k => collapsedState[k] = false); render(); }
+function collapseAll() { allPaths.forEach(k => collapsedState[k] = true); render(); }
+
+// ── Reorder ──
+function reorderScene() {
+  collectState();
+
+  const getPrimarySortKey = (obj) => {
+    if (!obj || typeof obj !== 'object') return '';
+    return String(obj.id || obj.technique || obj.type || obj.model || obj.texture || '').toLowerCase();
+  };
+
+  if (Array.isArray(scene.models)) {
+    scene.models.sort((a, b) => getPrimarySortKey(a).localeCompare(getPrimarySortKey(b)));
+  }
+
+  if (Array.isArray(scene.textures)) {
+    scene.textures.sort((a, b) => getPrimarySortKey(a).localeCompare(getPrimarySortKey(b)));
+  }
+
+  if (Array.isArray(scene.instances)) {
+    scene.instances.sort((a, b) => getPrimarySortKey(a).localeCompare(getPrimarySortKey(b)));
+    scene.instances.forEach(group => {
+      if (Array.isArray(group.elements)) {
+        group.elements.sort((a, b) => getPrimarySortKey(a).localeCompare(getPrimarySortKey(b)));
+      }
+    });
+  }
+
+  render();
+  setStatus('Reordered alphabetically by primary attribute');
+}
+
+// ── Load / New / Save ──
+function loadFile() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        scene = JSON.parse(ev.target.result);
+        if (!scene.models) scene.models = [];
+        if (!scene.textures) scene.textures = [];
+        if (!scene.instances) scene.instances = [];
+        Object.keys(collapsedState).forEach(k => delete collapsedState[k]);
+        render();
+        setStatus('Loaded: ' + file.name);
+      } catch (err) { setStatus('Parse error: ' + err.message, true); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function newScene() {
+  scene = { models: [], textures: [], instances: [] };
+  Object.keys(collapsedState).forEach(k => delete collapsedState[k]);
+  render();
+  setStatus('New scene created');
+}
+
+async function saveFile() {
+  collectState();
+  const json = JSON.stringify(scene, null, 4) + '\n';
+  if (window.showDirectoryPicker) {
+    try {
+      const dh = await window.showDirectoryPicker({ mode: 'readwrite' });
+      const fh = await dh.getFileHandle('Scene.json', { create: true });
+      const w = await fh.createWritable(); await w.write(json); await w.close();
+      setStatus('Saved to: ' + dh.name + '/Scene.json'); return;
+    } catch (err) { if (err.name === 'AbortError') { setStatus('Cancelled'); return; } }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+  a.download = 'Scene.json'; a.click(); URL.revokeObjectURL(a.href);
+  setStatus('Downloaded Scene.json');
+}
+
+function togglePreview() {
+  const sec = document.getElementById('preview-section');
+  const isHidden = sec.style.display === 'none' || getComputedStyle(sec).display === 'none';
+  sec.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) {
+    try {
+      collectState();
+      document.getElementById('preview').textContent = JSON.stringify(scene, null, 4);
+      sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch (err) {
+      document.getElementById('preview').textContent = 'Error collecting state: ' + err.message + '\n' + err.stack;
+      setStatus('Preview error: ' + err.message, true);
+    }
+  }
+}
+
+// ── Collect ──
+function pf(input) { return parseFloat(input.value) || 0; }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function collectState() {
+  scene.models = [];
+  document.querySelectorAll('[data-kind="model"]').forEach(el => {
+    const m = {};
+    m.id = el.querySelector('[data-field="id"]').value;
+    m.VD = el.querySelector('[data-field="VD"]').value;
+    m.model = el.querySelector('[data-field="model"]').value;
+    m.format = el.querySelector('[data-field="format"]').value;
+    if (m.format === 'ASSET') {
+      const a = el.querySelector('[data-field="asset"]'); if (a) m.asset = a.value;
+      const mi = el.querySelector('[data-field="meshId"]'); if (mi) m.meshId = parseInt(mi.value) || 0;
+      const n = el.querySelector('[data-field="node"]'); if (n) m.node = parseInt(n.value) || 0;
+    }
+    const hasCol = el.querySelector('[data-field="has-collider"]');
+    if (hasCol && hasCol.checked) {
+      const cn = el.querySelector('.collider-node');
+      if (cn) m.collider = collectColliderNode(cn);
+    }
+    scene.models.push(m);
+  });
+
+  scene.textures = [];
+  document.querySelectorAll('[data-kind="texture"]').forEach(el => {
+    scene.textures.push({
+      id: el.querySelector('[data-field="id"]').value,
+      texture: el.querySelector('[data-field="texture"]').value,
+      format: el.querySelector('[data-field="format"]').value
+    });
+  });
+
+  scene.instances = [];
+  document.querySelectorAll('[data-kind="group"]').forEach(gEl => {
+    const group = { technique: gEl.querySelector('[data-field="technique"]').value, elements: [] };
+    gEl.querySelectorAll('[data-kind="element"]').forEach(el => {
+      const inst = {};
+      inst.id = el.querySelector('[data-field="id"]').value;
+      inst.model = el.querySelector('[data-field="model"]').value;
+      inst.texture = [];
+      el.querySelectorAll('.texture-list input').forEach(t => { if (t.value) inst.texture.push(t.value); });
+
+      const mode = el.querySelector('[data-field="transform-mode"]').value;
+      if (mode === 'matrix') {
+        const mi = el.querySelectorAll('.matrix-inputs input');
+        if (mi.length === 16) inst.transform = Array.from(mi).map(i => parseFloat(i.value) || 0);
+      } else {
+        const tx = el.querySelectorAll('.translate-inputs input');
+        if (tx.length === 3) { const v = [pf(tx[0]),pf(tx[1]),pf(tx[2])]; if (v.some(x=>x!==0)) inst.translate = v; }
+        const rm = el.querySelector('[data-field="rotation-mode"]');
+        if (rm && rm.value === 'euler') {
+          const rx = el.querySelectorAll('.euler-inputs input');
+          if (rx.length===3) { const v=[pf(rx[0]),pf(rx[1]),pf(rx[2])]; if(v.some(x=>x!==0)) inst.eulerAngles=v; }
+        } else if (rm && rm.value === 'quaternion') {
+          const rx = el.querySelectorAll('.quat-inputs input');
+          if (rx.length===4) inst.quaternion = [pf(rx[0]),pf(rx[1]),pf(rx[2]),pf(rx[3])];
+        }
+        const sx = el.querySelectorAll('.scale-inputs input');
+        if (sx.length===3) { const v=[pf(sx[0]),pf(sx[1]),pf(sx[2])]; if(!(v[0]===1&&v[1]===1&&v[2]===1)) inst.scale=v; }
+      }
+      group.elements.push(inst);
+    });
+    scene.instances.push(group);
+  });
+}
+
+function collectColliderNode(node) {
+  const type = node.querySelector(':scope > .collider-node-body [data-field="collider-type"]').value;
+  const visible = node.querySelector(':scope > .collider-node-body [data-field="collider-visible"]');
+  const result = { type };
+  if (visible && visible.checked) result.visible = true;
+
+  // Collect typed params
+  const paramDefs = COLLIDER_PARAM_DEFS[type] || [];
+  if (paramDefs.length > 0) {
+    const paramInputs = node.querySelectorAll(':scope > .collider-node-body > .collider-params-row [data-param]');
+    const params = [];
+    paramInputs.forEach(inp => params.push(parseFloat(inp.value) || 0));
+    if (params.length > 0 && params.some(p => p !== 0)) result.params = params;
+  }
+
+  if (type === 'BVH') {
+    const children = [];
+    const container = node.querySelector(':scope > .collider-node-body > .collider-children');
+    if (container) {
+      container.querySelectorAll(':scope > .collider-node').forEach(cn => children.push(collectColliderNode(cn)));
+    }
+    if (children.length) result.children = children;
+  }
+  return result;
+}
+
+// ── Render ──
+function render() {
+  allPaths = [];
+  const ed = document.getElementById('editor');
+  ed.innerHTML = '';
+  ed.appendChild(makeSection('Models', 'models', body => {
+    scene.models.forEach((m, i) => body.appendChild(renderModel(m, i)));
+  }, () => { scene.models.unshift({ id: '', VD: 'VDposUV', model: '', format: 'OBJ' }); render(); }));
+  ed.appendChild(makeSection('Textures', 'textures', body => {
+    scene.textures.forEach((t, i) => body.appendChild(renderTexture(t, i)));
+  }, () => { scene.textures.unshift({ id: '', texture: '', format: 'C' }); render(); }));
+  ed.appendChild(makeSection('Instances (by Technique)', 'instances', body => {
+    scene.instances.forEach((g, i) => body.appendChild(renderInstanceGroup(g, i)));
+  }, () => { scene.instances.unshift({ technique: '', elements: [] }); render(); }));
+}
+
+function makeSection(title, key, populate, onAdd) {
+  const sec = document.createElement('div'); sec.className = 'section';
+  const path = 'sec-' + key;
+  registerPath(path);
+  const header = document.createElement('div'); header.className = 'section-header';
+  header.innerHTML = `<h2><span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▼</span>${title} (${scene[key].length})</h2>`;
+  header.onclick = e => { if (e.target.tagName==='BUTTON') return; toggleCollapse(path); };
+  const addBtn = document.createElement('button'); addBtn.textContent = '+ Add';
+  addBtn.onclick = e => { e.stopPropagation(); collectState(); onAdd(); };
+  header.appendChild(addBtn);
+  sec.appendChild(header);
+  const body = document.createElement('div');
+  body.className = 'section-body' + (isCollapsed(path) ? ' collapsed' : '');
+  body.dataset.path = path;
+  sec.appendChild(body);
+  populate(body);
+  return sec;
+}
+
+function makeCollapsibleItem(path, titleHtml, titleClass, content, onRemove, extraHeaderBtns) {
+  registerPath(path);
+  const div = document.createElement('div'); div.className = 'item';
+  const header = document.createElement('div'); header.className = 'item-header';
+  header.innerHTML = `<span class="item-title ${titleClass}"><span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▶</span>${titleHtml}</span>`;
+  header.onclick = e => { if (e.target.tagName==='BUTTON') return; toggleCollapse(path); };
+
+  const btnsDiv = document.createElement('div'); btnsDiv.className = 'header-btns';
+  if (extraHeaderBtns) extraHeaderBtns.forEach(b => btnsDiv.appendChild(b));
+  if (onRemove) {
+    const btn = document.createElement('button'); btn.className = 'danger sm'; btn.textContent = '×';
+    btn.onclick = e => { e.stopPropagation(); collectState(); onRemove(); };
+    btnsDiv.appendChild(btn);
+  }
+  header.appendChild(btnsDiv);
+
+  div.appendChild(header);
+  const body = document.createElement('div');
+  body.className = 'item-body' + (isCollapsed(path) ? ' collapsed' : '');
+  body.dataset.path = path;
+  if (typeof content === 'string') body.innerHTML = content; else body.appendChild(content);
+  div.appendChild(body);
+  return div;
+}
+
+// ── Model ──
+function renderModel(m, idx) {
+  const path = 'model-' + idx;
+  const frag = document.createElement('div');
+  frag.innerHTML = `
+    <div class="row"><label>ID</label><input type="text" data-field="id" value="${esc(m.id||'')}"></div>
+    <div class="row"><label>VD</label><input type="text" data-field="VD" value="${esc(m.VD||'VDposUV')}"></div>
+    <div class="row"><label>Model path</label><input type="text" data-field="model" value="${esc(m.model||'')}" style="width:350px"></div>
+    <div class="row"><label>Format</label>
+      <select data-field="format" onchange="collectState(); render();">
+        ${MODEL_FORMATS.map(f=>`<option value="${f}" ${f===m.format?'selected':''}>${f}</option>`).join('')}
+      </select></div>
+    ${m.format==='ASSET'?`<div class="row"><label>Asset</label><input type="text" data-field="asset" value="${esc(m.asset||'')}">
+      <label>MeshId</label><input type="number" data-field="meshId" value="${m.meshId||0}">
+      <label>Node</label><input type="number" data-field="node" value="${m.node||0}"></div>`:''}
+    <div class="row"><label>Collider</label>
+      <input type="checkbox" data-field="has-collider" ${m.collider?'checked':''}
+             onchange="this.closest('[data-kind]').querySelector('.collider-root').style.display=this.checked?'block':'none'"></div>
+    <div class="collider-root" style="display:${m.collider?'block':'none'}"></div>
+  `;
+  const colRoot = frag.querySelector('.collider-root');
+  colRoot.appendChild(renderColliderNode(m.collider || {type:'AABB'}, path + '-col'));
+
+  const item = makeCollapsibleItem(path, `Model #${idx}: <span style="color:#adf">${esc(m.id||'(unnamed)')}</span>`, '',
+    frag, () => { scene.models.splice(idx,1); render(); });
+  item.dataset.kind = 'model';
+  return item;
+}
+
+// ── Texture ──
+function renderTexture(t, idx) {
+  const path = 'tex-' + idx;
+  const html = `
+    <div class="row"><label>ID</label><input type="text" data-field="id" value="${esc(t.id||'')}"></div>
+    <div class="row"><label>Format</label><select data-field="format">
+        ${TEXTURE_FORMATS.map(f=>`<option value="${f}" ${f===t.format?'selected':''}>${f}</option>`).join('')}
+      </select></div>
+    <div class="row"><label>Texture path</label><input type="text" data-field="texture" value="${esc(t.texture||'')}" style="width:350px"></div>
+  `;
+  const item = makeCollapsibleItem(path, `Texture #${idx}: <span style="color:#adf">${esc(t.id||'(unnamed)')}</span>`, '',
+    html, () => { scene.textures.splice(idx,1); render(); });
+  item.dataset.kind = 'texture';
+  return item;
+}
+
+// ── Instance Group ──
+function renderInstanceGroup(group, gIdx) {
+  const path = 'group-' + gIdx;
+  const frag = document.createElement('div');
+  frag.innerHTML = `<div class="row"><label>Technique</label><input type="text" data-field="technique" value="${esc(group.technique||'')}"></div>`;
+  (group.elements||[]).forEach((el, eIdx) => frag.appendChild(renderInstance(el, gIdx, eIdx)));
+
+  // + Add button goes in the header, styled like section + Add
+  const addBtn = document.createElement('button'); addBtn.textContent = '+ Add';
+  addBtn.onclick = e => { e.stopPropagation(); collectState(); scene.instances[gIdx].elements.unshift({id:'',model:'',texture:[]}); render(); };
+
+  const item = makeCollapsibleItem(path,
+    `Technique #${gIdx}: <span style="color:#adf">${esc(group.technique||'(unnamed)')}</span> — ${(group.elements||[]).length} elements`, '',
+    frag, () => { scene.instances.splice(gIdx,1); render(); }, [addBtn]);
+  item.dataset.kind = 'group';
+  return item;
+}
+
+// ── Instance Element ──
+function renderInstance(inst, gIdx, eIdx) {
+  const path = `inst-${gIdx}-${eIdx}`;
+  const hasMatrix = inst.transform && Array.isArray(inst.transform);
+  const tMode = hasMatrix ? 'matrix' : 'components';
+  const hasQuat = inst.quaternion != null;
+  const rotMode = hasQuat ? 'quaternion' : 'euler';
+  const tr = inst.translate || [0,0,0];
+  const sc = inst.scale || [1,1,1];
+  const eu = inst.eulerAngles || [0,0,0];
+  const qu = inst.quaternion || [1,0,0,0];
+  const mat = inst.transform || [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
+  const textures = inst.texture || [];
+
+  const html = `
+    <div class="row"><label>ID</label><input type="text" data-field="id" value="${esc(inst.id||'')}"></div>
+    <div class="row"><label>Model</label><input type="text" data-field="model" value="${esc(inst.model||'')}"></div>
+    <div class="row"><label>Textures</label>
+      <div class="texture-list">
+        ${textures.map(t=>`<input type="text" value="${esc(t)}">`).join('')}
+        <button class="sm" onclick="this.parentElement.insertBefore(Object.assign(document.createElement('input'),{type:'text',style:'width:120px'}),this)">+</button>
+      </div></div>
+    <div class="row"><label>Transform</label>
+      <select data-field="transform-mode" onchange="toggleTransformMode(this)">
+        <option value="components" ${tMode==='components'?'selected':''}>Translate / Rotate / Scale</option>
+        <option value="matrix" ${tMode==='matrix'?'selected':''}>4×4 Matrix</option>
+      </select></div>
+    <div class="components-inputs" style="display:${tMode==='components'?'block':'none'}">
+      <div class="row"><label>Translate</label><div class="vec3 translate-inputs">
+        <input type="number" step="any" value="${tr[0]}"><input type="number" step="any" value="${tr[1]}"><input type="number" step="any" value="${tr[2]}"></div></div>
+      <div class="row"><label>Rotation</label>
+        <select data-field="rotation-mode" onchange="toggleRotMode(this)">
+          <option value="euler" ${rotMode==='euler'?'selected':''}>Euler Angles</option>
+          <option value="quaternion" ${rotMode==='quaternion'?'selected':''}>Quaternion</option>
+        </select></div>
+      <div class="row euler-row" style="display:${rotMode==='euler'?'flex':'none'}"><label>Euler (°)</label>
+        <div class="vec3 euler-inputs"><input type="number" step="any" value="${eu[0]}"><input type="number" step="any" value="${eu[1]}"><input type="number" step="any" value="${eu[2]}"></div></div>
+      <div class="row quat-row" style="display:${rotMode==='quaternion'?'flex':'none'}"><label>Quat (w,x,y,z)</label>
+        <div class="vec4 quat-inputs"><input type="number" step="any" value="${qu[0]}"><input type="number" step="any" value="${qu[1]}"><input type="number" step="any" value="${qu[2]}"><input type="number" step="any" value="${qu[3]}"></div></div>
+      <div class="row"><label>Scale</label><div class="vec3 scale-inputs">
+        <input type="number" step="any" value="${sc[0]}"><input type="number" step="any" value="${sc[1]}"><input type="number" step="any" value="${sc[2]}"></div></div>
+    </div>
+    <div class="matrix-inputs-wrap" style="display:${tMode==='matrix'?'block':'none'}">
+      <div class="row"><label>Matrix</label>
+        <div class="matrix-inputs" style="display:grid;grid-template-columns:repeat(4,70px);gap:2px;">
+          ${Array.from({length:16},(_,i)=>`<input type="number" step="any" value="${mat[i]||0}">`).join('')}
+        </div></div>
+    </div>
+  `;
+
+  const item = makeCollapsibleItem(path,
+    `#${eIdx}: <span style="color:#fd8">${esc(inst.id||'(unnamed)')}</span>`, '',
+    html, () => { scene.instances[gIdx].elements.splice(eIdx,1); render(); });
+  item.dataset.kind = 'element';
+  item.classList.add('instance-item');
+  return item;
+}
+
+function toggleTransformMode(sel) {
+  const item = sel.closest('[data-kind="element"]');
+  item.querySelector('.components-inputs').style.display = sel.value==='components'?'block':'none';
+  item.querySelector('.matrix-inputs-wrap').style.display = sel.value==='matrix'?'block':'none';
+}
+function toggleRotMode(sel) {
+  const item = sel.closest('[data-kind="element"]');
+  item.querySelector('.euler-row').style.display = sel.value==='euler'?'flex':'none';
+  item.querySelector('.quat-row').style.display = sel.value==='quaternion'?'flex':'none';
+}
+
+// ── Collider param fields builder ──
+function buildParamFields(type, params) {
+  const defs = COLLIDER_PARAM_DEFS[type] || [];
+  if (defs.length === 0) return '';
+  return '<div class="row param-fields">' +
+    defs.map((d, i) =>
+      `<label>${d.n}</label><input type="number" step="any" data-param="${i}" value="${params[i] != null ? params[i] : 0}">`
+    ).join('') + '</div>';
+}
+
+// ── Collider tree node ──
+function renderColliderNode(col, path) {
+  registerPath(path);
+  const isObj = typeof col === 'object' && col !== null;
+  const type = isObj ? (col.type || 'AABB') : 'AABB';
+  const visible = isObj ? (col.visible || false) : false;
+  const params = isObj && col.params ? col.params : [];
+  const children = isObj && col.children ? col.children : [];
+
+  const node = document.createElement('div');
+  node.className = 'collider-node';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'collider-node-header';
+  header.innerHTML = `<span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▼</span><span class="tag ${type}">${type}</span>`;
+  if (visible) { const vis = document.createElement('span'); vis.textContent = '👁'; vis.style.fontSize='11px'; header.appendChild(vis); }
+
+  // Summary of params in header
+  const paramDefs = COLLIDER_PARAM_DEFS[type] || [];
+  if (params.length > 0 && paramDefs.length > 0) {
+    const summary = paramDefs.map((d,i) => `${d.n}:${params[i]!=null?params[i]:0}`).join(' ');
+    const p = document.createElement('span'); p.textContent = summary; p.style.cssText='font-size:11px;color:#888;'; header.appendChild(p);
+  }
+
+  const rmBtn = document.createElement('button');
+  rmBtn.className = 'danger sm'; rmBtn.textContent = '×'; rmBtn.style.marginLeft = 'auto';
+  rmBtn.onclick = e => { e.stopPropagation(); node.remove(); };
+  header.appendChild(rmBtn);
+  header.onclick = e => { if (e.target.tagName==='BUTTON') return; toggleCollapse(path); };
+  node.appendChild(header);
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'collider-node-body' + (isCollapsed(path) ? ' collapsed' : '');
+  body.dataset.path = path;
+
+  body.innerHTML = `
+    <div class="row"><label>Type</label>
+      <select data-field="collider-type" onchange="handleColliderTypeChange(this, '${path}')">
+        ${COLLIDER_TYPES.map(t=>`<option value="${t}" ${t===type?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+    <div class="row"><label>Visible</label><input type="checkbox" data-field="collider-visible" ${visible?'checked':''}></div>
+    <div class="collider-params-row" style="display:${type==='BVH'?'none':'block'}">
+      ${buildParamFields(type, params)}
+    </div>
+  `;
+
+  // BVH children container
+  const childrenDiv = document.createElement('div');
+  childrenDiv.className = 'collider-children';
+  childrenDiv.style.display = type === 'BVH' ? 'block' : 'none';
+
+  const childLabel = document.createElement('div');
+  childLabel.className = 'collider-children-label';
+  childLabel.textContent = 'Children:';
+  childrenDiv.appendChild(childLabel);
+
+  children.forEach((child, ci) => {
+    childrenDiv.appendChild(renderColliderNode(child, path + '-c' + ci));
+  });
+
+  const addChildBtn = document.createElement('button');
+  addChildBtn.className = 'sm'; addChildBtn.textContent = '+ Add Child';
+  addChildBtn.onclick = () => {
+    const newPath = path + '-c' + childrenDiv.querySelectorAll(':scope > .collider-node').length;
+    childrenDiv.insertBefore(renderColliderNode({type:'Sphere'}, newPath), addChildBtn);
+  };
+  childrenDiv.appendChild(addChildBtn);
+
+  body.appendChild(childrenDiv);
+  node.appendChild(body);
+  return node;
+}
+
+function handleColliderTypeChange(sel, path) {
+  const node = sel.closest('.collider-node');
+  const childrenDiv = node.querySelector(':scope > .collider-node-body > .collider-children');
+  childrenDiv.style.display = sel.value === 'BVH' ? 'block' : 'none';
+  const paramsRow = node.querySelector(':scope > .collider-node-body > .collider-params-row');
+  if (paramsRow) {
+    paramsRow.style.display = sel.value === 'BVH' ? 'none' : 'block';
+    paramsRow.innerHTML = buildParamFields(sel.value, []);
+  }
+  // Update tag
+  const tag = node.querySelector(':scope > .collider-node-header .tag');
+  tag.className = 'tag ' + sel.value;
+  tag.textContent = sel.value;
+}
+
+// ── Init ──
+render();
+setStatus('Ready');
+</script>
+</body>
+</html>

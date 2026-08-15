@@ -22,12 +22,13 @@ struct PlayerState {
     // Player camera and movement speed
     const float mouseSensitivity = glm::radians(0.1f); // rad / pixel
     const float moveSpeed        = 10.0f;              // meters / second
+    const float gravity          = -9.8f / 2.0f;       // meters / second
     const float runMultiplier    = 2.0f;
-    const float gravity          = -9.8f / 2.0f;
 
     bool cursorCaptured = true;  // Whether the window has focus
     bool flightMode     = false; // Whether the player can fly
     bool collisions     = true;  // Collisions with objects
     bool showColliders  = false; // Object hitboxes
     bool debugScreen    = true;  // Show debug screen
+    bool running        = false; // Whether player is running
 };

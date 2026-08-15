@@ -70,8 +70,8 @@ void Vulcano::VDInit() {
 }
 
 void Vulcano::setDSPoolSize() {
+    // Sized generously to scale with scene's object count
     // [Inherited from BaseProject: this->DPSZs]
-    //Sized generously to scale with scene's object count
     this->DPSZs.uniformBlocksInPool = 300;
     this->DPSZs.texturesInPool      = 300;
     this->DPSZs.setsInPool          = 300;
