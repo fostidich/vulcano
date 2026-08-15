@@ -11,26 +11,6 @@
             }
         },
         {
-            "id": "RiverStraight",
-            "VD": "VDposUV",
-            "model": "assets/models/SPW_Terrain_River_Mid.mgcg",
-            "format": "MGCG",
-            "collider": {
-                "type": "OOBB",
-                "visible": false
-            }
-        },
-        {
-            "id": "RiverCorner",
-            "VD": "VDposUV",
-            "model": "assets/models/SPW_Terrain_River_Corner.mgcg",
-            "format": "MGCG",
-            "collider": {
-                "type": "OOBB",
-                "visible": false
-            }
-        },
-        {
             "id": "CastleEntry",
             "VD": "VDposUV",
             "model": "assets/models/SPW_Medieval_Castle_01.mgcg",
@@ -129,6 +109,24 @@
                 "type": "AABB",
                 "visible": false
             }
+        },
+        {
+            "id": "moatBlock",
+            "VD": "VDposUV",
+            "model": "assets/models/Grid128x128.obj",
+            "format": "OBJ",
+            "collider": {
+                "type": "OOBB",
+                "visible": false,
+                "params": [
+                    -0.5,
+                    -1.0,
+                    -0.5,
+                    0.5,
+                    1.0,
+                    0.5
+                ]
+            }
         }
     ],
     "textures": [
@@ -145,16 +143,6 @@
         {
             "id": "colors",
             "texture": "assets/textures/Colors.png",
-            "format": "C"
-        },
-        {
-            "id": "RiverStraight",
-            "texture": "assets/textures/SPW_Terrain_River_Mid.png",
-            "format": "C"
-        },
-        {
-            "id": "RiverCorner",
-            "texture": "assets/textures/SPW_Terrain_River_Corner.png",
             "format": "C"
         },
         {
@@ -241,36 +229,36 @@
                 },
                 {
                     "id": "moatFront",
-                    "model": "plane",
+                    "model": "moatBlock",
                     "texture": [
                         "Water"
                     ],
                     "translate": [
                         0.0,
                         0.1,
-                        18.0
+                        20.0
                     ],
                     "scale": [
-                        22.0,
+                        75.0,
                         1.0,
-                        4.0
+                        5.0
                     ]
                 },
                 {
                     "id": "moatLeft",
-                    "model": "plane",
+                    "model": "moatBlock",
                     "texture": [
                         "Water"
                     ],
                     "translate": [
-                        -22.0,
+                        -35.0,
                         0.1,
-                        32.0
+                        52.0
                     ],
                     "scale": [
-                        10.0,
+                        65.5,
                         1.0,
-                        4.0
+                        5.0
                     ],
                     "eulerAngles": [
                         0.0,
@@ -280,24 +268,41 @@
                 },
                 {
                     "id": "moatRight",
-                    "model": "plane",
+                    "model": "moatBlock",
                     "texture": [
                         "Water"
                     ],
                     "translate": [
-                        22.0,
+                        35.0,
                         0.1,
-                        32.0
+                        52.5
                     ],
                     "scale": [
-                        10.0,
+                        65.5,
                         1.0,
-                        4.0
+                        5.0
                     ],
                     "eulerAngles": [
                         0.0,
                         90.0,
                         0.0
+                    ]
+                },
+                {
+                    "id": "moatBack",
+                    "model": "moatBlock",
+                    "texture": [
+                        "Water"
+                    ],
+                    "translate": [
+                        0.0,
+                        0.1,
+                        85.0
+                    ],
+                    "scale": [
+                        75.0,
+                        1.0,
+                        5.0
                     ]
                 },
                 {
