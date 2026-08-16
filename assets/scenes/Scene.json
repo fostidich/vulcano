@@ -462,6 +462,50 @@
                     ]
                 },
                 {
+                    "id": "slide5",
+                    "model": "plane",
+                    "texture": [
+                        "marble"
+                    ],
+                    "translate": [
+                        -32,
+                        1,
+                        -100
+                    ],
+                    "eulerAngles": [
+                        5,
+                        45,
+                        0
+                    ],
+                    "scale": [
+                        25,
+                        25,
+                        25
+                    ]
+                },
+                {
+                    "id": "slide60",
+                    "model": "plane",
+                    "texture": [
+                        "marble"
+                    ],
+                    "translate": [
+                        32,
+                        5,
+                        -100
+                    ],
+                    "eulerAngles": [
+                        60,
+                        45,
+                        0
+                    ],
+                    "scale": [
+                        25,
+                        25,
+                        25
+                    ]
+                },
+                {
                     "id": "slide50",
                     "model": "plane",
                     "texture": [

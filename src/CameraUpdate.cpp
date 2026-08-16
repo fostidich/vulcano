@@ -70,7 +70,10 @@ void Vulcano::cameraUpdate(float deltaT) {
 
     // Compute collisions
     vec3 newPos = this->state.eyePosition;
-    processCollisions(newPos, displacement);
+    if (state.collisions)
+        processCollisions(newPos, displacement);
+    else
+        newPos += displacement;
 
     // Update camera
     this->state.eyePosition = newPos;

@@ -19,11 +19,12 @@ struct PlayerState {
     const float nearPlane = 0.1f;
     const float farPlane  = 1000.f;
 
-    // Player camera and movement speed
+    // Player camera and movement speed settings
     const float mouseSensitivity = glm::radians(0.1f); // rad / pixel
     const float moveSpeed        = 10.0f;              // meters / second
     const float gravity          = -9.8f / 2.0f;       // meters / second
     const float runMultiplier    = 2.0f;
+    const float maxSlopeAngle    = glm::radians(45.0f);
 
     bool cursorCaptured = true;  // Whether the window has focus
     bool flightMode     = false; // Whether the player can fly

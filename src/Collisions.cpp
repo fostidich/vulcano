@@ -3,12 +3,6 @@
 using namespace glm;
 
 void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
-    // Early exit if collisions are disabled
-    if (!state.collisions) {
-        currentPos += displacement;
-        return;
-    }
-
     // Compute walking player displacement on a slope in steps
     const float totalDist = length(displacement);                             // Total distance to compute
     if (totalDist < 0.0001f) return;                                          // If player is not staying still
@@ -25,16 +19,23 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
         // Slope snapping only when walking on ground (not in flight mode).
         // No collision at new top Y and collision at new bottom Y means we are
         // on a slope (no wall, no ravine).
-        // Since max step in all direction is coincides to max step in Y
-        // direction, this computation is permitted only on slopes with
-        // steepness in (-45, 45) degrees range.
         if (!state.flightMode &&
             !checkCollision(vec3(targetHoriz.x, topY, targetHoriz.z)) &&
             checkCollision(vec3(targetHoriz.x, bottomY, targetHoriz.z))) {
-
             // Converge to a more precise Y displacement
             const float snapY = binaryVerticalCollisionSearch(bottomY, topY, targetHoriz);
-            currentPos        = vec3(targetHoriz.x, snapY, targetHoriz.z);
+
+            // Compute true slope steepness
+            const float eps       = 0.10f;
+            const float snapYx    = binaryVerticalCollisionSearch(bottomY, topY, targetHoriz + vec3(eps, 0.0f, 0.0f));
+            const float snapYz    = binaryVerticalCollisionSearch(bottomY, topY, targetHoriz + vec3(0.0f, 0.0f, eps));
+            const float dh_dx     = (snapYx - snapY) / eps;
+            const float dh_dz     = (snapYz - snapY) / eps;
+            const float trueSlope = std::sqrt(dh_dx * dh_dx + dh_dz * dh_dz);
+
+            // Commit step only if slope is less than max slope (allow for 5% steepness error)
+            const bool walkableSlope = trueSlope <= std::tan(state.maxSlopeAngle * 1.05f);
+            if (walkableSlope) currentPos = vec3(targetHoriz.x, snapY, targetHoriz.z);
         }
         // Flat ground, flight mode, or airborne horizontal movement
         else if (!checkCollision(targetHoriz)) {

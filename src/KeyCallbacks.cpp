@@ -24,6 +24,7 @@ void Vulcano::switchKeys(int key, int action) {
             break;
         case GLFW_KEY_F: // Toggle creative
             toggle(state.flightMode);
+            if (!state.flightMode) state.collisions = true;
             break;
         case GLFW_KEY_Z: // Activate zoom
             state.zooming = true;
