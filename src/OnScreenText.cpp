@@ -57,6 +57,8 @@ void Vulcano::updateDebugScreen(float deltaT) {
         oss << "[C] Collisions: " << boolstr(state.collisions) << "\n";
         oss << "[H] Hitboxes: " << boolstr(state.showColliders) << "\n";
         oss << "[I] Info text: " << "on" << "\n";
+        oss << "[L] Bridge: " << (state.leverTriggered ? "lowered" : "raised") << "\n";
+
     } else {
         oss << "[I]" << "\n";
     }

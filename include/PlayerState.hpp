@@ -31,4 +31,7 @@ struct PlayerState {
     bool showColliders  = false; // Object hitboxes
     bool debugScreen    = true;  // Show debug screen
     bool running        = false; // Whether player is running
+
+
+    bool leverTriggered    = false; //hidden mechanism - lower bridge
 };

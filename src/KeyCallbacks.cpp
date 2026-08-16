@@ -24,6 +24,13 @@ void Vulcano::switchKeys(int key) {
     case GLFW_KEY_F: // Toggle creative
         toggle(state.flightMode);
         break;
+    case GLFW_KEY_L: { // Interact with nearby lever
+        const glm::vec3 leverPos(0.0f, 0.0f, 20.0f); // constant position of lever
+        if (glm::distance(state.eyePosition, leverPos) < 500.0f) { // if user in close proximity
+            toggle(state.leverTriggered); // trigger lever
+        }
+        break;
+    }
     default:
         logs::debug("Unknown key: ", key);
     }

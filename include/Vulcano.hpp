@@ -257,4 +257,7 @@ class Vulcano : public BaseProject {
 
     // Map mouse button presses to the action they execute.
     void switchMouseButtons(int key);
+
+    // hidden mechanism - lower bridge
+    void updateBridge(float deltaT);
 };
