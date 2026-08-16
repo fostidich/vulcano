@@ -6,10 +6,10 @@ void Vulcano::updateUniformBuffer(u32 currentImage) {
     this->toggleColliders(currentImage);
     this->updateDebugScreen(deltaT);
     this->computeViewProj();
+    this->updateBridge(deltaT);
     GlobalUniformBufferObject gubo;
     this->updateGlobalLight(gubo, deltaT, currentImage);
     this->updateSceneInstances(gubo, currentImage);
-    this->updateBridge(deltaT);
 }
 
 float Vulcano::getDeltaT() {
@@ -70,10 +70,11 @@ void Vulcano::updateSceneInstances(const GlobalUniformBufferObject &gubo, int cu
         this->SC.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0);          // Camera MVP matrix
     }
 }
+
 void Vulcano::updateBridge(float deltaT) {
     static int bridgeIndex = -1;
     if (bridgeIndex < 0) {
-        for (int j = 0; j < SC.TI[0].InstanceCount; j++) { //looping instances
+        for (int j = 0; j < SC.TI[0].InstanceCount; j++) { // looping instances
             if (*SC.TI[0].I[j].id == "bridge1") {
                 bridgeIndex = j;
                 break;
@@ -81,17 +82,17 @@ void Vulcano::updateBridge(float deltaT) {
         }
     }
 
-    const float raisedY = -4.0f;
-    const float loweredY = -7.0f;
-    const float time = 2.0f;
+    const float raisedY   = -4.0f;
+    const float loweredY  = -7.0f;
+    const float time      = 2.0f;
     static bool triggered = false;
-    static float t = 0.0f;
+    static float t        = 0.0f;
 
     if (state.leverTriggered != triggered) {
-        t = 0.0f;
+        t         = 0.0f;
         triggered = state.leverTriggered;
     }
-    t = t + deltaT; //update of how much time it took
+    t = t + deltaT; // update of how much time it took
 
     const float alpha = glm::clamp(t / time, 0.0f, 1.0f); // progress -- 0 < alpha < 1
 
@@ -101,10 +102,7 @@ void Vulcano::updateBridge(float deltaT) {
     const glm::mat4 Wm = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, y, 15.0f)) *
                          glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 1, 0)) *
                          glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1, 0, 0));
-    if (bridgeIndex >= 1) {
-        this->SC.TI[0].I[bridgeIndex].Wm = Wm; //overwrite transformation
+    if (bridgeIndex >= 0) {
+        this->SC.TI[0].I[bridgeIndex].Wm = Wm; // overwrite transformation
     }
 }
-
-
-
