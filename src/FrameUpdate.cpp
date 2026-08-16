@@ -93,16 +93,16 @@ void Vulcano::updateBridge(float deltaT) {
     }
     t = t + deltaT; //update of how much time it took
 
-    const float alpha = glm::clamp(t / time, 0.0f, 1.0f); // progress - 0 < alpha < 1
+    const float alpha = glm::clamp(t / time, 0.0f, 1.0f); // progress -- 0 < alpha < 1
 
-    // if triggered interpolate from raised towards lowered, else from lowared to raised
+    // if triggered interpolate from raised towards lowered, else from lowered to raised
     const float y = state.leverTriggered ? glm::mix(raisedY, loweredY, alpha) : glm::mix(loweredY, raisedY, alpha);
 
     const glm::mat4 Wm = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, y, 15.0f)) *
                          glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 1, 0)) *
                          glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1, 0, 0));
     if (bridgeIndex >= 1) {
-        this->SC.TI[0].I[bridgeIndex].Wm = Wm;
+        this->SC.TI[0].I[bridgeIndex].Wm = Wm; //overwrite transformation
     }
 }
 
