@@ -462,18 +462,18 @@
                     ]
                 },
                 {
-                    "id": "slide5",
+                    "id": "slide05",
                     "model": "plane",
                     "texture": [
                         "marble"
                     ],
                     "translate": [
                         -32,
-                        1,
+                        5,
                         -100
                     ],
                     "eulerAngles": [
-                        5,
+                        -50,
                         45,
                         0
                     ],

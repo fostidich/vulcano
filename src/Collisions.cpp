@@ -15,7 +15,7 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
         const float bottomY = currentPos.y - maxStep; // Min Y reachable in the frame
 
         // If bottom surface is near, snap to it
-        if (!state.flightMode &&
+        if (!state.flightMode && !state.jumping &&
             checkCollision(vec3(target.x, bottomY, target.z)) &&
             !checkCollision(vec3(target.x, currentPos.y - 0.0001f, target.z))) {
             const float snapY = binaryVerticalCollisionSearch(bottomY, currentPos.y, target);

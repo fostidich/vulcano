@@ -10,8 +10,8 @@ just run
 
 - **WASD**: move the player
 - **Mouse**: rotate camera
+- **Space**: jump / go up
 - **Shift**: go down
-- **Space**: go up
 - **Control**: sprint
 - **ESC**: unfocus
 - **Z**: zoom

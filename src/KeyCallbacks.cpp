@@ -5,12 +5,18 @@ void toggle(bool &b) { b = !b; }
 void Vulcano::switchKeys(int key, int action) {
     if (action == GLFW_PRESS)
         switch (key) {
-        case GLFW_KEY_Q: // Close application
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-            break;
         case GLFW_KEY_ESCAPE: // Defocus window
             state.cursorCaptured = false;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            break;
+        case GLFW_KEY_SPACE: // Jump
+            if (!state.jumping) {
+                state.jumping   = true;
+                state.jumpTimer = state.jumpDuration;
+            }
+            break;
+        case GLFW_KEY_Q: // Close application
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
             break;
         case GLFW_KEY_I: // Toggle debug screen
             toggle(state.debugScreen);

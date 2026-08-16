@@ -32,6 +32,10 @@ struct PlayerState {
     bool debugScreen    = true;  // Show debug screen
     bool running        = false; // Whether player is running
     bool zooming        = false; // Camera is zooming
+    bool jumping        = false; // Player has gravity reversed
+
+    const float jumpDuration = 0.4f; // Time between jump start and max height
+    float jumpTimer          = 0.0f; // Time until player stays airborne for jumping
 
     bool leverTriggered = false; // hidden mechanism - lower bridge
 };

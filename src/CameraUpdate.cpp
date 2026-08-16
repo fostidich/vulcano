@@ -10,6 +10,15 @@ void Vulcano::cameraUpdate(float deltaT) {
         return;
     }
 
+    // Update jump timer
+    if (state.jumping) {
+        state.jumpTimer -= deltaT;
+        if (state.jumpTimer <= -state.jumpDuration) {
+            state.jumping   = false;
+            state.jumpTimer = 0.0f;
+        }
+    }
+
     // Compute mouse rotation difference from last frame
     double xpos, ypos;
     glfwGetCursorPos(this->window, &xpos, &ypos);
@@ -33,7 +42,7 @@ void Vulcano::cameraUpdate(float deltaT) {
         if (glfwGetKey(this->window, GLFW_KEY_SPACE)) mv.y += 0.5f;
         if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 0.5f;
     } else {
-        mv.y = state.gravity;
+        mv.y = state.gravity * (state.jumping ? -state.jumpTimer : 1.0f);
     }
     if (state.flightMode) mv *= 5.0f;
 
