@@ -24,7 +24,6 @@ struct PlayerState {
     const float moveSpeed        = 10.0f;              // meters / second
     const float gravity          = -9.8f / 2.0f;       // meters / second
     const float runMultiplier    = 2.0f;
-    const float maxSlopeAngle    = glm::radians(45.0f);
 
     bool cursorCaptured = true;  // Whether the window has focus
     bool flightMode     = false; // Whether the player can fly

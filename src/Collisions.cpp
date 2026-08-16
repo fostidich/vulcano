@@ -3,54 +3,51 @@
 using namespace glm;
 
 void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
-    // Compute walking player displacement on a slope in steps
-    const float totalDist = length(displacement);                             // Total distance to compute
-    if (totalDist < 0.0001f) return;                                          // If player is not staying still
-    const float maxStep   = 0.2f;                                             // Max distance computable at a time
-    const int steps       = std::max(1, (int)std::ceil(totalDist / maxStep)); // Number of iterations needed to cover all distance
-    const vec3 stepDisp   = displacement / (float)steps;                      // Distance to compute for each iteration
-    const vec3 horizDisp  = vec3(stepDisp.x, 0.0f, stepDisp.z);               // New XZ-only coordinates
-    const float horizDist = length(horizDisp);                                // Horizontal distanced walked (hypotenuse)
-    for (int s = 0; s < steps; ++s) {                                         // Each step modifies only `currentPos`
-        const float topY       = currentPos.y + maxStep;                      // Max Y reachable in the frame
-        const float bottomY    = currentPos.y - maxStep;                      // Max Y reachable in the frame
-        const vec3 targetHoriz = currentPos + horizDisp;                      // Horizontal-only displacement
+    const float distance = length(displacement);
+    if (distance < 0.0001f) return;
 
-        // Slope snapping only when walking on ground (not in flight mode).
-        // No collision at new top Y and collision at new bottom Y means we are
-        // on a slope (no wall, no ravine).
+    const float maxStep = 0.2f;                                            // Max distance computable at a time
+    const int steps     = std::max(1, (int)std::ceil(distance / maxStep)); // Number of iterations needed to cover all distance
+    const vec3 dispStep = displacement / (float)steps;                     // Horizontal contribution of step displacement
+    for (int s = 0; s < steps; ++s) {
+        const vec3 target   = currentPos + dispStep;  // Final position to test
+        const float topY    = currentPos.y + maxStep; // Max Y reachable in the frame
+        const float bottomY = currentPos.y - maxStep; // Min Y reachable in the frame
+
+        // If bottom surface is near, snap to it
         if (!state.flightMode &&
-            !checkCollision(vec3(targetHoriz.x, topY, targetHoriz.z)) &&
-            checkCollision(vec3(targetHoriz.x, bottomY, targetHoriz.z))) {
-            // Converge to a more precise Y displacement
-            const float snapY = binaryVerticalCollisionSearch(bottomY, topY, targetHoriz);
-
-            // Compute true slope steepness
-            const float eps       = 0.10f;
-            const float snapYx    = binaryVerticalCollisionSearch(bottomY, topY, targetHoriz + vec3(eps, 0.0f, 0.0f));
-            const float snapYz    = binaryVerticalCollisionSearch(bottomY, topY, targetHoriz + vec3(0.0f, 0.0f, eps));
-            const float dh_dx     = (snapYx - snapY) / eps;
-            const float dh_dz     = (snapYz - snapY) / eps;
-            const float trueSlope = std::sqrt(dh_dx * dh_dx + dh_dz * dh_dz);
-
-            // Commit step only if slope is less than max slope (allow for 5% steepness error)
-            const bool walkableSlope = trueSlope <= std::tan(state.maxSlopeAngle * 1.05f);
-            if (walkableSlope) currentPos = vec3(targetHoriz.x, snapY, targetHoriz.z);
+            checkCollision(vec3(target.x, bottomY, target.z)) &&
+            !checkCollision(vec3(target.x, currentPos.y - 0.0001f, target.z))) {
+            const float snapY = binaryVerticalCollisionSearch(bottomY, currentPos.y, target);
+            currentPos        = vec3(target.x, snapY, target.z);
         }
-        // Flat ground, flight mode, or airborne horizontal movement
-        else if (!checkCollision(targetHoriz)) {
-            currentPos = targetHoriz;
-            if (stepDisp.y == 0.0f) continue; // Finish here for flight mode
-            const vec3 targetVert = currentPos + vec3(0.0f, stepDisp.y, 0.0f);
-            if (!checkCollision(targetVert)) currentPos = targetVert; // Make gravity do its things
+        // If going straight, go straight
+        else if (!checkCollision(vec3(target.x, currentPos.y, target.z))) {
+            currentPos = vec3(target.x, currentPos.y, target.z);
         }
-        // Wall hit
-        else {}
+        // If going up a slope, go up
+        else if (!state.flightMode &&
+                 !checkCollision(vec3(target.x, topY, target.z))) {
+            const float snapY = binaryVerticalCollisionSearch(currentPos.y, topY, target);
+            currentPos        = vec3(target.x, snapY, target.z);
+        }
+        // If colliding with something, slide on it
+        else {
+            const vec3 dispX = vec3(dispStep.x, 0.0f, 0.0f);
+            const vec3 dispZ = vec3(0.0f, 0.0f, dispStep.z);
+            if (std::abs(dispX.x) > 0.0001f && !checkCollision(currentPos + dispX)) currentPos += dispX;
+            if (std::abs(dispZ.z) > 0.0001f && !checkCollision(currentPos + dispZ)) currentPos += dispZ;
+        }
+
+        // Compute gravity pull down
+        if (dispStep.y == 0.0f) continue; // Stop here in flight mode
+        const vec3 targetV = currentPos + vec3(0.0f, dispStep.y, 0.0f);
+        if (!checkCollision(targetV)) currentPos = targetV;
     }
 }
 
 float Vulcano::binaryVerticalCollisionSearch(float low, float high, vec3 pos) {
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 5; ++i) {
         const float mid = (low + high) * 0.5f;
         if (checkCollision(vec3(pos.x, mid, pos.z)))
             low = mid;
@@ -65,11 +62,9 @@ bool Vulcano::checkCollision(const vec3 &testPos) {
     this->playerCollider.setWorldMatrix(translate(mat4(1.0f), testPos));
 
     // Test against all colliders created by the scene
-    for (Collider *objCollider : this->SC.GlobalColliders) {
-        if (objCollider && this->playerCollider.collidesWith(*objCollider)) {
+    for (Collider *objCollider : this->SC.GlobalColliders)
+        if (objCollider && this->playerCollider.collidesWith(*objCollider))
             return true; // Collision detected
-        }
-    }
     return false;
 };
 

@@ -245,7 +245,8 @@ class Vulcano : public BaseProject {
     // Update settings, performance and debug data on-screen.
     void updateDebugScreen(float deltaT);
 
-    // Helper lambda to check if a test position collides with anything in the scene
+    // Helper lambda to check if a test position collides with anything in the scene.
+    // Returns true the first time a collision is detected.
     bool checkCollision(const glm::vec3 &testPos);
 
     // Axis-aligned movement with wall sliding.
@@ -261,7 +262,6 @@ class Vulcano : public BaseProject {
     // hidden mechanism - lower bridge
     void updateBridge(float deltaT);
 
-    // Find the lowest Y between low and high at which pos' XZ would not have
-    // collisions (with error 1/64).
+    // Find the lowest Y between low and high at which pos' XZ would not have collisions.
     float binaryVerticalCollisionSearch(float low, float high, glm::vec3 pos);
 };

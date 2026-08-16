@@ -67,13 +67,13 @@ void Vulcano::keypressCallbacksInit() {
     glfwSetWindowUserPointer(this->window, this);                      // Store instance pointer on window
 
     // Register keys callback
-    glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+    glfwSetKeyCallback(this->window, [](GLFWwindow *window, int key, int, int action, int) {
         auto *app = static_cast<Vulcano *>(glfwGetWindowUserPointer(window));
         app->switchKeys(key, action);
     });
 
     // Register mouse button callback
-    glfwSetMouseButtonCallback(this->window, [](GLFWwindow *window, int button, int action, int mods) {
+    glfwSetMouseButtonCallback(this->window, [](GLFWwindow *window, int button, int action, int) {
         auto *app = static_cast<Vulcano *>(glfwGetWindowUserPointer(window));
         app->switchMouseButtons(button, action);
     });
