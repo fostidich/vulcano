@@ -453,36 +453,97 @@ function collectColliderNode(node) {
   return result;
 }
 
+// ── Fuzzy match helper ──
+function fuzzyMatch(pattern, str) {
+  if (!pattern) return true;
+  pattern = pattern.toLowerCase();
+  str = (str || '').toLowerCase();
+  let pi = 0;
+  for (let si = 0; si < str.length && pi < pattern.length; si++) {
+    if (str[si] === pattern[pi]) pi++;
+  }
+  return pi === pattern.length;
+}
+
+// ── Filter State ──
+const filterState = {
+  models: '',
+  textures: '',
+  groupFilters: {} // gIdx -> search query
+};
+
 // ── Render ──
 function render() {
   allPaths = [];
   const ed = document.getElementById('editor');
   ed.innerHTML = '';
   ed.appendChild(makeSection('Models', 'models', body => {
-    scene.models.forEach((m, i) => body.appendChild(renderModel(m, i)));
+    const query = (filterState.models || '').trim();
+    scene.models.forEach((m, i) => {
+      const item = renderModel(m, i);
+      if (query && !fuzzyMatch(query, m.id || '')) {
+        item.style.display = 'none';
+      }
+      body.appendChild(item);
+    });
   }, () => { scene.models.unshift({ id: '', VD: 'VDposUV', model: '', format: 'OBJ' }); render(); }));
+
   ed.appendChild(makeSection('Textures', 'textures', body => {
-    scene.textures.forEach((t, i) => body.appendChild(renderTexture(t, i)));
+    const query = (filterState.textures || '').trim();
+    scene.textures.forEach((t, i) => {
+      const item = renderTexture(t, i);
+      if (query && !fuzzyMatch(query, t.id || '')) {
+        item.style.display = 'none';
+      }
+      body.appendChild(item);
+    });
   }, () => { scene.textures.unshift({ id: '', texture: '', format: 'C' }); render(); }));
+
   ed.appendChild(makeSection('Instances (by Technique)', 'instances', body => {
-    scene.instances.forEach((g, i) => body.appendChild(renderInstanceGroup(g, i)));
-  }, () => { scene.instances.unshift({ technique: '', elements: [] }); render(); }));
+    scene.instances.forEach((g, i) => {
+      body.appendChild(renderInstanceGroup(g, i));
+    });
+  }, () => { scene.instances.unshift({ technique: '', elements: [] }); render(); }, false));
 }
 
-function makeSection(title, key, populate, onAdd) {
+function makeSection(title, key, populate, onAdd, hasSearch = true) {
   const sec = document.createElement('div'); sec.className = 'section';
   const path = 'sec-' + key;
   registerPath(path);
   const header = document.createElement('div'); header.className = 'section-header';
   header.innerHTML = `<h2><span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▼</span>${title} (${scene[key].length})</h2>`;
-  header.onclick = e => { if (e.target.tagName==='BUTTON') return; toggleCollapse(path); };
+  header.onclick = e => { if (e.target.tagName==='BUTTON' || e.target.tagName==='INPUT') return; toggleCollapse(path); };
+
   const addBtn = document.createElement('button'); addBtn.textContent = '+ Add';
   addBtn.onclick = e => { e.stopPropagation(); collectState(); onAdd(); };
   header.appendChild(addBtn);
   sec.appendChild(header);
+
   const body = document.createElement('div');
   body.className = 'section-body' + (isCollapsed(path) ? ' collapsed' : '');
   body.dataset.path = path;
+
+  if (hasSearch) {
+    const searchBar = document.createElement('div');
+    searchBar.style.cssText = 'margin-bottom: 8px; display: flex; align-items: center; gap: 8px;';
+    searchBar.innerHTML = `
+      <input type="text" placeholder="🔍 Fuzzy search ${key} ID (e.g. 'cstbrg')..." value="${esc(filterState[key] || '')}"
+             style="width: 100%; max-width: 450px; font-size: 12px; padding: 5px 8px; background: #181818; border: 1px solid #555; color: #fff; border-radius: 2px;">
+    `;
+    const inp = searchBar.querySelector('input');
+    inp.oninput = e => {
+      filterState[key] = e.target.value;
+      const q = e.target.value.trim();
+      const items = body.querySelectorAll(`[data-kind="${key === 'models' ? 'model' : 'texture'}"]`);
+      items.forEach(el => {
+        const idx = parseInt(el.dataset.idx);
+        const itemObj = scene[key][idx] || {};
+        el.style.display = fuzzyMatch(q, itemObj.id || '') ? '' : 'none';
+      });
+    };
+    body.appendChild(searchBar);
+  }
+
   sec.appendChild(body);
   populate(body);
   return sec;
@@ -493,7 +554,7 @@ function makeCollapsibleItem(path, titleHtml, titleClass, content, onRemove, ext
   const div = document.createElement('div'); div.className = 'item';
   const header = document.createElement('div'); header.className = 'item-header';
   header.innerHTML = `<span class="item-title ${titleClass}"><span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▶</span><span class="item-title-content">${titleHtml}</span></span>`;
-  header.onclick = e => { if (e.target.tagName==='BUTTON') return; toggleCollapse(path); };
+  header.onclick = e => { if (e.target.tagName==='BUTTON' || e.target.tagName==='INPUT') return; toggleCollapse(path); };
 
   const btnsDiv = document.createElement('div'); btnsDiv.className = 'header-btns';
   if (extraHeaderBtns) extraHeaderBtns.forEach(b => btnsDiv.appendChild(b));
@@ -574,8 +635,37 @@ function renderTexture(t, idx) {
 function renderInstanceGroup(group, gIdx) {
   const path = 'group-' + gIdx;
   const frag = document.createElement('div');
-  frag.innerHTML = `<div class="row"><label>Technique</label><input type="text" data-field="technique" value="${esc(group.technique||'')}"></div>`;
-  (group.elements||[]).forEach((el, eIdx) => frag.appendChild(renderInstance(el, gIdx, eIdx)));
+  frag.innerHTML = `<div class="row" style="margin-bottom:8px;"><label>Technique</label><input type="text" data-field="technique" value="${esc(group.technique||'')}"></div>`;
+
+  const query = (filterState.groupFilters[gIdx] || '').trim();
+
+  // Search bar inside this technique block
+  const searchBar = document.createElement('div');
+  searchBar.style.cssText = 'margin-bottom: 8px; display: flex; align-items: center; gap: 8px;';
+  searchBar.innerHTML = `
+    <input type="text" placeholder="🔍 Fuzzy search instance ID (e.g. 'brdg1')..." value="${esc(filterState.groupFilters[gIdx] || '')}"
+           style="width: 100%; max-width: 450px; font-size: 12px; padding: 4px 8px; background: #1c1c1c; border: 1px solid #484848; color: #fd8; border-radius: 2px;">
+  `;
+  const inp = searchBar.querySelector('input');
+  inp.oninput = e => {
+    filterState.groupFilters[gIdx] = e.target.value;
+    const q = e.target.value.trim();
+    const elements = frag.querySelectorAll('[data-kind="element"]');
+    elements.forEach(el => {
+      const eIdx = parseInt(el.dataset.eidx);
+      const elObj = group.elements[eIdx] || {};
+      el.style.display = fuzzyMatch(q, elObj.id || '') ? '' : 'none';
+    });
+  };
+  frag.appendChild(searchBar);
+
+  (group.elements||[]).forEach((el, eIdx) => {
+    const elItem = renderInstance(el, gIdx, eIdx);
+    if (query && !fuzzyMatch(query, el.id || '')) {
+      elItem.style.display = 'none';
+    }
+    frag.appendChild(elItem);
+  });
 
   // + Add button goes in the header, styled like section + Add
   const addBtn = document.createElement('button'); addBtn.textContent = '+ Add';
