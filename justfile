@@ -51,4 +51,5 @@ clean:
 # Open scene JSON editor
 scene-builder:
     open .scene-builder/index.html
+alias sb := scene-builder
 

@@ -60,8 +60,8 @@ void Vulcano::pipelinesAndDescriptorSetsCleanup() {
 }
 
 void Vulcano::setWindowParameters() {
-    this->windowWidth     = 1000;
-    this->windowHeight    = 750;
+    this->windowWidth     = 1200;
+    this->windowHeight    = 800;
     this->windowTitle     = "Vulcano";
     this->windowResizable = GLFW_TRUE;
     this->Ar              = (float)this->windowWidth / (float)this->windowHeight;

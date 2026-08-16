@@ -27,9 +27,10 @@
   button.danger { background: #633; border-color: #a55; color: #fcc; }
   button.danger:hover { background: #744; }
   button.sm { padding: 2px 6px; font-size: 11px; }
+  button.dup { background: #335; border-color: #558; color: #aaf; }
+  button.dup:hover { background: #446; }
 
-  .status { padding: 4px 8px; font-size: 12px; color: #8f8; margin-left: auto; }
-  .status.error { color: #f88; }
+  .item-hint { font-size: 11px; color: #777; font-weight: normal; margin-left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 600px; }
 
   #editor { padding: 12px; }
 
@@ -107,7 +108,7 @@
   .param-fields input { width: 70px; }
 
   /* ── Preview ── */
-  .preview { padding: 0 12px 12px; }
+  .preview { padding: 10px 12px 12px; }
   .preview pre {
     background: #111; padding: 8px; max-height: 400px; overflow: auto;
     border: 1px solid #333; font-size: 11px; white-space: pre; color: #9d9;
@@ -120,12 +121,12 @@
   <h1>Scene.json Builder</h1>
   <button onclick="loadFile()">Load</button>
   <button onclick="newScene()">New</button>
-  <button class="primary" onclick="saveFile()">Save</button>
   <button onclick="reorderScene()">Reorder</button>
   <button onclick="togglePreview()">Preview</button>
   <button onclick="expandAll()">Expand All</button>
   <button onclick="collapseAll()">Collapse All</button>
-  <span id="status" class="status"></span>
+  <button class="primary" onclick="saveFile()">Save</button>
+  <span id="file-info" style="font-size:12px; color:#8cf; margin-left:auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:650px;" title=""></span>
 </div>
 
 <div id="preview-section" class="preview" style="display:none;">
@@ -143,6 +144,8 @@
 let scene = { models: [], textures: [], instances: [] };
 const collapsedState = {};
 let allPaths = [];
+let loadedFileName = '';
+let loadedFileHandle = null;
 
 const MODEL_FORMATS = ['OBJ', 'MGCG', 'GLTF', 'ASSET'];
 const TEXTURE_FORMATS = ['C', 'D'];
@@ -157,10 +160,12 @@ const COLLIDER_PARAM_DEFS = {
   BVH:    []
 };
 
-function setStatus(msg, isError) {
-  const el = document.getElementById('status');
-  el.textContent = msg;
-  el.className = 'status' + (isError ? ' error' : '');
+function updateFileInfo(name) {
+  loadedFileName = name || '';
+  const el = document.getElementById('file-info');
+  if (!el) return;
+  el.textContent = loadedFileName ? '📄 ' + loadedFileName : '';
+  el.title = loadedFileName || '';
 }
 
 // ── Collapse helpers ──
@@ -203,15 +208,36 @@ function reorderScene() {
   }
 
   render();
-  setStatus('Reordered alphabetically by primary attribute');
 }
 
 // ── Load / New / Save ──
-function loadFile() {
+async function loadFile() {
+  if (window.showOpenFilePicker) {
+    try {
+      const [fh] = await window.showOpenFilePicker({
+        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+      });
+      loadedFileHandle = fh;
+      const file = await fh.getFile();
+      const text = await file.text();
+      scene = JSON.parse(text);
+      if (!scene.models) scene.models = [];
+      if (!scene.textures) scene.textures = [];
+      if (!scene.instances) scene.instances = [];
+      Object.keys(collapsedState).forEach(k => delete collapsedState[k]);
+      updateFileInfo(file.name);
+      render();
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      // Fall through to traditional file input
+    }
+  }
   const input = document.createElement('input');
   input.type = 'file'; input.accept = '.json';
   input.onchange = e => {
     const file = e.target.files[0]; if (!file) return;
+    loadedFileHandle = null;
     const reader = new FileReader();
     reader.onload = ev => {
       try {
@@ -220,9 +246,9 @@ function loadFile() {
         if (!scene.textures) scene.textures = [];
         if (!scene.instances) scene.instances = [];
         Object.keys(collapsedState).forEach(k => delete collapsedState[k]);
+        updateFileInfo(file.name);
         render();
-        setStatus('Loaded: ' + file.name);
-      } catch (err) { setStatus('Parse error: ' + err.message, true); }
+      } catch (err) { alert('Parse error: ' + err.message); }
     };
     reader.readAsText(file);
   };
@@ -230,27 +256,58 @@ function loadFile() {
 }
 
 function newScene() {
+  loadedFileHandle = null;
+  updateFileInfo('');
   scene = { models: [], textures: [], instances: [] };
   Object.keys(collapsedState).forEach(k => delete collapsedState[k]);
   render();
-  setStatus('New scene created');
 }
 
 async function saveFile() {
   collectState();
   const json = JSON.stringify(scene, null, 4) + '\n';
-  if (window.showDirectoryPicker) {
+  const defaultName = loadedFileName ? loadedFileName.split('/').pop() : 'Scene.json';
+
+  // 1. If we already opened/saved a file handle, save directly in place (no dialog / no "(1)" rename)
+  if (loadedFileHandle) {
     try {
-      const dh = await window.showDirectoryPicker({ mode: 'readwrite' });
-      const fh = await dh.getFileHandle('Scene.json', { create: true });
-      const w = await fh.createWritable(); await w.write(json); await w.close();
-      setStatus('Saved to: ' + dh.name + '/Scene.json'); return;
-    } catch (err) { if (err.name === 'AbortError') { setStatus('Cancelled'); return; } }
+      const w = await loadedFileHandle.createWritable();
+      await w.write(json);
+      await w.close();
+      const file = await loadedFileHandle.getFile();
+      updateFileInfo(file.name);
+      return;
+    } catch (err) {
+      console.warn('Could not write to existing handle, falling back to picker:', err);
+      loadedFileHandle = null;
+    }
   }
+
+  // 2. Otherwise prompt for save location
+  if (window.showSaveFilePicker) {
+    try {
+      const fh = await window.showSaveFilePicker({
+        suggestedName: defaultName,
+        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+      });
+      const w = await fh.createWritable();
+      await w.write(json);
+      await w.close();
+      loadedFileHandle = fh;
+      const file = await fh.getFile();
+      updateFileInfo(file.name);
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+    }
+  }
+
+  // 3. Fallback download for browsers without File System Access API
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
-  a.download = 'Scene.json'; a.click(); URL.revokeObjectURL(a.href);
-  setStatus('Downloaded Scene.json');
+  a.download = defaultName;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 function togglePreview() {
@@ -264,9 +321,42 @@ function togglePreview() {
       sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } catch (err) {
       document.getElementById('preview').textContent = 'Error collecting state: ' + err.message + '\n' + err.stack;
-      setStatus('Preview error: ' + err.message, true);
     }
   }
+}
+
+// ── Duplicate helpers ──
+function duplicateModel(idx) {
+  collectState();
+  const copy = JSON.parse(JSON.stringify(scene.models[idx]));
+  copy.id = copy.id ? copy.id + '_copy' : 'copy';
+  scene.models.splice(idx, 0, copy);
+  render();
+  setStatus('Duplicated model #' + idx);
+}
+function duplicateTexture(idx) {
+  collectState();
+  const copy = JSON.parse(JSON.stringify(scene.textures[idx]));
+  copy.id = copy.id ? copy.id + '_copy' : 'copy';
+  scene.textures.splice(idx, 0, copy);
+  render();
+  setStatus('Duplicated texture #' + idx);
+}
+function duplicateInstance(gIdx, eIdx) {
+  collectState();
+  const copy = JSON.parse(JSON.stringify(scene.instances[gIdx].elements[eIdx]));
+  copy.id = copy.id ? copy.id + '_copy' : 'copy';
+  scene.instances[gIdx].elements.splice(eIdx, 0, copy);
+  render();
+  setStatus('Duplicated instance #' + eIdx + ' in group #' + gIdx);
+}
+function duplicateGroup(gIdx) {
+  collectState();
+  const copy = JSON.parse(JSON.stringify(scene.instances[gIdx]));
+  copy.technique = copy.technique ? copy.technique + '_copy' : 'copy';
+  scene.instances.splice(gIdx, 0, copy);
+  render();
+  setStatus('Duplicated group #' + gIdx);
 }
 
 // ── Collect ──
@@ -402,7 +492,7 @@ function makeCollapsibleItem(path, titleHtml, titleClass, content, onRemove, ext
   registerPath(path);
   const div = document.createElement('div'); div.className = 'item';
   const header = document.createElement('div'); header.className = 'item-header';
-  header.innerHTML = `<span class="item-title ${titleClass}"><span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▶</span>${titleHtml}</span>`;
+  header.innerHTML = `<span class="item-title ${titleClass}"><span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▶</span><span class="item-title-content">${titleHtml}</span></span>`;
   header.onclick = e => { if (e.target.tagName==='BUTTON') return; toggleCollapse(path); };
 
   const btnsDiv = document.createElement('div'); btnsDiv.className = 'header-btns';
@@ -446,9 +536,15 @@ function renderModel(m, idx) {
   const colRoot = frag.querySelector('.collider-root');
   colRoot.appendChild(renderColliderNode(m.collider || {type:'AABB'}, path + '-col'));
 
-  const item = makeCollapsibleItem(path, `Model #${idx}: <span style="color:#adf">${esc(m.id||'(unnamed)')}</span>`, '',
-    frag, () => { scene.models.splice(idx,1); render(); });
+  const dupBtn = document.createElement('button'); dupBtn.className = 'dup sm'; dupBtn.textContent = '⧉';
+  dupBtn.title = 'Duplicate'; dupBtn.onclick = e => { e.stopPropagation(); duplicateModel(idx); };
+
+  const hintText = m.model ? m.model : '(no path)';
+  const item = makeCollapsibleItem(path,
+    `Model #${idx}: <span style="color:#adf">${esc(m.id||'(unnamed)')}</span><span class="item-hint" title="${esc(hintText)}">${esc(hintText)}</span>`, '',
+    frag, () => { scene.models.splice(idx,1); render(); }, [dupBtn]);
   item.dataset.kind = 'model';
+  item.dataset.idx = idx;
   return item;
 }
 
@@ -462,9 +558,15 @@ function renderTexture(t, idx) {
       </select></div>
     <div class="row"><label>Texture path</label><input type="text" data-field="texture" value="${esc(t.texture||'')}" style="width:350px"></div>
   `;
-  const item = makeCollapsibleItem(path, `Texture #${idx}: <span style="color:#adf">${esc(t.id||'(unnamed)')}</span>`, '',
-    html, () => { scene.textures.splice(idx,1); render(); });
+  const dupBtn = document.createElement('button'); dupBtn.className = 'dup sm'; dupBtn.textContent = '⧉';
+  dupBtn.title = 'Duplicate'; dupBtn.onclick = e => { e.stopPropagation(); duplicateTexture(idx); };
+
+  const hintText = t.texture ? t.texture : '(no path)';
+  const item = makeCollapsibleItem(path,
+    `Texture #${idx}: <span style="color:#adf">${esc(t.id||'(unnamed)')}</span><span class="item-hint" title="${esc(hintText)}">${esc(hintText)}</span>`, '',
+    html, () => { scene.textures.splice(idx,1); render(); }, [dupBtn]);
   item.dataset.kind = 'texture';
+  item.dataset.idx = idx;
   return item;
 }
 
@@ -479,10 +581,14 @@ function renderInstanceGroup(group, gIdx) {
   const addBtn = document.createElement('button'); addBtn.textContent = '+ Add';
   addBtn.onclick = e => { e.stopPropagation(); collectState(); scene.instances[gIdx].elements.unshift({id:'',model:'',texture:[]}); render(); };
 
+  const dupBtn = document.createElement('button'); dupBtn.className = 'dup sm'; dupBtn.textContent = '⧉';
+  dupBtn.title = 'Duplicate'; dupBtn.onclick = e => { e.stopPropagation(); duplicateGroup(gIdx); };
+
   const item = makeCollapsibleItem(path,
     `Technique #${gIdx}: <span style="color:#adf">${esc(group.technique||'(unnamed)')}</span> — ${(group.elements||[]).length} elements`, '',
-    frag, () => { scene.instances.splice(gIdx,1); render(); }, [addBtn]);
+    frag, () => { scene.instances.splice(gIdx,1); render(); }, [addBtn, dupBtn]);
   item.dataset.kind = 'group';
+  item.dataset.gidx = gIdx;
   return item;
 }
 
@@ -505,8 +611,8 @@ function renderInstance(inst, gIdx, eIdx) {
     <div class="row"><label>Model</label><input type="text" data-field="model" value="${esc(inst.model||'')}"></div>
     <div class="row"><label>Textures</label>
       <div class="texture-list">
-        ${textures.map(t=>`<input type="text" value="${esc(t)}">`).join('')}
-        <button class="sm" onclick="this.parentElement.insertBefore(Object.assign(document.createElement('input'),{type:'text',style:'width:120px'}),this)">+</button>
+        ${textures.map(t=>`<span class="tex-tag" style="display:inline-flex;align-items:center;gap:2px;"><input type="text" value="${esc(t)}"><button class="danger sm" onclick="const inst=this.closest('[data-kind=\\'element\\']');this.parentElement.remove();if(inst)updateInstanceHeader(inst);" style="padding:1px 4px;font-size:10px;">×</button></span>`).join('')}
+        <button class="sm" onclick="addTextureToInstance(this)">+</button>
       </div></div>
     <div class="row"><label>Transform</label>
       <select data-field="transform-mode" onchange="toggleTransformMode(this)">
@@ -536,10 +642,20 @@ function renderInstance(inst, gIdx, eIdx) {
     </div>
   `;
 
+  const dupBtn = document.createElement('button'); dupBtn.className = 'dup sm'; dupBtn.textContent = '⧉';
+  dupBtn.title = 'Duplicate'; dupBtn.onclick = e => { e.stopPropagation(); duplicateInstance(gIdx, eIdx); };
+
+  const hintParts = [];
+  if (inst.model) hintParts.push('model: ' + inst.model);
+  if (textures.length) hintParts.push('tex: ' + textures.join(', '));
+  const hintText = hintParts.length ? hintParts.join(' · ') : '(no model/textures)';
+
   const item = makeCollapsibleItem(path,
-    `#${eIdx}: <span style="color:#fd8">${esc(inst.id||'(unnamed)')}</span>`, '',
-    html, () => { scene.instances[gIdx].elements.splice(eIdx,1); render(); });
+    `#${eIdx}: <span style="color:#fd8">${esc(inst.id||'(unnamed)')}</span><span class="item-hint" title="${esc(hintText)}">${esc(hintText)}</span>`, '',
+    html, () => { scene.instances[gIdx].elements.splice(eIdx,1); render(); }, [dupBtn]);
   item.dataset.kind = 'element';
+  item.dataset.gidx = gIdx;
+  item.dataset.eidx = eIdx;
   item.classList.add('instance-item');
   return item;
 }
@@ -581,14 +697,7 @@ function renderColliderNode(col, path) {
   const header = document.createElement('div');
   header.className = 'collider-node-header';
   header.innerHTML = `<span class="chevron ${isCollapsed(path)?'collapsed':''}" data-chev="${path}">▼</span><span class="tag ${type}">${type}</span>`;
-  if (visible) { const vis = document.createElement('span'); vis.textContent = '👁'; vis.style.fontSize='11px'; header.appendChild(vis); }
-
-  // Summary of params in header
-  const paramDefs = COLLIDER_PARAM_DEFS[type] || [];
-  if (params.length > 0 && paramDefs.length > 0) {
-    const summary = paramDefs.map((d,i) => `${d.n}:${params[i]!=null?params[i]:0}`).join(' ');
-    const p = document.createElement('span'); p.textContent = summary; p.style.cssText='font-size:11px;color:#888;'; header.appendChild(p);
-  }
+  if (visible) { const vis = document.createElement('span'); vis.className = 'collider-eye'; vis.textContent = '👁'; vis.style.fontSize='11px'; header.appendChild(vis); }
 
   const rmBtn = document.createElement('button');
   rmBtn.className = 'danger sm'; rmBtn.textContent = '×'; rmBtn.style.marginLeft = 'auto';
@@ -655,9 +764,132 @@ function handleColliderTypeChange(sel, path) {
   tag.textContent = sel.value;
 }
 
+// ── Live Header Updates ──
+function updateModelHeader(modelEl) {
+  const idx = modelEl.dataset.idx;
+  const id = modelEl.querySelector('[data-field="id"]')?.value || '';
+  const modelPath = modelEl.querySelector('[data-field="model"]')?.value || '';
+  const titleContent = modelEl.querySelector(':scope > .item-header .item-title-content');
+  if (!titleContent) return;
+  const hintText = modelPath || '(no path)';
+  titleContent.innerHTML = `Model #${idx}: <span style="color:#adf">${esc(id || '(unnamed)')}</span><span class="item-hint" title="${esc(hintText)}">${esc(hintText)}</span>`;
+}
+
+function updateTextureHeader(texEl) {
+  const idx = texEl.dataset.idx;
+  const id = texEl.querySelector('[data-field="id"]')?.value || '';
+  const texPath = texEl.querySelector('[data-field="texture"]')?.value || '';
+  const titleContent = texEl.querySelector(':scope > .item-header .item-title-content');
+  if (!titleContent) return;
+  const hintText = texPath || '(no path)';
+  titleContent.innerHTML = `Texture #${idx}: <span style="color:#adf">${esc(id || '(unnamed)')}</span><span class="item-hint" title="${esc(hintText)}">${esc(hintText)}</span>`;
+}
+
+function addTextureToInstance(btn) {
+  const span = document.createElement('span');
+  span.className = 'tex-tag';
+  span.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+  span.innerHTML = `<input type="text" style="width:120px"><button class="danger sm" onclick="const inst=this.closest('[data-kind=\\'element\\']');this.parentElement.remove();if(inst)updateInstanceHeader(inst);" style="padding:1px 4px;font-size:10px;">×</button>`;
+  btn.parentElement.insertBefore(span, btn);
+}
+
+function updateGroupHeader(groupEl) {
+  const gIdx = groupEl.dataset.gidx;
+  const techInput = groupEl.querySelector('[data-field="technique"]');
+  const tech = techInput ? techInput.value : '';
+  const count = groupEl.querySelectorAll('[data-kind="element"]').length;
+  const titleContent = groupEl.querySelector(':scope > .item-header .item-title-content');
+  if (!titleContent) return;
+  titleContent.innerHTML = `Technique #${gIdx}: <span style="color:#adf">${esc(tech || '(unnamed)')}</span> — ${count} elements`;
+}
+
+function updateInstanceHeader(instEl) {
+  const eIdx = instEl.dataset.eidx;
+  const id = instEl.querySelector('[data-field="id"]')?.value || '';
+  const model = instEl.querySelector('[data-field="model"]')?.value || '';
+  const textures = [];
+  instEl.querySelectorAll('.texture-list input').forEach(inp => { if (inp.value) textures.push(inp.value); });
+  const titleContent = instEl.querySelector(':scope > .item-header .item-title-content');
+  if (!titleContent) return;
+  const hintParts = [];
+  if (model) hintParts.push('model: ' + model);
+  if (textures.length) hintParts.push('tex: ' + textures.join(', '));
+  const hintText = hintParts.length ? hintParts.join(' · ') : '(no model/textures)';
+  titleContent.innerHTML = `#${eIdx}: <span style="color:#fd8">${esc(id || '(unnamed)')}</span><span class="item-hint" title="${esc(hintText)}">${esc(hintText)}</span>`;
+}
+
+function updateColliderHeader(colNode) {
+  const header = colNode.querySelector(':scope > .collider-node-header');
+  if (!header) return;
+  const visible = colNode.querySelector(':scope > .collider-node-body [data-field="collider-visible"]')?.checked || false;
+
+  let eye = header.querySelector('.collider-eye');
+  if (visible && !eye) {
+    eye = document.createElement('span');
+    eye.className = 'collider-eye';
+    eye.textContent = '👁';
+    eye.style.fontSize = '11px';
+    const tag = header.querySelector('.tag');
+    if (tag && tag.nextSibling) {
+      header.insertBefore(eye, tag.nextSibling);
+    } else {
+      header.appendChild(eye);
+    }
+  } else if (!visible && eye) {
+    eye.remove();
+  }
+}
+
+document.addEventListener('input', e => {
+  const target = e.target;
+  const modelEl = target.closest('[data-kind="model"]');
+  if (modelEl && !target.closest('.collider-node')) {
+    updateModelHeader(modelEl);
+  }
+  const texEl = target.closest('[data-kind="texture"]');
+  if (texEl) {
+    updateTextureHeader(texEl);
+  }
+  const instEl = target.closest('[data-kind="element"]');
+  if (instEl) {
+    updateInstanceHeader(instEl);
+  }
+  const groupEl = target.closest('[data-kind="group"]');
+  if (groupEl && target.matches('[data-field="technique"]')) {
+    updateGroupHeader(groupEl);
+  }
+});
+
+document.addEventListener('change', e => {
+  const target = e.target;
+  if (target.matches('[data-field="collider-visible"]')) {
+    const colNode = target.closest('.collider-node');
+    if (colNode) updateColliderHeader(colNode);
+  }
+  const modelEl = target.closest('[data-kind="model"]');
+  if (modelEl) updateModelHeader(modelEl);
+  const texEl = target.closest('[data-kind="texture"]');
+  if (texEl) updateTextureHeader(texEl);
+  const instEl = target.closest('[data-kind="element"]');
+  if (instEl) updateInstanceHeader(instEl);
+});
+
+
+// ── Keyboard Shortcuts ──
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && !e.shiftKey && !e.altKey) {
+    if (e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      saveFile();
+    } else if (e.key === 'o' || e.key === 'O') {
+      e.preventDefault();
+      loadFile();
+    }
+  }
+});
+
 // ── Init ──
 render();
-setStatus('Ready');
 </script>
 </body>
 </html>
