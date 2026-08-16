@@ -25,7 +25,7 @@ float Vulcano::getDeltaT() {
 
 void Vulcano::computeViewProj() {
     // Projection matrix
-    this->Prj = glm::perspective(this->state.FOVy,
+    this->Prj = glm::perspective(this->state.FOVy * (state.zooming ? 0.1f : 1.0f),
                                  this->Ar,
                                  this->state.nearPlane,
                                  this->state.farPlane);

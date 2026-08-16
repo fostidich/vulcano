@@ -418,7 +418,95 @@
                     ]
                 },
                 {
-                    "id": "slide",
+                    "id": "wall89",
+                    "model": "plane",
+                    "texture": [
+                        "marble"
+                    ],
+                    "translate": [
+                        0,
+                        5,
+                        -96.3
+                    ],
+                    "eulerAngles": [
+                        91,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        20,
+                        20,
+                        20
+                    ]
+                },
+                {
+                    "id": "wall",
+                    "model": "plane",
+                    "texture": [
+                        "marble"
+                    ],
+                    "translate": [
+                        0,
+                        5,
+                        -96
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        20,
+                        20,
+                        20
+                    ]
+                },
+                {
+                    "id": "slide50",
+                    "model": "plane",
+                    "texture": [
+                        "marble"
+                    ],
+                    "translate": [
+                        32,
+                        5,
+                        -64
+                    ],
+                    "eulerAngles": [
+                        50,
+                        45,
+                        0
+                    ],
+                    "scale": [
+                        25,
+                        25,
+                        25
+                    ]
+                },
+                {
+                    "id": "slide40",
+                    "model": "plane",
+                    "texture": [
+                        "marble"
+                    ],
+                    "translate": [
+                        -32,
+                        5,
+                        -64
+                    ],
+                    "eulerAngles": [
+                        40,
+                        45,
+                        0
+                    ],
+                    "scale": [
+                        25,
+                        25,
+                        25
+                    ]
+                },
+                {
+                    "id": "slide45",
                     "model": "plane",
                     "texture": [
                         "marble"
@@ -429,14 +517,14 @@
                         -64
                     ],
                     "eulerAngles": [
-                        30,
+                        45,
                         45,
                         0
                     ],
                     "scale": [
-                        30,
-                        30,
-                        30
+                        25,
+                        25,
+                        25
                     ]
                 },
                 {
@@ -480,9 +568,9 @@
                         "colors"
                     ],
                     "translate": [
-                        32,
+                        -32,
                         0,
-                        -100
+                        -32
                     ],
                     "scale": [
                         2,
@@ -497,9 +585,14 @@
                         "colors"
                     ],
                     "translate": [
-                        50,
+                        32,
                         0,
-                        -64
+                        -32
+                    ],
+                    "scale": [
+                        2,
+                        2,
+                        2
                     ]
                 },
                 {

@@ -6,8 +6,8 @@
 // Main struct containing player specific settings and state.
 struct PlayerState {
     // Camera position and rotation state
-    glm::vec3 eyePosition = glm::vec3(0.0f, 2.0f, -20.0f);
-    glm::vec3 lookAtPoint = glm::vec3(0.0f, 2.0f, 0.0f);
+    glm::vec3 eyePosition = glm::vec3(0.0f, 5.0f, -20.0f);
+    glm::vec3 lookAtPoint = glm::vec3(0.0f, 1.5f, 0.0f);
     glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Looking directions
@@ -31,6 +31,7 @@ struct PlayerState {
     bool showColliders  = false; // Object hitboxes
     bool debugScreen    = true;  // Show debug screen
     bool running        = false; // Whether player is running
+    bool zooming        = false; // Camera is zooming
 
     bool leverTriggered = false; // hidden mechanism - lower bridge
 };

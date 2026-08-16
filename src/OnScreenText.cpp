@@ -53,12 +53,12 @@ void Vulcano::updateDebugScreen(float deltaT) {
         oss << "Direction: " << compass(state.yaw) << "\n";
         oss << "[ctrl] Running: " << boolstr(state.running) << "\n";
         oss << "[esc] Focus: " << boolstr(state.cursorCaptured) << "\n";
+        oss << "[Z] Zoom: " << boolstr(state.zooming) << "\n";
         oss << "[F] Flight: " << boolstr(state.flightMode) << "\n";
         oss << "[C] Collisions: " << boolstr(state.collisions) << "\n";
         oss << "[H] Hitboxes: " << boolstr(state.showColliders) << "\n";
-        oss << "[I] Info text: " << "on" << "\n";
         oss << "[L] Bridge: " << (state.leverTriggered ? "lowered" : "raised") << "\n";
-
+        oss << "[I] Info text: " << "on" << "\n";
     } else {
         oss << "[I]" << "\n";
     }

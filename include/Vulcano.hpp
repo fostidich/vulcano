@@ -253,11 +253,15 @@ class Vulcano : public BaseProject {
     void processCollisions(glm::vec3 &newPos, const glm::vec3 &displacement);
 
     // Map key-presses to the action they execute.
-    void switchKeys(int key);
+    void switchKeys(int key, int action);
 
     // Map mouse button presses to the action they execute.
-    void switchMouseButtons(int key);
+    void switchMouseButtons(int key, int action);
 
     // hidden mechanism - lower bridge
     void updateBridge(float deltaT);
+
+    // Find the lowest Y between low and high at which pos' XZ would not have
+    // collisions (with error 1/64).
+    float binaryVerticalCollisionSearch(float low, float high, glm::vec3 pos);
 };

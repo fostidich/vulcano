@@ -536,9 +536,8 @@ function makeSection(title, key, populate, onAdd, hasSearch = true) {
       const q = e.target.value.trim();
       const items = body.querySelectorAll(`[data-kind="${key === 'models' ? 'model' : 'texture'}"]`);
       items.forEach(el => {
-        const idx = parseInt(el.dataset.idx);
-        const itemObj = scene[key][idx] || {};
-        el.style.display = fuzzyMatch(q, itemObj.id || '') ? '' : 'none';
+        const currentId = el.querySelector('[data-field="id"]')?.value || '';
+        el.style.display = fuzzyMatch(q, currentId) ? '' : 'none';
       });
     };
     body.appendChild(searchBar);
@@ -652,9 +651,8 @@ function renderInstanceGroup(group, gIdx) {
     const q = e.target.value.trim();
     const elements = frag.querySelectorAll('[data-kind="element"]');
     elements.forEach(el => {
-      const eIdx = parseInt(el.dataset.eidx);
-      const elObj = group.elements[eIdx] || {};
-      el.style.display = fuzzyMatch(q, elObj.id || '') ? '' : 'none';
+      const currentId = el.querySelector('[data-field="id"]')?.value || '';
+      el.style.display = fuzzyMatch(q, currentId) ? '' : 'none';
     });
   };
   frag.appendChild(searchBar);
@@ -935,14 +933,27 @@ document.addEventListener('input', e => {
   const modelEl = target.closest('[data-kind="model"]');
   if (modelEl && !target.closest('.collider-node')) {
     updateModelHeader(modelEl);
+    if (target.matches('[data-field="id"]')) {
+      const q = (filterState.models || '').trim();
+      if (q) modelEl.style.display = fuzzyMatch(q, target.value) ? '' : 'none';
+    }
   }
   const texEl = target.closest('[data-kind="texture"]');
   if (texEl) {
     updateTextureHeader(texEl);
+    if (target.matches('[data-field="id"]')) {
+      const q = (filterState.textures || '').trim();
+      if (q) texEl.style.display = fuzzyMatch(q, target.value) ? '' : 'none';
+    }
   }
   const instEl = target.closest('[data-kind="element"]');
   if (instEl) {
     updateInstanceHeader(instEl);
+    if (target.matches('[data-field="id"]')) {
+      const gIdx = instEl.dataset.gidx;
+      const q = (filterState.groupFilters[gIdx] || '').trim();
+      if (q) instEl.style.display = fuzzyMatch(q, target.value) ? '' : 'none';
+    }
   }
   const groupEl = target.closest('[data-kind="group"]');
   if (groupEl && target.matches('[data-field="technique"]')) {
