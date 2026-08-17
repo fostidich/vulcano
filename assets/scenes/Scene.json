@@ -137,6 +137,24 @@
             "collider": {
                 "type": "AABB"
             }
+        },
+        {
+            "id": "Box",
+            "VD": "VDposUV",
+            "model": "assets/models/SPW_Medieval_Box_01.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB"
+            }
+        },
+        {
+            "id": "Candle",
+            "VD": "VDposUV",
+            "model": "assets/models/light.007_Mesh.6852.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "AABB"
+            }
         }
     ],
     "textures": [
@@ -209,6 +227,16 @@
             "id": "Well",
             "texture": "assets/textures/SPW_Medieval_Props_01.png",
             "format": "C"
+        },
+        {
+            "id": "Box",
+            "texture": "assets/textures/SPW_Medieval_Box_01.png",
+            "format": "C"
+        },
+        {
+            "id": "Candle",
+            "texture": "assets/textures/DungeonProps.png",
+            "format": "C"
         }
     ],
     "instances": [
@@ -233,7 +261,7 @@
                     ]
                 },
                 {
-                    "id": "circustent",
+                    "id": "circusTent",
                     "model": "CircusTent",
                     "texture": [
                         "CircusTent"
@@ -252,6 +280,50 @@
                         1.5,
                         1.5,
                         1.5
+                    ]
+                },
+                {
+                    "id": "box1",
+                    "model": "Box",
+                    "texture": [
+                        "Box"
+                    ],
+                    "translate": [
+                        8,
+                        0,
+                        46
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        1.7,
+                        1.7,
+                        1.7
+                    ]
+                },
+                {
+                    "id": "candle1",
+                    "model": "Candle",
+                    "texture": [
+                        "Candle"
+                    ],
+                    "translate": [
+                        8,
+                        1.4,
+                        46
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        1.7,
+                        1.7,
+                        1.7
                     ]
                 },
                 {
