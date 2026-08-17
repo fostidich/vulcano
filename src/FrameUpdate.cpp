@@ -58,6 +58,8 @@ void Vulcano::updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, i
     gubo.lightDir   = glm::vec3(lightView * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
     gubo.lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) * 5.0f;
     gubo.eyePos     = glm::vec3(glm::inverse(this->View)[3]);
+    gubo.candleLightPos = glm::vec3(8.0f, 1.7f, 46.0f);
+    gubo.candleLightColor = glm::vec4(1.0f, 0.6f, 0.2f, 1.0f) * 5.0f;
     this->DSglobal.map(currentImage, &gubo, 0);
 }
 

@@ -23,6 +23,8 @@ struct GlobalUniformBufferObject {
     alignas(16) glm::vec3 lightDir;
     alignas(16) glm::vec4 lightColor;
     alignas(16) glm::vec3 eyePos;
+    alignas(16) glm::vec3 candleLightPos;
+    alignas(16) glm::vec3 candleLightColor;
 };
 
 // A vertex is a useful struct for storing the required data for each single
