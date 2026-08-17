@@ -1,6 +1,22 @@
 {
     "models": [
         {
+            "id": "deer",
+            "VD": "VDposUV",
+            "model": "assets/models/nature/Deer.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "Sphere",
+                "visible": true,
+                "params": [
+                    0,
+                    0,
+                    -1,
+                    0.5
+                ]
+            }
+        },
+        {
             "id": "box",
             "VD": "VDposUV",
             "model": "assets/models/objects/Box.mgcg",
@@ -95,8 +111,85 @@
             "model": "assets/models/structures/CastleSmall.mgcg",
             "format": "MGCG",
             "collider": {
-                "type": "OOBB",
-                "visible": true
+                "type": "BVH",
+                "children": [
+                    {
+                        "type": "OOBB",
+                        "visible": true,
+                        "params": [
+                            -6,
+                            -6,
+                            0,
+                            -2,
+                            6,
+                            -10
+                        ]
+                    },
+                    {
+                        "type": "OOBB",
+                        "visible": true,
+                        "params": [
+                            -6,
+                            -6,
+                            -7,
+                            6,
+                            6,
+                            -12
+                        ]
+                    },
+                    {
+                        "type": "Sphere",
+                        "visible": true,
+                        "params": [
+                            -5.25,
+                            5.25,
+                            -1.5,
+                            2
+                        ]
+                    },
+                    {
+                        "type": "OOBB",
+                        "visible": true,
+                        "params": [
+                            6,
+                            -6,
+                            0,
+                            2,
+                            6,
+                            -10
+                        ]
+                    },
+                    {
+                        "type": "Sphere",
+                        "visible": true,
+                        "params": [
+                            5.25,
+                            5.25,
+                            -1.5,
+                            2
+                        ]
+                    },
+                    {
+                        "type": "Sphere",
+                        "visible": true,
+                        "params": [
+                            5.25,
+                            5.25,
+                            -14,
+                            2
+                        ]
+                    },
+                    {
+                        "type": "Sphere",
+                        "visible": true,
+                        "params": [
+                            -5.25,
+                            5.25,
+                            -14,
+                            2
+                        ]
+                    }
+                ]
             }
         },
         {
@@ -153,9 +246,9 @@
             }
         },
         {
-            "id": "castle-wall1",
+            "id": "castle-wall-short",
             "VD": "VDposUV",
-            "model": "assets/models/structures/CastleWall1.mgcg",
+            "model": "assets/models/structures/CastleWallShort.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -171,9 +264,9 @@
             }
         },
         {
-            "id": "castle-wall2",
+            "id": "castle-wall-long",
             "VD": "VDposUV",
-            "model": "assets/models/structures/CastleWall2.mgcg",
+            "model": "assets/models/structures/CastleWallLong.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -296,7 +389,7 @@
                             0,
                             6,
                             6,
-                            -1
+                            -0.4
                         ]
                     },
                     {
@@ -310,6 +403,18 @@
                             3,
                             -23
                         ]
+                    },
+                    {
+                        "type": "OOBB",
+                        "visible": true,
+                        "params": [
+                            -5.2,
+                            -5.2,
+                            0,
+                            5.2,
+                            5.2,
+                            -0.8
+                        ]
                     }
                 ]
             }
@@ -317,7 +422,7 @@
         {
             "id": "water",
             "VD": "VDposUV",
-            "model": "assets/models/objects/Water.mgcg",
+            "model": "assets/models/nature/Water.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -421,6 +526,23 @@
             "technique": "BlinnPos",
             "elements": [
                 {
+                    "id": "deer/1",
+                    "model": "deer",
+                    "texture": [
+                        "colors3"
+                    ],
+                    "translate": [
+                        24,
+                        0,
+                        32
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ]
+                },
+                {
                     "id": "box/1",
                     "model": "box",
                     "texture": [
@@ -428,8 +550,13 @@
                     ],
                     "translate": [
                         -8,
-                        0.5,
-                        32.5
+                        0,
+                        32
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
                     ]
                 },
                 {
@@ -470,7 +597,7 @@
                     "translate": [
                         32,
                         0,
-                        -32
+                        -96
                     ],
                     "eulerAngles": [
                         90,
@@ -513,8 +640,8 @@
                     ]
                 },
                 {
-                    "id": "castle-wall1/1",
-                    "model": "castle-wall1",
+                    "id": "castle-wall-short/1",
+                    "model": "castle-wall-short",
                     "texture": [
                         "castle"
                     ],
@@ -530,8 +657,8 @@
                     ]
                 },
                 {
-                    "id": "castle-wall2/1",
-                    "model": "castle-wall2",
+                    "id": "castle-wall-long/1",
+                    "model": "castle-wall-long",
                     "texture": [
                         "castle"
                     ],

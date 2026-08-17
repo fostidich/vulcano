@@ -7,8 +7,8 @@
 // Main struct containing player specific settings and state.
 struct PlayerState {
     // Camera position and rotation state
-    glm::vec3 eyePosition = glm::vec3(0.0f, 4.0f, 0.0f);
-    glm::vec3 lookAtPoint = glm::vec3(0.0f, 4.0f, -1.0f);
+    glm::vec3 eyePosition = glm::vec3(0.0f, 4.0f, -4.0f);
+    glm::vec3 lookAtPoint = glm::vec3(0.0f, 4.0f, 1.5f);
     glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Looking directions
@@ -41,7 +41,8 @@ struct PlayerState {
     const float jumpDuration = 0.4f;  // Time between jump start and max height
     float jumpTimer          = 0.0f;  // Time until player stays airborne for jumping
 
-    bool leverTriggered = false; // hidden mechanism - lower bridge
+    bool leverTriggered = false;
 
+    // Default scene to load
     std::string scenePath = "assets/scenes/Scene.json";
 };

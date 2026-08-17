@@ -260,9 +260,9 @@ class Vulcano : public BaseProject {
     // Map mouse button presses to the action they execute.
     void switchMouseButtons(int key, int action);
 
-    // hidden mechanism - lower bridge
-    void updateBridge(float deltaT);
-
     // Find the lowest Y between low and high at which pos' XZ would not have collisions.
     float binaryVerticalCollisionSearch(float low, float high, glm::vec3 pos);
+
+    // Lower or raise the bridge.
+    void updateBridge(float deltaT);
 };
