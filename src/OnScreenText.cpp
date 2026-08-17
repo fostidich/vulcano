@@ -9,6 +9,11 @@ string ftoistr(float f) { return std::to_string(static_cast<int>(f)); }
 
 string boolstr(bool b) { return b ? "on" : "off"; }
 
+string jumpstr(bool j, float jt, float jd) {
+    if (!j) return "-";
+    return std::format("{:.2f}", jt + jd);
+}
+
 string radtodegstr(float f) {
     float deg = std::fmod(glm::degrees(f) + 180.0f, 360.0f);
     if (deg < 0.0f) deg += 360.0f;
@@ -51,13 +56,14 @@ void Vulcano::updateDebugScreen(float deltaT) {
         oss << "Pitch: " << radtodegstr(state.pitch) << "\n";
         oss << "Yaw: " << radtodegstr(state.yaw) << "\n";
         oss << "Direction: " << compass(state.yaw) << "\n";
+        oss << "[space] Jumping: " << jumpstr(state.jumping, state.jumpTimer, state.jumpDuration) << "\n";
+        oss << "[shift] Sneaking: " << boolstr(state.slowing) << "\n";
         oss << "[ctrl] Running: " << boolstr(state.running) << "\n";
         oss << "[esc] Focus: " << boolstr(state.cursorCaptured) << "\n";
         oss << "[Z] Zoom: " << boolstr(state.zooming) << "\n";
         oss << "[F] Flight: " << boolstr(state.flightMode) << "\n";
         oss << "[C] Collisions: " << boolstr(state.collisions) << "\n";
         oss << "[H] Hitboxes: " << boolstr(state.showColliders) << "\n";
-        oss << "[L] Bridge: " << (state.leverTriggered ? "lowered" : "raised") << "\n";
         oss << "[I] Info text: " << "on" << "\n";
     } else {
         oss << "[I]" << "\n";

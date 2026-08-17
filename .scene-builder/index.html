@@ -178,8 +178,16 @@ function toggleCollapse(path) {
   if (body) body.classList.toggle('collapsed', isCollapsed(path));
   if (chev) chev.classList.toggle('collapsed', isCollapsed(path));
 }
-function expandAll() { allPaths.forEach(k => collapsedState[k] = false); render(); }
-function collapseAll() { allPaths.forEach(k => collapsedState[k] = true); render(); }
+function expandAll() {
+  allPaths.forEach(k => collapsedState[k] = false);
+  document.querySelectorAll('.section-body, .item-body, .collider-node-body').forEach(el => el.classList.remove('collapsed'));
+  document.querySelectorAll('.chevron').forEach(el => el.classList.remove('collapsed'));
+}
+function collapseAll() {
+  allPaths.forEach(k => collapsedState[k] = true);
+  document.querySelectorAll('.section-body, .item-body, .collider-node-body').forEach(el => el.classList.add('collapsed'));
+  document.querySelectorAll('.chevron').forEach(el => el.classList.add('collapsed'));
+}
 
 // ── Reorder ──
 function reorderScene() {
@@ -215,7 +223,11 @@ async function loadFile() {
   if (window.showOpenFilePicker) {
     try {
       const [fh] = await window.showOpenFilePicker({
-        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        types: [
+          { description: 'JSON Files (*.json)', accept: { 'application/json': ['.json'], 'text/plain': ['.json', '.txt'] } },
+          { description: 'All Files (*.*)', accept: { '*/*': [] } }
+        ],
+        excludeAcceptAllOption: false
       });
       loadedFileHandle = fh;
       const file = await fh.getFile();
@@ -234,7 +246,8 @@ async function loadFile() {
     }
   }
   const input = document.createElement('input');
-  input.type = 'file'; input.accept = '.json';
+  input.type = 'file';
+  input.accept = '.json,application/json,text/plain,*/*';
   input.onchange = e => {
     const file = e.target.files[0]; if (!file) return;
     loadedFileHandle = null;
@@ -288,7 +301,11 @@ async function saveFile() {
     try {
       const fh = await window.showSaveFilePicker({
         suggestedName: defaultName,
-        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+        types: [
+          { description: 'JSON Files (*.json)', accept: { 'application/json': ['.json'] } },
+          { description: 'All Files (*.*)', accept: { '*/*': [] } }
+        ],
+        excludeAcceptAllOption: false
       });
       const w = await fh.createWritable();
       await w.write(json);

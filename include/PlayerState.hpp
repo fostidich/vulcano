@@ -2,12 +2,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <string>
 
 // Main struct containing player specific settings and state.
 struct PlayerState {
     // Camera position and rotation state
-    glm::vec3 eyePosition = glm::vec3(0.0f, 5.0f, -20.0f);
-    glm::vec3 lookAtPoint = glm::vec3(0.0f, 1.5f, 0.0f);
+    glm::vec3 eyePosition = glm::vec3(0.0f, 4.0f, 0.0f);
+    glm::vec3 lookAtPoint = glm::vec3(0.0f, 4.0f, -1.0f);
     glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Looking directions
@@ -24,18 +25,23 @@ struct PlayerState {
     const float moveSpeed        = 10.0f;              // meters / second
     const float gravity          = -9.8f / 2.0f;       // meters / second
     const float runMultiplier    = 2.0f;
+    const float sneakMultiplier  = 0.5f;
 
     bool cursorCaptured = true;  // Whether the window has focus
     bool flightMode     = false; // Whether the player can fly
     bool collisions     = true;  // Collisions with objects
     bool showColliders  = false; // Object hitboxes
-    bool debugScreen    = true;  // Show debug screen
-    bool running        = false; // Whether player is running
+    bool debugScreen    = false; // Show debug screen
+    bool running        = false; // Whether player is sprinting
+    bool slowing        = false; // Whether player is sneaking
     bool zooming        = false; // Camera is zooming
-    bool jumping        = false; // Player has gravity reversed
 
-    const float jumpDuration = 0.4f; // Time between jump start and max height
-    float jumpTimer          = 0.0f; // Time until player stays airborne for jumping
+    // Jump: gravity reversed for a while
+    bool jumping             = false; // Whether player pressed space
+    const float jumpDuration = 0.4f;  // Time between jump start and max height
+    float jumpTimer          = 0.0f;  // Time until player stays airborne for jumping
 
     bool leverTriggered = false; // hidden mechanism - lower bridge
+
+    std::string scenePath = "assets/scenes/Scene.json";
 };

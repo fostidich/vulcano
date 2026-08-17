@@ -8,10 +8,11 @@
 #include "modules/TextMaker.hpp"
 
 class Vulcano : public BaseProject {
-  protected:
+  public:
     // Player's camera information, settings and actions state.
     PlayerState state;
 
+  protected:
     // Player's collisions shape (1x1x2 rectangle with eye at h1.5)
     Collider playerCollider;
 

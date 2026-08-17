@@ -803,7 +803,7 @@ inline AABBextents Collider::getExtents() {
 // COLLIDERS VISUALIZATION
 class ColliderShow;
 
-#define MAX_COLLIDERS 20
+#define MAX_COLLIDERS 256
 #define SPHERE_RESOLUTION 64
 
 // Uniform buffer used by the collider rendering pipeline

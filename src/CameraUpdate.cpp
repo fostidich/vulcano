@@ -46,9 +46,6 @@ void Vulcano::cameraUpdate(float deltaT) {
     }
     if (state.flightMode) mv *= 5.0f;
 
-    // Speed multiplier (running player with CTRL)
-    const bool speeding = glfwGetKey(this->window, GLFW_KEY_LEFT_CONTROL);
-
     // Compute current yaw and pitch
     const vec3 dir = normalize(state.lookAtPoint - state.eyePosition);
     float yaw      = std::atan2(dir.x, -dir.z);
@@ -71,8 +68,10 @@ void Vulcano::cameraUpdate(float deltaT) {
     const vec3 straightUp  = vec3(0.0f, 1.0f, 0.0f);
 
     // Compute translation delta
-    const vec3 moveDirZ     = flatForward * -mv.z * (speeding ? state.runMultiplier : 1);
-    const vec3 moveDirX     = flatRight * mv.x * (speeding ? state.runMultiplier : 1);
+    const float speedMul = (state.running ? state.runMultiplier : 1.0f) *
+                           (state.slowing ? state.sneakMultiplier : 1.0f);
+    const vec3 moveDirZ     = flatForward * -mv.z * speedMul;
+    const vec3 moveDirX     = flatRight * mv.x * speedMul;
     const vec3 moveDirY     = straightUp * mv.y;
     const vec3 moveDir      = moveDirZ + moveDirX + moveDirY;
     const vec3 displacement = moveDir * state.moveSpeed * deltaT;
@@ -89,5 +88,4 @@ void Vulcano::cameraUpdate(float deltaT) {
     this->state.lookAtPoint = state.eyePosition + forward;
     this->state.pitch       = pitch;
     this->state.yaw         = yaw;
-    this->state.running     = speeding;
 }

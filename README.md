@@ -11,7 +11,7 @@ just run
 - **WASD**: move the player
 - **Mouse**: rotate camera
 - **Space**: jump / go up
-- **Shift**: go down
+- **Shift**: sneak / go down
 - **Control**: sprint
 - **ESC**: unfocus
 - **Z**: zoom
@@ -20,4 +20,12 @@ just run
 - **H**: toggle hitboxes
 - **I**: info/debug screen
 - **Q**: quit
+
+## Showcase scene
+
+Use argument `showcase` to load debug scene.
+
+```sh
+just run showcase
+```
 

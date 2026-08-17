@@ -9,8 +9,14 @@ void Vulcano::switchKeys(int key, int action) {
             state.cursorCaptured = false;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             break;
+        case GLFW_KEY_LEFT_CONTROL: // Sprint
+            state.running = true;
+            break;
+        case GLFW_KEY_LEFT_SHIFT: // Sneak
+            if (!state.flightMode) state.slowing = true;
+            break;
         case GLFW_KEY_SPACE: // Jump
-            if (!state.jumping) {
+            if (!state.jumping && !state.flightMode) {
                 state.jumping   = true;
                 state.jumpTimer = state.jumpDuration;
             }
@@ -31,6 +37,7 @@ void Vulcano::switchKeys(int key, int action) {
         case GLFW_KEY_F: // Toggle creative
             toggle(state.flightMode);
             if (!state.flightMode) state.collisions = true;
+            if (state.flightMode) state.slowing = false;
             break;
         case GLFW_KEY_Z: // Activate zoom
             state.zooming = true;
@@ -47,6 +54,12 @@ void Vulcano::switchKeys(int key, int action) {
         }
     else if (action == GLFW_RELEASE)
         switch (key) {
+        case GLFW_KEY_LEFT_CONTROL: // Back to normal speed
+            state.running = false;
+            break;
+        case GLFW_KEY_LEFT_SHIFT: // Back to normal speed
+            state.slowing = false;
+            break;
         case GLFW_KEY_Z: // Deactivate zoom
             state.zooming = false;
             break;

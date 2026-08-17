@@ -3,7 +3,7 @@
 
 layout(binding = 0) uniform UniformBufferObject {
     mat4 vpMat;
-    vec4 strokeColors[20];
+    vec4 strokeColors[256];
 } ubo;
 
 layout(push_constant) uniform PushConsts {

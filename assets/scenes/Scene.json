@@ -244,7 +244,7 @@
             "technique": "BlinnPos",
             "elements": [
                 {
-                    "id": "bridge1",
+                    "id": "bridgeGoingUp",
                     "model": "CastleBridge",
                     "texture": [
                         "CastleBridge"

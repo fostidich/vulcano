@@ -19,8 +19,8 @@ force-build: init
 alias fb := force-build
 
 # Run the compiled Vulkan application (syncs assets if changed)
-run: build copy-assets
-    cd build && ./{{ APP_NAME }}
+run *ARGS: build copy-assets
+    cd build && ./{{ APP_NAME }} {{ ARGS }}
 alias r := run
 
 # Update assets for the current build
