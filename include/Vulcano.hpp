@@ -263,6 +263,12 @@ class Vulcano : public BaseProject {
     // Find the lowest Y between low and high at which pos' XZ would not have collisions.
     float binaryVerticalCollisionSearch(float low, float high, glm::vec3 pos);
 
-    // Lower or raise the bridge.
-    void updateBridge(float deltaT);
+    // Process all possible interactions doable by pressing E.
+    void processInteractions();
+
+    // Interact with the deer to lower the bridge.
+    void drawDeersBridge();
+
+    // Lower or raise the bridge, after asking the deer.
+    void updateDeersBridge(float deltaT);
 };

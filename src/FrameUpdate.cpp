@@ -6,9 +6,9 @@ void Vulcano::updateUniformBuffer(u32 currentImage) {
     this->toggleColliders(currentImage);
     this->updateDebugScreen(deltaT);
     this->computeViewProj();
-    this->updateBridge(deltaT);
     GlobalUniformBufferObject gubo;
     this->updateGlobalLight(gubo, deltaT, currentImage);
+    this->updateDeersBridge(deltaT);
     this->updateSceneInstances(gubo, currentImage);
 }
 
@@ -70,41 +70,5 @@ void Vulcano::updateSceneInstances(const GlobalUniformBufferObject &gubo, int cu
         ubo.mvpMat = this->ViewPrj * ubo.mMat;
         this->SC.TI[0].I[instanceId].DS[0][0]->map(currentImage, (void *)&gubo, 0); // Global lighting
         this->SC.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0);          // Camera MVP matrix
-    }
-}
-
-void Vulcano::updateBridge(float deltaT) {
-    static int bridgeIndex = -1;
-    if (bridgeIndex < 0) {
-        for (int j = 0; j < SC.TI[0].InstanceCount; j++) { // looping instances
-            if (*SC.TI[0].I[j].id == "bridgeGoingUp") {
-                bridgeIndex = j;
-                break;
-            }
-        }
-    }
-
-    const float raisedY   = -4.0f;
-    const float loweredY  = -7.0f;
-    const float time      = 2.0f;
-    static bool triggered = false;
-    static float t        = 0.0f;
-
-    if (state.leverTriggered != triggered) {
-        t         = 0.0f;
-        triggered = state.leverTriggered;
-    }
-    t = t + deltaT; // update of how much time it took
-
-    const float alpha = glm::clamp(t / time, 0.0f, 1.0f); // progress -- 0 < alpha < 1
-
-    // if triggered interpolate from raised towards lowered, else from lowered to raised
-    const float y = state.leverTriggered ? glm::mix(raisedY, loweredY, alpha) : glm::mix(loweredY, raisedY, alpha);
-
-    const glm::mat4 Wm = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, y, 15.0f)) *
-                         glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0, 1, 0)) *
-                         glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1, 0, 0));
-    if (bridgeIndex >= 0) {
-        this->SC.TI[0].I[bridgeIndex].Wm = Wm; // overwrite transformation
     }
 }

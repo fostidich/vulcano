@@ -16,10 +16,9 @@ void Vulcano::switchKeys(int key, int action) {
             if (!state.flightMode) state.slowing = true;
             break;
         case GLFW_KEY_SPACE: // Jump
-            if (!state.jumping && !state.flightMode) {
-                state.jumping   = true;
-                state.jumpTimer = state.jumpDuration;
-            }
+            if (state.jumping || state.flightMode) break;
+            state.jumping   = true;
+            state.jumpTimer = state.jumpDuration;
             break;
         case GLFW_KEY_Q: // Close application
             glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -42,16 +41,13 @@ void Vulcano::switchKeys(int key, int action) {
         case GLFW_KEY_Z: // Activate zoom
             state.zooming = true;
             break;
-        case GLFW_KEY_L: {                                             // Interact with nearby lever
-            const glm::vec3 leverPos(0.0f, 0.0f, 20.0f);               // constant position of lever
-            if (glm::distance(state.eyePosition, leverPos) < 500.0f) { // if user in close proximity
-                toggle(state.leverTriggered);                          // trigger lever
-            }
+        case GLFW_KEY_E: // Interact with world
+            this->processInteractions();
             break;
-        }
         default:
             logs::debug("Unknown key: ", key);
         }
+
     else if (action == GLFW_RELEASE)
         switch (key) {
         case GLFW_KEY_LEFT_CONTROL: // Back to normal speed

@@ -14,6 +14,7 @@ just run
 - **Shift**: sneak / go down
 - **Control**: sprint
 - **ESC**: unfocus
+- **E**: interact with world
 - **Z**: zoom
 - **F**: toggle flight
 - **C**: toggle collisions

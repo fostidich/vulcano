@@ -526,6 +526,28 @@
             "technique": "BlinnPos",
             "elements": [
                 {
+                    "id": "deer/1",
+                    "model": "deer",
+                    "texture": [
+                        "colors3"
+                    ],
+                    "translate": [
+                        7,
+                        0,
+                        -3
+                    ],
+                    "eulerAngles": [
+                        90,
+                        60,
+                        0
+                    ],
+                    "scale": [
+                        1.5,
+                        1.5,
+                        1.5
+                    ]
+                },
+                {
                     "id": "box/1",
                     "model": "box",
                     "texture": [
