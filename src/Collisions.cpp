@@ -68,10 +68,15 @@ bool Vulcano::checkCollision(const vec3 &testPos) {
     return false;
 };
 
-void Vulcano::toggleColliders(u32 currentImage) {
+void Vulcano::renderColliders(u32 currentImage) {
     if (this->state.showColliders)
         this->SC.updateColliderVisualizer(currentImage, this->ViewPrj);
+}
+
+void Vulcano::toggleColliders() {
+    if (state.showColliders)
+        SC.refreshColliderVisualizer();
     else
-        // Feed zero matrix to clip/discard all collider vertices
-        this->SC.updateColliderVisualizer(currentImage, glm::mat4(0.0f));
+        for (u32 img = 0; img < this->swapChainImages.size(); ++img)
+            this->SC.updateColliderVisualizer(img, glm::mat4(0.0f));
 }

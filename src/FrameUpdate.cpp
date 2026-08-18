@@ -3,7 +3,7 @@
 void Vulcano::updateUniformBuffer(u32 currentImage) {
     const float deltaT = this->getDeltaT();
     this->cameraUpdate(deltaT);
-    this->toggleColliders(currentImage);
+    this->renderColliders(currentImage);
     this->updateDebugScreen(deltaT);
     this->computeViewProj();
     GlobalUniformBufferObject gubo;

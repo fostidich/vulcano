@@ -231,7 +231,7 @@ class Vulcano : public BaseProject {
     void cameraUpdate(float deltaT);
 
     // If key H is pressed, it toggles collider hitbox show render.
-    void toggleColliders(u32 currentImage);
+    void renderColliders(u32 currentImage);
 
     // Compute projection matrix, view matrix from camera and combine them.
     void computeViewProj();
@@ -253,6 +253,9 @@ class Vulcano : public BaseProject {
     // Axis-aligned movement with wall sliding.
     // Exists early if collisions are disabled.
     void processCollisions(glm::vec3 &newPos, const glm::vec3 &displacement);
+
+    // Tasks for correctly update colliders box rendering when toggling their state.
+    void toggleColliders();
 
     // Map key-presses to the action they execute.
     void switchKeys(int key, int action);

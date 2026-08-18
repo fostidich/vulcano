@@ -1,6 +1,8 @@
 #include "Vulcano.hpp"
 
+namespace {
 void toggle(bool &b) { b = !b; }
+} // namespace
 
 void Vulcano::switchKeys(int key, int action) {
     if (action == GLFW_PRESS)
@@ -28,6 +30,7 @@ void Vulcano::switchKeys(int key, int action) {
             break;
         case GLFW_KEY_H: // Toggle colliders
             toggle(state.showColliders);
+            toggleColliders();
             break;
         case GLFW_KEY_C: // Toggle collisions
             toggle(state.collisions);

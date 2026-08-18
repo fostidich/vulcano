@@ -8,9 +8,13 @@ void Vulcano::processInteractions() {
     this->drawDeersBridge();
 }
 
+namespace {
+void toggle(bool &b) { b = !b; }
+
 bool contains(const auto &range, const auto &val) {
     return std::find(std::begin(range), std::end(range), val) != std::end(range);
 }
+} // namespace
 
 void Vulcano::drawDeersBridge() {
     const vec3 deerPosition         = vec3(7.0f, 0.0f, -3.0f);
@@ -19,27 +23,27 @@ void Vulcano::drawDeersBridge() {
     if (playerDistance > minDistanceRequired) return; // Check if player is near enough
     if (state.deersBridgeMoving) return;
     state.deersBridgeMoving = true;
-    logs::info("Deer's bridge requested to be raised");
+    logs::info("Deer's bridge requested to be ", state.deersBridgeRaised ? "lowered" : "raised");
 }
 
 void Vulcano::updateDeersBridge(float deltaT) {
     if (!state.deersBridgeMoving) return;
     const str bridgesID[]    = {"castle-bridge/1", "castle-bridge/2"};
     const float duration     = 3.0f;
-    const float maxRaise     = 7.5f;
+    const float targetHeight = 7.5f * (state.deersBridgeRaised ? -1.0f : 1.0f);
     static float currentTime = 0.0f;
     static unordered_map<Instance *, mat4> initialWms; // World matrix of objects before animation
     static AnimTrack moveTrack;                        // Animation tracker for interpolating position in time
 
-    // Cache the initial transformation matrices on first run
-    if (initialWms.empty())
+    if (currentTime == 0.0f) {
+        // Cache the initial transformation matrices on first run
         for (int k = 0; k < SC.TechniqueInstanceCount; k++)
             for (int i = 0; i < SC.TI[k].InstanceCount; i++)
                 if (SC.TI[k].I[i].id && contains(bridgesID, *SC.TI[k].I[i].id))
                     initialWms[&SC.TI[k].I[i]] = SC.TI[k].I[i].Wm;
 
-    // Setup animation tracker if it has not been done already
-    if (moveTrack.Frames.empty()) {
+        // Setup animation tracker at the start of the animation
+        moveTrack.Frames.clear();
         moveTrack.nKeyFrames = 2; // Two points to interpolate
         moveTrack.Frames.push_back({
             0.0f,                         // Time
@@ -48,10 +52,10 @@ void Vulcano::updateDeersBridge(float deltaT) {
             vec3(1.0f, 1.0f, 1.0f)        // Scaling
         });
         moveTrack.Frames.push_back({
-            duration,                     // Time duration
-            vec3(0.0f, maxRaise, 0.0f),   // Translation delta
-            quat(1.0f, 0.0f, 0.0f, 0.0f), // No rotation
-            vec3(1.0f, 1.0f, 1.0f)        // No scaling
+            duration,                       // Time duration
+            vec3(0.0f, targetHeight, 0.0f), // Translation delta
+            quat(1.0f, 0.0f, 0.0f, 0.0f),   // No rotation
+            vec3(1.0f, 1.0f, 1.0f)          // No scaling
         });
     }
 
@@ -72,9 +76,11 @@ void Vulcano::updateDeersBridge(float deltaT) {
 
     // Conclude animation
     if (currentTime >= duration) {
-        currentTime             = 0.0f;
+        currentTime = 0.0f;
+        initialWms.clear();
+        moveTrack.Frames.clear();
         state.deersBridgeMoving = false;
-        state.deersBridgeRaised = true;
-        logs::info("Deer's bridge raised");
+        toggle(state.deersBridgeRaised);
+        logs::info("Deer's bridge ", state.deersBridgeRaised ? "raised" : "lowered");
     }
 }
