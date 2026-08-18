@@ -13,6 +13,10 @@ void Vulcano::updateUniformBuffer(u32 currentImage) {
     this->updateSceneInstances(gubo, currentImage);
 }
 
+void Vulcano::textMakerUpdate() {
+    this->txt.updateCommandBuffer();
+}
+
 float Vulcano::getDeltaT() {
     static auto startTime = std::chrono::high_resolution_clock::now();
     static float lastTime = 0.0f;

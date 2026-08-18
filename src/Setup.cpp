@@ -34,6 +34,10 @@ void Vulcano::loadScene() {
     }
 }
 
+void Vulcano::textMakerInit() {
+    this->txt.init(this, this->swapChainExtent.width, this->swapChainExtent.height);
+}
+
 void Vulcano::pipelinesAndDescriptorSetsInit() {
     this->RP.create();
     this->P.create(&this->RP);

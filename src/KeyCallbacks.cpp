@@ -96,15 +96,3 @@ void Vulcano::keypressCallbacksInit() {
         app->switchMouseButtons(button, action);
     });
 }
-
-void Vulcano::fireInteractions() {
-    if (this->world.sceneID == SCENE_DEFAULT)
-        this->drawDeersBridge();
-}
-
-void Vulcano::drawDeersBridge() {
-    if (world.deerDistance > world.minDistanceForAnimation) return;
-    if (world.deerBridgeMoving) return;
-    world.deerBridgeMoving = true;
-    logs::info("Deer's bridge requested to be ", world.deerBridgeRaised ? "lowered" : "raised");
-}

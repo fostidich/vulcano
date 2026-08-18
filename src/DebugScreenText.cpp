@@ -2,12 +2,6 @@
 
 using namespace glm;
 
-void Vulcano::processTextOnScreen(float deltaT) {
-    this->updateDebugScreen(deltaT);
-    if (this->world.sceneID == SCENE_DEFAULT)
-        this->printDeerText();
-}
-
 namespace {
 string vec3str(vec3 v) { return std::format("({:.2f}, {:.2f}, {:.2f})", v.x, v.y, v.z); }
 
@@ -33,15 +27,6 @@ string compass(float yaw) {
     const string directions[] = {"North", "North-East", "East", "South-East", "South", "South-West", "West", "North-West"};
     const usize index         = static_cast<usize>((deg + 22.5f) / 45.0f) % 8;
     return directions[index];
-}
-
-void printCenterBottom(TextMaker &txt, int id, const string &s) {
-    txt.print(0.0f, 0.9f,
-              s, id, "CO",
-              false, false, false,
-              TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
-              {1.0f, 1.0f, 1.0f, 1.0f},
-              {0.0f, 0.0f, 0.0f, 1.0f});
 }
 } // namespace
 
@@ -91,33 +76,4 @@ void Vulcano::updateDebugScreen(float deltaT) {
                     TAL_LEFT, TRH_LEFT, TRV_TOP,
                     {1.0f, 1.0f, 1.0f, 1.0f},
                     {0.0f, 0.0f, 0.0f, 0.0f});
-}
-
-void Vulcano::printDeerText() {
-    if (!world.deerBridgeMoving) {
-        // Check if player is near enough for displaying the message or for
-        // requesting raising/lowering the bridge (if it's not moving already).
-        if (world.deerDistance > world.minDistanceForMessage) {
-            txt.removeText(2);
-            return;
-        }
-        if (world.deerDistance > world.minDistanceForAnimation) {
-            const string dist = std::format("[{:.2f}m]", world.deerDistance);
-            printCenterBottom(txt, 2, "Talk with the deer " + dist);
-            return;
-        }
-        const string req = world.deerBridgeRaised ? "lower" : "raise";
-        printCenterBottom(txt, 2, "Hi wanderer, press [E] to " + req + " the bridge");
-    } else {
-        const string status = world.deerBridgeRaised ? "down" : "up";
-        printCenterBottom(txt, 2, "Bridge is going " + status);
-    }
-}
-
-void Vulcano::textMakerInit() {
-    this->txt.init(this, this->swapChainExtent.width, this->swapChainExtent.height);
-}
-
-void Vulcano::textMakerUpdate() {
-    this->txt.updateCommandBuffer();
 }
