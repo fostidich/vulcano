@@ -5,17 +5,17 @@ using namespace glm;
 void Vulcano::cameraUpdate(float deltaT) {
     // When first focusing window, delay camera change to avoid flickers
     static u8 stillFrames = 5;
-    if (!state.cursorCaptured) {
+    if (!player.cursorCaptured) {
         stillFrames = 5;
         return;
     }
 
     // Update jump timer
-    if (state.jumping) {
-        state.jumpTimer -= deltaT;
-        if (state.jumpTimer <= -state.jumpDuration) {
-            state.jumping   = false;
-            state.jumpTimer = 0.0f;
+    if (player.jumping) {
+        player.jumpTimer -= deltaT;
+        if (player.jumpTimer <= -player.jumpDuration) {
+            player.jumping   = false;
+            player.jumpTimer = 0.0f;
         }
     }
 
@@ -38,22 +38,22 @@ void Vulcano::cameraUpdate(float deltaT) {
     if (glfwGetKey(this->window, GLFW_KEY_A)) mv.x -= 1.0f;
     if (glfwGetKey(this->window, GLFW_KEY_S)) mv.z += 1.0f;
     if (glfwGetKey(this->window, GLFW_KEY_W)) mv.z -= 1.0f;
-    if (state.flightMode) {
+    if (player.flightMode) {
         if (glfwGetKey(this->window, GLFW_KEY_SPACE)) mv.y += 0.5f;
         if (glfwGetKey(this->window, GLFW_KEY_LEFT_SHIFT)) mv.y -= 0.5f;
     } else {
-        mv.y = state.gravity * (state.jumping ? -state.jumpTimer : 1.0f);
+        mv.y = player.gravity * (player.jumping ? -player.jumpTimer : 1.0f);
     }
-    if (state.flightMode) mv *= 5.0f;
+    if (player.flightMode) mv *= 5.0f;
 
     // Compute current yaw and pitch
-    const vec3 dir = normalize(state.lookAtPoint - state.eyePosition);
+    const vec3 dir = normalize(player.lookAtPoint - player.eyePosition);
     float yaw      = std::atan2(dir.x, -dir.z);
     float pitch    = std::asin(dir.y);
 
     // Accumulate rotation (clamp pitch to prevent camera flipping)
-    yaw += m_dx * state.mouseSensitivity;
-    pitch -= m_dy * state.mouseSensitivity;
+    yaw += m_dx * player.mouseSensitivity;
+    pitch -= m_dy * player.mouseSensitivity;
     pitch = clamp(pitch, radians(-89.0f), radians(89.0f));
 
     // Compute camera looking direction
@@ -68,24 +68,24 @@ void Vulcano::cameraUpdate(float deltaT) {
     const vec3 straightUp  = vec3(0.0f, 1.0f, 0.0f);
 
     // Compute translation delta
-    const float speedMul    = (state.running ? state.runMultiplier : 1.0f) *
-                              (state.slowing ? state.sneakMultiplier : 1.0f);
+    const float speedMul    = (player.running ? player.runMultiplier : 1.0f) *
+                              (player.slowing ? player.sneakMultiplier : 1.0f);
     const vec3 moveDirZ     = flatForward * -mv.z * speedMul;
     const vec3 moveDirX     = flatRight * mv.x * speedMul;
     const vec3 moveDirY     = straightUp * mv.y;
     const vec3 moveDir      = moveDirZ + moveDirX + moveDirY;
-    const vec3 displacement = moveDir * state.moveSpeed * deltaT;
+    const vec3 displacement = moveDir * player.moveSpeed * deltaT;
 
     // Compute collisions
-    vec3 newPos = this->state.eyePosition;
-    if (state.collisions)
+    vec3 newPos = this->player.eyePosition;
+    if (player.collisions)
         processCollisions(newPos, displacement);
     else
         newPos += displacement;
 
     // Update camera
-    this->state.eyePosition = newPos;
-    this->state.lookAtPoint = state.eyePosition + forward;
-    this->state.pitch       = pitch;
-    this->state.yaw         = yaw;
+    this->player.eyePosition = newPos;
+    this->player.lookAtPoint = player.eyePosition + forward;
+    this->player.pitch       = pitch;
+    this->player.yaw         = yaw;
 }

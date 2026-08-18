@@ -15,7 +15,7 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
         const float bottomY = currentPos.y - maxStep; // Min Y reachable in the frame
 
         // If bottom surface is near, snap to it
-        if (!state.flightMode && !state.jumping &&
+        if (!player.flightMode && !player.jumping &&
             checkCollision(vec3(target.x, bottomY, target.z)) &&
             !checkCollision(vec3(target.x, currentPos.y - 0.0001f, target.z))) {
             const float snapY = binaryVerticalCollisionSearch(bottomY, currentPos.y, target);
@@ -26,7 +26,7 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
             currentPos = vec3(target.x, currentPos.y, target.z);
         }
         // If going up a slope, go up
-        else if (!state.flightMode &&
+        else if (!player.flightMode &&
                  !checkCollision(vec3(target.x, topY, target.z))) {
             const float snapY = binaryVerticalCollisionSearch(currentPos.y, topY, target);
             currentPos        = vec3(target.x, snapY, target.z);
@@ -69,12 +69,12 @@ bool Vulcano::checkCollision(const vec3 &testPos) {
 };
 
 void Vulcano::renderColliders(u32 currentImage) {
-    if (this->state.showColliders)
+    if (this->player.showColliders)
         this->SC.updateColliderVisualizer(currentImage, this->ViewPrj);
 }
 
 void Vulcano::toggleColliders() {
-    if (state.showColliders)
+    if (player.showColliders)
         SC.refreshColliderVisualizer();
     else
         for (u32 img = 0; img < this->swapChainImages.size(); ++img)

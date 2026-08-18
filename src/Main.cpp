@@ -1,15 +1,19 @@
 #include "Vulcano.hpp"
 
 void switchScene(Vulcano &app, str scene) {
-    if (scene == "showcase")
-        app.state.scenePath = "assets/scenes/Showcase.json";
-    else
+    if (scene == "default") {
+        app.world.scenePath = "assets/scenes/Scene.json";
+        app.world.sceneID   = SCENE_DEFAULT;
+    } else if (scene == "showcase") {
+        app.world.scenePath = "assets/scenes/Showcase.json";
+        app.world.sceneID   = SCENE_SHOWCASE;
+    } else
         logs::error("Unknown scene identifier: ", scene);
 }
 
 int main(int argc, char *argv[]) {
     auto app = std::make_unique<Vulcano>();
-    if (argc > 1) switchScene(*app, argv[1]);
+    switchScene(*app, argc > 1 ? argv[1] : "default");
 
     try {
         app->run(false);

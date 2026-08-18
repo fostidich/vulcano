@@ -4,8 +4,8 @@ void Vulcano::updateUniformBuffer(u32 currentImage) {
     const float deltaT = this->getDeltaT();
     this->cameraUpdate(deltaT);
     this->renderColliders(currentImage);
-    this->updateDebugScreen(deltaT);
-    this->updateDeersBridge(deltaT);
+    this->processInteractions(deltaT);
+    this->processTextOnScreen(deltaT);
     this->textMakerUpdate();
     this->computeViewProj();
     GlobalUniformBufferObject gubo;
@@ -26,16 +26,16 @@ float Vulcano::getDeltaT() {
 
 void Vulcano::computeViewProj() {
     // Projection matrix
-    this->Prj = glm::perspective(this->state.FOVy * (state.zooming ? 0.1f : 1.0f),
+    this->Prj = glm::perspective(this->player.FOVy * (player.zooming ? 0.1f : 1.0f),
                                  this->Ar,
-                                 this->state.nearPlane,
-                                 this->state.farPlane);
+                                 this->player.nearPlane,
+                                 this->player.farPlane);
     this->Prj[1][1] *= -1;
 
     // View matrix
-    this->View = glm::lookAt(this->state.eyePosition,
-                             this->state.lookAtPoint,
-                             this->state.upVector);
+    this->View = glm::lookAt(this->player.eyePosition,
+                             this->player.lookAtPoint,
+                             this->player.upVector);
 
     // View projection matrix
     this->ViewPrj = this->Prj * this->View;

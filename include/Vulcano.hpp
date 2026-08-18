@@ -2,6 +2,7 @@
 #include "Descriptors.hpp"
 #include "PlayerState.hpp"
 #include "Types.hpp"
+#include "WorldState.hpp"
 #include "modules/Colliders.hpp"
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
@@ -10,7 +11,10 @@
 class Vulcano : public BaseProject {
   public:
     // Player's camera information, settings and actions state.
-    PlayerState state;
+    PlayerState player;
+
+    // World scene interactions and objects state.
+    WorldState world;
 
   protected:
     // Player's collisions shape (1x1x2 rectangle with eye at h1.5)
@@ -269,12 +273,21 @@ class Vulcano : public BaseProject {
     // Find the lowest Y between low and high at which pos' XZ would not have collisions.
     float binaryVerticalCollisionSearch(float low, float high, glm::vec3 pos);
 
-    // Process all possible interactions doable by pressing E.
-    void processInteractions();
+    // Process all possible text to print on screen, based on selected scene.
+    void processTextOnScreen(float deltaT);
+
+    // Process all possible world events, based on selected scene.
+    void processInteractions(float deltaT);
+
+    // Process all possible interactions doable by pressing E, based on selected scene.
+    void fireInteractions();
 
     // Interact with the deer to lower the bridge.
     void drawDeersBridge();
 
     // Lower or raise the bridge, after asking the deer.
     void updateDeersBridge(float deltaT);
+
+    // Print deer's speeches for raising/lowering the bridge when near.
+    void printDeerText();
 };

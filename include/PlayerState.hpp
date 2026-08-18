@@ -1,8 +1,5 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <string>
 
 // Main struct containing player specific settings and state.
 struct PlayerState {
@@ -40,12 +37,4 @@ struct PlayerState {
     bool jumping             = false; // Whether player pressed space
     const float jumpDuration = 0.4f;  // Time between jump start and max height
     float jumpTimer          = 0.0f;  // Time until player stays airborne for jumping
-
-    // Default scene to load
-    std::string scenePath = "assets/scenes/Scene.json";
-
-    // TODO: move out from PlayerState to a new WorldState
-    // World interactions
-    bool deersBridgeRaised = false;
-    bool deersBridgeMoving = false;
 };

@@ -4,8 +4,9 @@
 using namespace glm;
 using namespace std;
 
-void Vulcano::processInteractions() {
-    this->drawDeersBridge();
+void Vulcano::processInteractions(float deltaT) {
+    if (this->world.sceneID == SCENE_DEFAULT)
+        this->updateDeersBridge(deltaT);
 }
 
 namespace {
@@ -14,56 +15,14 @@ void toggle(bool &b) { b = !b; }
 bool contains(const auto &range, const auto &val) {
     return std::find(std::begin(range), std::end(range), val) != std::end(range);
 }
-
-void printCenterBottom(TextMaker &txt, int id, const string &s) {
-    txt.print(0.0f, 0.9f,
-              s, id, "CO",
-              false, false, false,
-              TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
-              {1.0f, 1.0f, 1.0f, 1.0f},
-              {0.0f, 0.0f, 0.0f, 1.0f});
-}
 } // namespace
 
-void Vulcano::drawDeersBridge() {
-    const vec3 deerPosition             = vec3(7.0f, 0.0f, -3.0f);
-    const float minDistanceForAnimation = 5.0f;
-    const float playerDistance          = length(deerPosition - state.eyePosition);
-    if (playerDistance > minDistanceForAnimation) return;
-
-    if (state.deersBridgeMoving) return;
-    state.deersBridgeMoving = true;
-    logs::info("Deer's bridge requested to be ", state.deersBridgeRaised ? "lowered" : "raised");
-}
-
 void Vulcano::updateDeersBridge(float deltaT) {
-    if (!state.deersBridgeMoving) {
-        const vec3 deerPosition             = vec3(7.0f, 0.0f, -3.0f);
-        const float minDistanceForMessage   = 15.0f;
-        const float minDistanceForAnimation = 5.0f;
-        const float playerDistance          = length(deerPosition - state.eyePosition);
+    world.deerDistance = length(world.deerPosition - player.eyePosition); // Keep track of how far the deer is
+    if (!world.deerBridgeMoving) return;
 
-        // Check if player is near enough for displaying the message or for
-        // requesting raising/lowering the bridge (if it's not moving already).
-        if (playerDistance > minDistanceForMessage) {
-            txt.removeText(2);
-            return;
-        }
-        if (playerDistance > minDistanceForAnimation) {
-            printCenterBottom(txt, 2, "Talk with the deer");
-            return;
-        }
-        const string req = state.deersBridgeRaised ? "lower" : "raise";
-        printCenterBottom(txt, 2, "Hi wanderer, press [E] to " + req + " the bridge");
-        return;
-    } else {
-        const string status = state.deersBridgeRaised ? "down" : "up";
-        printCenterBottom(txt, 2, "Bridge is going " + status);
-    }
-
-    const str bridgesID[]    = {"castle-bridge/1", "castle-bridge/2"};
     const float duration     = 3.0f;
-    const float targetHeight = 7.5f * (state.deersBridgeRaised ? -1.0f : 1.0f);
+    const float targetHeight = 7.5f * (world.deerBridgeRaised ? -1.0f : 1.0f);
     static float currentTime = 0.0f;
     static vector<pair<Instance *, mat4>> initialWms; // World matrix of objects before animation
     static AnimTrack moveTrack;                       // Animation tracker for interpolating position in time
@@ -72,7 +31,7 @@ void Vulcano::updateDeersBridge(float deltaT) {
         // Cache the initial transformation matrices on first run
         for (int k = 0; k < SC.TechniqueInstanceCount; k++)
             for (int i = 0; i < SC.TI[k].InstanceCount; i++)
-                if (SC.TI[k].I[i].id && contains(bridgesID, *SC.TI[k].I[i].id))
+                if (SC.TI[k].I[i].id && contains(world.deerBridgesID, *SC.TI[k].I[i].id))
                     initialWms.emplace_back(&SC.TI[k].I[i], SC.TI[k].I[i].Wm);
 
         // Setup animation tracker at the start of the animation
@@ -105,15 +64,15 @@ void Vulcano::updateDeersBridge(float deltaT) {
     }
 
     // Refresh colliders guides also
-    if (state.showColliders) SC.refreshColliderVisualizer();
+    if (player.showColliders) SC.refreshColliderVisualizer();
 
     // Conclude animation
     if (currentTime >= duration) {
         currentTime = 0.0f;
         initialWms.clear();
         moveTrack.Frames.clear();
-        state.deersBridgeMoving = false;
-        toggle(state.deersBridgeRaised);
-        logs::info("Deer's bridge ", state.deersBridgeRaised ? "raised" : "lowered");
+        world.deerBridgeMoving = false;
+        toggle(world.deerBridgeRaised);
+        logs::info("Deer's bridge ", world.deerBridgeRaised ? "raised" : "lowered");
     }
 }

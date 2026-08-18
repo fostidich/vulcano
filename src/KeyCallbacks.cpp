@@ -8,44 +8,44 @@ void Vulcano::switchKeys(int key, int action) {
     if (action == GLFW_PRESS)
         switch (key) {
         case GLFW_KEY_ESCAPE: // Defocus window
-            state.cursorCaptured = false;
+            player.cursorCaptured = false;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             break;
         case GLFW_KEY_LEFT_CONTROL: // Sprint
-            state.running = true;
+            player.running = true;
             break;
         case GLFW_KEY_LEFT_SHIFT: // Sneak
-            if (!state.flightMode) state.slowing = true;
+            if (!player.flightMode) player.slowing = true;
             break;
         case GLFW_KEY_SPACE: // Jump
-            if (state.jumping || state.flightMode) break;
-            state.jumping   = true;
-            state.jumpTimer = state.jumpDuration;
+            if (player.jumping || player.flightMode) break;
+            player.jumping   = true;
+            player.jumpTimer = player.jumpDuration;
             break;
         case GLFW_KEY_Q: // Close application
             glfwSetWindowShouldClose(window, GLFW_TRUE);
             break;
         case GLFW_KEY_I: // Toggle debug screen
-            toggle(state.debugScreen);
+            toggle(player.debugScreen);
             break;
         case GLFW_KEY_H: // Toggle colliders
-            toggle(state.showColliders);
+            toggle(player.showColliders);
             toggleColliders();
             break;
         case GLFW_KEY_C: // Toggle collisions
-            toggle(state.collisions);
-            if (!state.collisions) state.flightMode = true;
+            toggle(player.collisions);
+            if (!player.collisions) player.flightMode = true;
             break;
         case GLFW_KEY_F: // Toggle creative
-            toggle(state.flightMode);
-            if (!state.flightMode) state.collisions = true;
-            if (state.flightMode) state.slowing = false;
+            toggle(player.flightMode);
+            if (!player.flightMode) player.collisions = true;
+            if (player.flightMode) player.slowing = false;
             break;
         case GLFW_KEY_Z: // Activate zoom
-            state.zooming = true;
+            player.zooming = true;
             break;
         case GLFW_KEY_E: // Interact with world
-            this->processInteractions();
+            this->fireInteractions();
             break;
         default:
             logs::debug("Unknown key: ", key);
@@ -54,13 +54,13 @@ void Vulcano::switchKeys(int key, int action) {
     else if (action == GLFW_RELEASE)
         switch (key) {
         case GLFW_KEY_LEFT_CONTROL: // Back to normal speed
-            state.running = false;
+            player.running = false;
             break;
         case GLFW_KEY_LEFT_SHIFT: // Back to normal speed
-            state.slowing = false;
+            player.slowing = false;
             break;
         case GLFW_KEY_Z: // Deactivate zoom
-            state.zooming = false;
+            player.zooming = false;
             break;
         default:
             logs::debug("Unknown key: ", key);
@@ -71,8 +71,8 @@ void Vulcano::switchMouseButtons(int btn, int action) {
     if (action == GLFW_PRESS)
         switch (btn) {
         case GLFW_MOUSE_BUTTON_LEFT: // Refocus window
-            if (state.cursorCaptured) break;
-            state.cursorCaptured = true;
+            if (player.cursorCaptured) break;
+            player.cursorCaptured = true;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             break;
         default:
@@ -95,4 +95,16 @@ void Vulcano::keypressCallbacksInit() {
         auto *app = static_cast<Vulcano *>(glfwGetWindowUserPointer(window));
         app->switchMouseButtons(button, action);
     });
+}
+
+void Vulcano::fireInteractions() {
+    if (this->world.sceneID == SCENE_DEFAULT)
+        this->drawDeersBridge();
+}
+
+void Vulcano::drawDeersBridge() {
+    if (world.deerDistance > world.minDistanceForAnimation) return;
+    if (world.deerBridgeMoving) return;
+    world.deerBridgeMoving = true;
+    logs::info("Deer's bridge requested to be ", world.deerBridgeRaised ? "lowered" : "raised");
 }

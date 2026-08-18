@@ -20,7 +20,7 @@ void Vulcano::playerInit() {
 }
 
 void Vulcano::loadScene() {
-    const string scenePath = this->state.scenePath;
+    const string scenePath = this->world.scenePath;
     logs::info("Loading scene ", scenePath);
     const int err = this->SC.init(this,
                                   1,          // Number of render passes (1 for single main pass rendering)

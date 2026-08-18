@@ -1,7 +1,5 @@
 #pragma once
-#include "glm/fwd.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <glm/glm.hpp>
 
 // UBO is a struct used for storing transform matrices for each object.
 // A UBO object will be assigned to each object/mesh in the scene.
