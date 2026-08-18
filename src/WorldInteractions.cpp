@@ -14,33 +14,66 @@ void toggle(bool &b) { b = !b; }
 bool contains(const auto &range, const auto &val) {
     return std::find(std::begin(range), std::end(range), val) != std::end(range);
 }
+
+void printCenterBottom(TextMaker &txt, int id, const string &s) {
+    txt.print(0.0f, 0.9f,
+              s, id, "CO",
+              false, false, false,
+              TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
+              {1.0f, 1.0f, 1.0f, 1.0f},
+              {0.0f, 0.0f, 0.0f, 1.0f});
+}
 } // namespace
 
 void Vulcano::drawDeersBridge() {
-    const vec3 deerPosition         = vec3(7.0f, 0.0f, -3.0f);
-    const float minDistanceRequired = 5.0f;
-    const float playerDistance      = length(deerPosition - state.eyePosition);
-    if (playerDistance > minDistanceRequired) return; // Check if player is near enough
+    const vec3 deerPosition             = vec3(7.0f, 0.0f, -3.0f);
+    const float minDistanceForAnimation = 5.0f;
+    const float playerDistance          = length(deerPosition - state.eyePosition);
+    if (playerDistance > minDistanceForAnimation) return;
+
     if (state.deersBridgeMoving) return;
     state.deersBridgeMoving = true;
     logs::info("Deer's bridge requested to be ", state.deersBridgeRaised ? "lowered" : "raised");
 }
 
 void Vulcano::updateDeersBridge(float deltaT) {
-    if (!state.deersBridgeMoving) return;
+    if (!state.deersBridgeMoving) {
+        const vec3 deerPosition             = vec3(7.0f, 0.0f, -3.0f);
+        const float minDistanceForMessage   = 15.0f;
+        const float minDistanceForAnimation = 5.0f;
+        const float playerDistance          = length(deerPosition - state.eyePosition);
+
+        // Check if player is near enough for displaying the message or for
+        // requesting raising/lowering the bridge (if it's not moving already).
+        if (playerDistance > minDistanceForMessage) {
+            txt.removeText(2);
+            return;
+        }
+        if (playerDistance > minDistanceForAnimation) {
+            printCenterBottom(txt, 2, "Talk with the deer");
+            return;
+        }
+        const string req = state.deersBridgeRaised ? "lower" : "raise";
+        printCenterBottom(txt, 2, "Hi wanderer, press [E] to " + req + " the bridge");
+        return;
+    } else {
+        const string status = state.deersBridgeRaised ? "down" : "up";
+        printCenterBottom(txt, 2, "Bridge is going " + status);
+    }
+
     const str bridgesID[]    = {"castle-bridge/1", "castle-bridge/2"};
     const float duration     = 3.0f;
     const float targetHeight = 7.5f * (state.deersBridgeRaised ? -1.0f : 1.0f);
     static float currentTime = 0.0f;
-    static unordered_map<Instance *, mat4> initialWms; // World matrix of objects before animation
-    static AnimTrack moveTrack;                        // Animation tracker for interpolating position in time
+    static vector<pair<Instance *, mat4>> initialWms; // World matrix of objects before animation
+    static AnimTrack moveTrack;                       // Animation tracker for interpolating position in time
 
     if (currentTime == 0.0f) {
         // Cache the initial transformation matrices on first run
         for (int k = 0; k < SC.TechniqueInstanceCount; k++)
             for (int i = 0; i < SC.TI[k].InstanceCount; i++)
                 if (SC.TI[k].I[i].id && contains(bridgesID, *SC.TI[k].I[i].id))
-                    initialWms[&SC.TI[k].I[i]] = SC.TI[k].I[i].Wm;
+                    initialWms.emplace_back(&SC.TI[k].I[i], SC.TI[k].I[i].Wm);
 
         // Setup animation tracker at the start of the animation
         moveTrack.Frames.clear();

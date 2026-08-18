@@ -5,10 +5,11 @@ void Vulcano::updateUniformBuffer(u32 currentImage) {
     this->cameraUpdate(deltaT);
     this->renderColliders(currentImage);
     this->updateDebugScreen(deltaT);
+    this->updateDeersBridge(deltaT);
+    this->textMakerUpdate();
     this->computeViewProj();
     GlobalUniformBufferObject gubo;
     this->updateGlobalLight(gubo, deltaT, currentImage);
-    this->updateDeersBridge(deltaT);
     this->updateSceneInstances(gubo, currentImage);
 }
 

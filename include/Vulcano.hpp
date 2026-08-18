@@ -216,6 +216,9 @@ class Vulcano : public BaseProject {
     // Initialize the textual output and show FPS count in top-left corner.
     void textMakerInit();
 
+    // Update render of all text appearing on screen each frame.
+    void textMakerUpdate();
+
     // Set initial window settings, such as hide and lock mouse inside window.
     // Map each available key press event to the callback function it activates.
     // These callbacks are registered once at startup.

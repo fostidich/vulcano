@@ -74,12 +74,14 @@ void Vulcano::updateDebugScreen(float deltaT) {
                     oss.str(), 1, "CO",
                     false, false, true,
                     TAL_LEFT, TRH_LEFT, TRV_TOP,
-                    {1.0f, 0.0f, 0.0f, 1.0f},
-                    {0.8f, 0.8f, 0.0f, 1.0f});
-
-    this->txt.updateCommandBuffer();
+                    {1.0f, 1.0f, 1.0f, 1.0f},
+                    {0.0f, 0.0f, 0.0f, 0.0f});
 }
 
 void Vulcano::textMakerInit() {
-    this->txt.init(this, this->windowWidth, this->windowHeight);
+    this->txt.init(this, this->swapChainExtent.width, this->swapChainExtent.height);
+}
+
+void Vulcano::textMakerUpdate() {
+    this->txt.updateCommandBuffer();
 }

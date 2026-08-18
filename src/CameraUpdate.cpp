@@ -68,8 +68,8 @@ void Vulcano::cameraUpdate(float deltaT) {
     const vec3 straightUp  = vec3(0.0f, 1.0f, 0.0f);
 
     // Compute translation delta
-    const float speedMul = (state.running ? state.runMultiplier : 1.0f) *
-                           (state.slowing ? state.sneakMultiplier : 1.0f);
+    const float speedMul    = (state.running ? state.runMultiplier : 1.0f) *
+                              (state.slowing ? state.sneakMultiplier : 1.0f);
     const vec3 moveDirZ     = flatForward * -mv.z * speedMul;
     const vec3 moveDirX     = flatRight * mv.x * speedMul;
     const vec3 moveDirY     = straightUp * mv.y;

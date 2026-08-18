@@ -40,6 +40,7 @@ void Vulcano::pipelinesAndDescriptorSetsInit() {
     this->DSglobal.init(this, &this->DSLglobal, {});
     this->SC.pipelinesAndDescriptorSetsInit();
     this->txt.pipelinesAndDescriptorSetsInit();
+    this->commandBuffersInit(); // FIXME: added to avoid crashing when resizing
 }
 
 void Vulcano::localCleanup() {
@@ -52,6 +53,7 @@ void Vulcano::localCleanup() {
 }
 
 void Vulcano::pipelinesAndDescriptorSetsCleanup() {
+    this->clearCommandBuffers(); // FIXME: added to avoid crashing when resizing
     this->P.cleanup();
     this->RP.cleanup();
     this->DSglobal.cleanup();
@@ -69,6 +71,7 @@ void Vulcano::setWindowParameters() {
 }
 
 void Vulcano::onWindowResize(int w, int h) {
+    if (w < 0 || h < 0) return;
     this->Ar        = (float)w / (float)h;
     this->RP.width  = w;
     this->RP.height = h;
