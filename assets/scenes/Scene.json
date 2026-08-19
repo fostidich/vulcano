@@ -482,7 +482,49 @@
                 "type": "OOBB",
                 "visible": true
             }
+        },
+        {
+            "id": "house",
+            "VD": "VDposUV",
+            "model": "assets/models/structures/House.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
+        },
+        {
+            "id": "cornerhouse",
+            "VD": "VDposUV",
+            "model": "assets/models/structures/CornerHouse.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
+        },
+        {
+            "id": "cross1",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/WoodenCross.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
+        },
+        {
+            "id": "cross2",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/WoodenCross2.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
         }
+
+
     ],
     "textures": [
         {
@@ -1150,6 +1192,138 @@
                         1.2,
                         1.2,
                         1.2
+                    ]
+                },
+                {
+                    "id": "cornerhouse/1",
+                    "model": "cornerhouse",
+                    "texture": [
+                        "building"
+                    ],
+                    "translate": [
+                        20,
+                        0,
+                        -20
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        160
+                    ],
+                    "scale": [
+                        1.2,
+                        1.2,
+                        1.2
+                    ]
+                },
+                {
+                    "id": "house/2",
+                    "model": "house",
+                    "texture": [
+                        "building"
+                    ],
+                    "translate": [
+                        -20,
+                        0,
+                        -20
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        210
+                    ],
+                    "scale": [
+                        1.2,
+                        1.2,
+                        1.2
+                    ]
+                },
+                {
+                    "id": "cross1/1",
+                    "model": "cross1",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        10,
+                        0.8,
+                        -28
+                    ],
+                    "eulerAngles": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        1.5,
+                        1.5,
+                        1.5
+                    ]
+                },
+                {
+                    "id": "cross1/2",
+                    "model": "cross1",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        11.5,
+                        0.8,
+                        -27.7
+                    ],
+                    "eulerAngles": [
+                        0,
+                        0,
+                        20
+                    ],
+                    "scale": [
+                        1.5,
+                        1.5,
+                        1.5
+                    ]
+                },
+                {
+                    "id": "cross2/1",
+                    "model": "cross2",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        9.5,
+                        1,
+                        -27.7
+                    ],
+                    "eulerAngles": [
+                        0,
+                        0,
+                        -5
+                    ],
+                    "scale": [
+                        1.6,
+                        1.6,
+                        1.6
+                    ]
+                },
+                {
+                    "id": "box/2",
+                    "model": "box",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        7.15,
+                        0.7,
+                        -24.5
+                    ],
+                    "eulerAngles": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        1.6,
+                        1.6,
+                        1.6
                     ]
                 }
             ]
