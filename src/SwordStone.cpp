@@ -15,9 +15,10 @@ void Vulcano::updateSword(float deltaT) {
     static vector<pair<Instance *, mat4>> initialWms; // World matrix of objects before animation
     static AnimTrack moveTrack;                       // Animation tracker for interpolating position in time
 
+    // Manage sword animation state for this frame
     if (world.swordDistance > world.ring2) {
         if (currentTime == 0.0f) return; // In ring 3 and sword fully down
-        currentTime = 0.0f;              // Force sword to be fully down (reset)
+        currentTime = 0.0f;              // Force sword to be fully down (reset) when too far
     } else if (world.swordDistance > world.ring1) {
         if (currentTime <= 0.0f) return; // In ring 2 and sword fully down
         currentTime -= deltaT;           // Lower the sword
@@ -25,6 +26,7 @@ void Vulcano::updateSword(float deltaT) {
         if (currentTime >= duration) return; // In ring 1 and sword fully up
         currentTime += deltaT;               // Raise the sword
     }
+    currentTime = std::clamp(currentTime, 0.0f, duration);
 
     world.animating();
     if (initialWms.empty()) {
@@ -52,8 +54,7 @@ void Vulcano::updateSword(float deltaT) {
     }
 
     // Compute new matrix interpolating based on current frame sample time
-    const float sampleTime  = std::min(currentTime, duration);
-    const mat4 animationMat = moveTrack.Sample(sampleTime, 0, -1, false);
+    const mat4 animationMat = moveTrack.Sample(currentTime, 0, -1, false);
 
     // Combine current animation transform with initial matrix of object
     for (auto &[inst, baseWm] : initialWms) {
