@@ -290,4 +290,7 @@ class Vulcano : public BaseProject {
 
     // Print deer's speeches for raising/lowering the bridge when near.
     void printDeerText();
+
+    //print text when approaching tent
+    void printCandleText();
 };

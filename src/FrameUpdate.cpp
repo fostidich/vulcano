@@ -64,12 +64,9 @@ void Vulcano::updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, i
     gubo.lightColor       = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) * 5.0f;
     gubo.eyePos           = glm::vec3(glm::inverse(this->View)[3]);
 
-    const glm::vec3 candlePos  = glm::vec3(8.0f, 1.7f, 46.0f);
-    const glm::vec3 entrancePos = glm::vec3(7.95f, 1.51f, 40.05f);
-    const float candleAreaOn = 3.0f;
-
-    const bool candleNear = glm::distance(this->player.eyePosition, entrancePos) < candleAreaOn;
-    gubo.candleLightPos = candlePos;
+    world.candleDistance = glm::distance(this->player.eyePosition, world.entrancePos);
+    const bool candleNear = world.candleDistance < world.candleAreaOn;
+    gubo.candleLightPos = world.candlePos;
     gubo.candleLightColor = candleNear ? glm::vec4(1.0f, 0.6f, 0.2f, 1.0f) * 5.0f : glm::vec4(0.0f);
     this->DSglobal.map(currentImage, &gubo, 0);
 }

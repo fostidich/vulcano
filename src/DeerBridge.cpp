@@ -11,7 +11,7 @@ void toggle(bool &b) { b = !b; }
 bool contains(const auto &range, const auto &val) {
     return std::find(std::begin(range), std::end(range), val) != std::end(range);
 }
-
+} // namespace
 void printCenterBottom(TextMaker &txt, int id, const string &s) {
     txt.print(0.0f, 0.9f,
               s, id, "CO",
@@ -20,7 +20,6 @@ void printCenterBottom(TextMaker &txt, int id, const string &s) {
               {1.0f, 1.0f, 1.0f, 1.0f},
               {0.0f, 0.0f, 0.0f, 1.0f});
 }
-} // namespace
 
 void Vulcano::drawDeersBridge() {
     // Fired once when pressing E near the deer.

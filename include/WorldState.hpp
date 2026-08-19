@@ -21,4 +21,9 @@ struct WorldState {
     bool deerBridgeMoving                             = false;
     float deerDistance; // Keep track of how far the deer is
 
+    //candle in the tent
+    const glm::vec3 candlePos  = glm::vec3(8.0f, 1.7f, 46.0f);
+    const glm::vec3 entrancePos = glm::vec3(7.95f, 1.51f, 40.05f);
+    const float candleAreaOn = 3.0f;
+    float candleDistance;
 };
