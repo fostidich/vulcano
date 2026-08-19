@@ -7,6 +7,7 @@ void Vulcano::localInit() {
     this->setDSPoolSize();
     this->referencesInit();
     this->loadScene();
+    this->extractPointLights();
     this->commandBuffersInit();
     this->textMakerInit();
     this->keypressCallbacksInit();

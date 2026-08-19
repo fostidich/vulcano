@@ -63,8 +63,8 @@ foreach(INDEX RANGE ${DEP_MAX})
 endforeach()
 
 # Find all source files (src/*.cpp) and header files (include/**/*.hpp)
-file(GLOB SRC_FILES CONFIGURE_DEPENDS "${SRC_DIR}/*.cpp")
-file(GLOB_RECURSE INC_FILES CONFIGURE_DEPENDS "${INCLUDE_DIR}/*.hpp" "${INCLUDE_DIR}/*.h")
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "${SRC_DIR}/*.cpp")
+file(GLOB_RECURSE INC_FILES CONFIGURE_DEPENDS "${INCLUDE_DIR}/*.hpp")
 
 # Compile executable/target (named as project) including all source and header files
 add_executable(${PROJECT_NAME} ${SRC_FILES} ${INC_FILES})

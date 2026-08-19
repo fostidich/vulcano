@@ -5,9 +5,9 @@
 using namespace glm;
 using namespace std;
 
-void Vulcano::updateSword(float deltaT) {
-    world.swordDistance = length(world.swordPosition - player.eyePosition);
-    if (world.swordDistance > world.ring3) return;
+void Vulcano::updateSwordStone(float deltaT) {
+    world.swordStoneDistance = length(world.swordStonePosition - player.eyePosition);
+    if (world.swordStoneDistance > world.ring3) return;
 
     const float duration     = 1.0f;
     const float targetHeight = 1.0f;
@@ -16,10 +16,10 @@ void Vulcano::updateSword(float deltaT) {
     static AnimTrack moveTrack;                       // Animation tracker for interpolating position in time
 
     // Manage sword animation state for this frame
-    if (world.swordDistance > world.ring2) {
+    if (world.swordStoneDistance > world.ring2) {
         if (currentTime == 0.0f) return; // In ring 3 and sword fully down
         currentTime = 0.0f;              // Force sword to be fully down (reset) when too far
-    } else if (world.swordDistance > world.ring1) {
+    } else if (world.swordStoneDistance > world.ring1) {
         if (currentTime <= 0.0f) return; // In ring 2 and sword fully down
         currentTime -= deltaT;           // Lower the sword
     } else {
@@ -33,7 +33,7 @@ void Vulcano::updateSword(float deltaT) {
         // Cache the initial transformation matrices on first run
         for (int k = 0; k < SC.TechniqueInstanceCount; k++)
             for (int i = 0; i < SC.TI[k].InstanceCount; i++)
-                if (*SC.TI[k].I[i].id == world.swordID)
+                if (*SC.TI[k].I[i].id == world.swordStoneID)
                     initialWms.emplace_back(&SC.TI[k].I[i], SC.TI[k].I[i].Wm);
 
         // Setup animation tracker at the start of the animation

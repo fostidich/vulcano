@@ -1,6 +1,17 @@
 #pragma once
 #include <glm/glm.hpp>
 
+constexpr int MAX_POINT_LIGHTS = 16;
+
+// Struct defining data about a point light source, which will be sent to
+// shaders via GUBO.
+struct PointLight {
+    alignas(16) glm::vec3 position;
+    alignas(16) glm::vec3 color; // Linear RGB
+    alignas(4) float target;     // G
+    alignas(4) float decay;      // Beta
+};
+
 // UBO is a struct used for storing transform matrices for each object.
 // A UBO object will be assigned to each object/mesh in the scene.
 // The GPU then keeps the UBOs updated whenever object moves (model matrix
@@ -13,7 +24,8 @@ struct UniformBufferObject {
     alignas(16) glm::mat4 mMat;
 };
 
-// GUBO is a struct used to store a direct light model shared by all the scene.
+// GUBO is a struct used to store a direct light model and point lights shared
+// by all the scene.
 // It will be mapped to a location where fragment shaders are able to access it.
 // It also stores the frame's camera location, so that it will be possible to
 // compute specular highlights (shiny surfaces).
@@ -21,8 +33,8 @@ struct GlobalUniformBufferObject {
     alignas(16) glm::vec3 lightDir;
     alignas(16) glm::vec4 lightColor;
     alignas(16) glm::vec3 eyePos;
-    alignas(16) glm::vec3 candleLightPos;
-    alignas(16) glm::vec3 candleLightColor;
+    alignas(16) PointLight pointLights[MAX_POINT_LIGHTS];
+    alignas(4) int pointLightsCount;
 };
 
 // A vertex is a useful struct for storing the required data for each single

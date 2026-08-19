@@ -211,6 +211,11 @@ class Vulcano : public BaseProject {
     // Load 3D scene models, textures and instances/techniques from JSON file.
     void loadScene();
 
+    // Extract point lights from scene based on sources object/model ID, and
+    // add a point light struct to the global world state point lights map.
+    // Must be called after scene has been loaded.
+    void extractPointLights();
+
     // Submit command buffers: each subsystem (world render, collisions,
     // text...) can have its own command buffer, for enhanced modularity, and
     // based on given priorities they are executed in order by the GPU.
@@ -243,8 +248,8 @@ class Vulcano : public BaseProject {
     void computeViewProj();
 
     // Must be called after updating view matrix.
-    // Update GUBO parameters and construct new GUBO (scene's direct light model).
-    void updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, int currentImage);
+    // Update GUBO parameters and construct new GUBO (with scene's light models).
+    void updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT, int currentImage);
 
     // Update UBO and GUBO for each instance.
     void updateSceneInstances(const GlobalUniformBufferObject &gubo, int currentImage);
@@ -290,9 +295,12 @@ class Vulcano : public BaseProject {
     // Print deer's speeches for raising/lowering the bridge when near.
     void printDeerText();
 
-    // print text when approaching tent
+    // Print text when approaching tent.
     void printCandleText();
 
-    // lift sword from rock
-    void updateSword(float deltaT);
+    // Lift sword from rock.
+    void updateSwordStone(float deltaT);
+
+    // Light up the candle when approaching tent entrance.
+    void updateTentCandle();
 };

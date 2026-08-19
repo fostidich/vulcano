@@ -5,8 +5,8 @@
 
 inline void toggle(bool &b) { b = !b; }
 
-inline bool contains(const auto &range, const auto &val) {
-    return std::find(std::begin(range), std::end(range), val) != std::end(range);
+inline bool contains(const auto &list, const auto &value) {
+    return std::find(std::begin(list), std::end(list), value) != std::end(list);
 }
 
 namespace fmt {

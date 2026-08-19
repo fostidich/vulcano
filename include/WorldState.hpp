@@ -1,6 +1,8 @@
 #pragma once
+#include "Descriptors.hpp"
 #include <glm/glm.hpp>
 #include <string>
+#include <unordered_map>
 
 enum SceneID {
     SCENE_DEFAULT,
@@ -11,6 +13,15 @@ struct WorldState {
     // Loaded scene
     std::string scenePath;
     SceneID sceneID;
+
+    // Upon loading scene, all point lights will be extracted from it, based
+    // on recognised point light model IDs (e.g. "candle/*").
+    // To interact with lights, modify this point lights array or the point
+    // light struct of the point light in question.
+    // This map can only accept string views, meaning it enforces that the
+    // string used as key must always be specifically IDs of instances declared
+    // in this struct.
+    std::unordered_map<std::string_view, PointLight> pointLights;
 
     // Shared distances for standardizing interaction behaviors
     const float ring3 = 40.0f;
@@ -25,15 +36,15 @@ struct WorldState {
     float deerDistance; // Keep track of how far the deer is
 
     // Lifting sword from stone
-    static constexpr std::string_view swordID = "sword/1";
-    const glm::vec3 swordPosition             = glm::vec3(-15.15f, 0.8f, 50.9f);
-    float swordDistance;
+    static constexpr std::string_view swordStoneID = "sword/1";
+    const glm::vec3 swordStonePosition             = glm::vec3(-15.15f, 0.8f, 50.9f);
+    float swordStoneDistance;
 
-    // Candle in the tent
-    const glm::vec3 candlePos   = glm::vec3(8.0f, 1.7f, 46.0f);
-    const glm::vec3 entrancePos = glm::vec3(7.95f, 1.51f, 40.05f);
-    const float candleAreaOn    = 3.0f;
-    float candleDistance;
+    // Candle in the skeleton's tent
+    static constexpr std::string_view tentCandleID = "candle/1";
+    const glm::vec3 tentCandlePosition             = glm::vec3(8.0f, 1.7f, 46.0f);
+    const glm::vec3 tentCandleEntrancePos          = glm::vec3(7.95f, 1.51f, 40.05f);
+    float tentCandleDistance;
 
     // Optimization: don't refresh colliders if nothing is moving.
     inline void animating() { currentlyAnimating++; }

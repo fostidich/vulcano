@@ -1,4 +1,5 @@
 #include "Types.hpp"
+#include "Utils.hpp"
 #include "Vulcano.hpp"
 
 void Vulcano::updateUniformBuffer(u32 currentImage) {
@@ -12,7 +13,7 @@ void Vulcano::updateUniformBuffer(u32 currentImage) {
     this->cameraUpdate(deltaT);
     this->computeViewProj();
     GlobalUniformBufferObject gubo;
-    this->updateGlobalLight(gubo, deltaT, currentImage);
+    this->updateSceneLights(gubo, deltaT, currentImage);
     this->updateSceneInstances(gubo, currentImage);
 }
 
@@ -44,7 +45,7 @@ void Vulcano::computeViewProj() {
     this->ViewPrj = this->Prj * this->View;
 }
 
-void Vulcano::updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, int currentImage) {
+void Vulcano::updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT, int currentImage) {
     static float lightRotationAngle = 0.0f;
 
     // Define parameters for the uniform.
@@ -58,15 +59,18 @@ void Vulcano::updateGlobalLight(GlobalUniformBufferObject &gubo, float deltaT, i
                     glm::radians(-45.0f),
                     glm::vec3(1.0f, 0.0f, 0.0f));
 
-    // Construct GUBO and send it to GPU
+    // Construct GUBO for drift light model
     gubo.lightDir   = glm::vec3(lightView * glm::vec4(0.0f, 0.0f, -1.0f, 0.0f));
     gubo.lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f) * 5.0f;
     gubo.eyePos     = glm::vec3(glm::inverse(this->View)[3]);
 
-    world.candleDistance  = glm::distance(this->player.eyePosition, world.entrancePos);
-    const bool candleNear = world.candleDistance < world.candleAreaOn;
-    gubo.candleLightPos   = world.candlePos;
-    gubo.candleLightColor = candleNear ? glm::vec4(1.0f, 0.6f, 0.2f, 1.0f) * 5.0f : glm::vec4(0.0f);
+    // Copy point lights with GUBO
+    gubo.pointLightsCount = this->world.pointLights.size();
+    usize i               = 0;
+    for (const auto &[key, val] : this->world.pointLights)
+        gubo.pointLights[i++] = val;
+
+    // Transfer GUBO data to GPU
     this->DSglobal.map(currentImage, &gubo, 0);
 }
 

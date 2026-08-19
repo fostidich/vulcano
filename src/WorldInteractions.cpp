@@ -13,7 +13,8 @@ void Vulcano::processInteractions(float deltaT) {
     // world state changes and animations.
     if (this->world.sceneID == SCENE_DEFAULT) {
         this->updateDeersBridge(deltaT);
-        this->updateSword(deltaT);
+        this->updateSwordStone(deltaT);
+        this->updateTentCandle();
     }
 }
 
@@ -27,11 +28,4 @@ void Vulcano::processTextOnScreen(float deltaT) {
         this->printCandleText();
     } else if (this->world.sceneID == SCENE_SHOWCASE)
         this->showcaseInfoText();
-}
-
-/* ------------------------------------------------------------------------- */
-
-void Vulcano::printCandleText() {
-    if (world.candleDistance > world.candleAreaOn) return;
-    txt.printBottomCenter("Be careful where you look...");
 }
