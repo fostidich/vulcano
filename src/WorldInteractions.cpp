@@ -13,8 +13,12 @@ void Vulcano::processInteractions(float deltaT) {
     // Executed on every frame.
     // These are the callbacks executed after an event has been fired to compute
     // world state changes and animations.
-    if (this->world.sceneID == SCENE_DEFAULT)
+    if (this->world.sceneID == SCENE_DEFAULT) {
         this->updateDeersBridge(deltaT);
+        this->updateSword(deltaT);
+    }
+
+
 }
 
 void Vulcano::printCandleText() {

@@ -25,5 +25,11 @@ struct WorldState {
     const glm::vec3 candlePos  = glm::vec3(8.0f, 1.7f, 46.0f);
     const glm::vec3 entrancePos = glm::vec3(7.95f, 1.51f, 40.05f);
     const float candleAreaOn = 3.0f;
-    float candleDistance;
+    float candleDistance; // keep track of how far candle is
+
+    //lifting sword from stone
+    const glm::vec3 swordPosition = glm::vec3(-15.15f ,0.8f ,50.9f);
+    const float swordLift = 0.5f;
+    const float swordArea = 3.0f;
+    float swordDistance;
 };

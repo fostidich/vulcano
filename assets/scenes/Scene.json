@@ -522,9 +522,27 @@
                 "type": "OOBB",
                 "visible": true
             }
+        },
+        {
+            "id": "sword",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/Sword.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
+        },
+        {
+            "id": "stone",
+            "VD": "VDposUV",
+            "model": "assets/models/nature/Stone.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
         }
-
-
     ],
     "textures": [
         {
@@ -1325,8 +1343,53 @@
                         1.6,
                         1.6
                     ]
+                },
+                {
+                    "id": "stone/1",
+                    "model": "stone",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        -15.15,
+                        0.0,
+                        51.0
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        0.2,
+                        0.2,
+                        0.2
+                    ]
+                },
+                {
+                    "id": "sword/1",
+                    "model": "sword",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        -15.15,
+                        0.8,
+                        50.9
+                    ],
+                    "eulerAngles": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "scale": [
+                        1.6,
+                        1.6,
+                        1.6
+                    ]
                 }
             ]
+
         }
     ]
 }

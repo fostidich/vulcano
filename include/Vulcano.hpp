@@ -293,4 +293,7 @@ class Vulcano : public BaseProject {
 
     //print text when approaching tent
     void printCandleText();
+
+    //lift sword from rock
+    void updateSword(float deltaT);
 };
