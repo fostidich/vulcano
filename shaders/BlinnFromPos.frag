@@ -54,7 +54,7 @@ void main() {
 
     vec3 H2 = normalize(L2 + V); //half vector
     float NdotL2 = max(dot(N, L2), 0.0); // Clipped cosine of angle between vectors
-    float H2dotNcandle = max(dot(H2, L2), 0.0);// Clipped cosine of angle between vectors
+    float H2dotNcandle = max(dot(H2, N), 0.0);// Clipped cosine of angle between vectors
 
     vec3 specular2 = vec3(specularStrength * pow(H2dotNcandle, shininess));
     vec3 diffuse2 = albedo * NdotL2;

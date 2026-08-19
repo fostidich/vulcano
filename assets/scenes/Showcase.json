@@ -519,6 +519,11 @@
             "id": "water",
             "texture": "assets/textures/materials/Water.jpg",
             "format": "C"
+        },
+        {
+            "id": "water",
+            "texture": "assets/textures/materials/Water.jpg",
+            "format": "C"
         }
     ],
     "instances": [

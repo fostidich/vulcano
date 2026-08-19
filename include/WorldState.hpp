@@ -20,4 +20,5 @@ struct WorldState {
     bool deerBridgeRaised                             = false;
     bool deerBridgeMoving                             = false;
     float deerDistance; // Keep track of how far the deer is
+
 };

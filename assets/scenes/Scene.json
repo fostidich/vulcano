@@ -452,6 +452,36 @@
                     1
                 ]
             }
+        },
+        {
+            "id": "chair",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/Chair.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
+        },
+        {
+            "id": "bones",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/PiledBones.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
+        },
+        {
+            "id": "skeleton",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/Skeleton.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true
+            }
         }
     ],
     "textures": [
@@ -909,19 +939,63 @@
                         "building"
                     ],
                     "translate": [
-                        8,
+                        10,
                         0,
                         45
                     ],
                     "eulerAngles": [
                         90,
-                        190,
+                        200,
                         0
                     ],
                     "scale": [
-                        1.5,
-                        1.5,
-                        1.5
+                        2,
+                        2,
+                        2
+                    ]
+                },
+                {
+                    "id": "chair/1",
+                    "model": "chair",
+                    "texture": [
+                        "building"
+                    ],
+                    "translate": [
+                        10,
+                        0.9,
+                        46
+                    ],
+                    "scale": [
+                        2.3,
+                        2.3,
+                        2.3
+                    ],
+                    "eulerAngles": [
+                        0,
+                        180,
+                        0
+                    ]
+                },
+                {
+                    "id": "skeleton/1",
+                    "model": "skeleton",
+                    "texture": [
+                        "Color3"
+                    ],
+                    "translate": [
+                        11,
+                        0.2,
+                        44
+                    ],
+                    "scale": [
+                        2,
+                        2,
+                        2
+                    ],
+                    "eulerAngles": [
+                        0,
+                        170,
+                        0
                     ]
                 },
                 {
