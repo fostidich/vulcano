@@ -2,9 +2,9 @@ APP_NAME := "Vulcano"
 
 # Print help panel
 help:
-    just -l
+    @just -l
 
-# Configure the CMake build directory
+# Configure build directory
 init:
     @if [ ! -d build ]; then cmake --preset default; fi
 
@@ -14,11 +14,11 @@ build: init
 alias b := build
 
 # Force build the project by cleaning build targets first
-force-build: init
+clean-build: init
     cmake --build --preset default --clean-first
-alias fb := force-build
+alias cb := clean-build
 
-# Run the compiled Vulkan application (syncs assets if changed)
+# Run the compiled application (syncs assets if changed)
 run *ARGS: build copy-assets
     cd build && ./{{ APP_NAME }} {{ ARGS }}
 alias r := run

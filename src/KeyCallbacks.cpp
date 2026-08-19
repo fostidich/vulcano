@@ -1,8 +1,5 @@
+#include "Utils.hpp"
 #include "Vulcano.hpp"
-
-namespace {
-void toggle(bool &b) { b = !b; }
-} // namespace
 
 void Vulcano::switchKeys(int key, int action) {
     if (action == GLFW_PRESS)

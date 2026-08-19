@@ -1,3 +1,4 @@
+#include "Utils.hpp"
 #include "Vulcano.hpp"
 #include "modules/Animations.hpp"
 #include <glm/glm.hpp>
@@ -5,25 +6,9 @@
 using namespace glm;
 using namespace std;
 
-namespace {
-void toggle(bool &b) { b = !b; }
-
-bool contains(const auto &range, const auto &val) {
-    return std::find(std::begin(range), std::end(range), val) != std::end(range);
-}
-} // namespace
-void printCenterBottom(TextMaker &txt, int id, const string &s) {
-    txt.print(0.0f, 0.9f,
-              s, id, "CO",
-              false, false, false,
-              TAL_CENTER, TRH_CENTER, TRV_BOTTOM,
-              {1.0f, 1.0f, 1.0f, 1.0f},
-              {0.0f, 0.0f, 0.0f, 1.0f});
-}
-
 void Vulcano::drawDeersBridge() {
     // Fired once when pressing E near the deer.
-    if (world.deerDistance > world.minDistanceForAnimation) return;
+    if (world.deerDistance > world.ring1) return;
     if (world.deerBridgeMoving) return;
     world.deerBridgeMoving = true;
     logs::info("Deer's bridge requested to be ", world.deerBridgeRaised ? "lowered" : "raised");
@@ -34,6 +19,7 @@ void Vulcano::updateDeersBridge(float deltaT) {
     // to be lowered/raised.
     world.deerDistance = length(world.deerPosition - player.eyePosition); // Keep track of how far the deer is
     if (!world.deerBridgeMoving) return;
+    world.animating();
 
     const float duration     = 3.0f;
     const float targetHeight = 7.5f * (world.deerBridgeRaised ? -1.0f : 1.0f);
@@ -45,7 +31,7 @@ void Vulcano::updateDeersBridge(float deltaT) {
         // Cache the initial transformation matrices on first run
         for (int k = 0; k < SC.TechniqueInstanceCount; k++)
             for (int i = 0; i < SC.TI[k].InstanceCount; i++)
-                if (SC.TI[k].I[i].id && contains(world.deerBridgesID, *SC.TI[k].I[i].id))
+                if (contains(world.deerBridgesID, *SC.TI[k].I[i].id))
                     initialWms.emplace_back(&SC.TI[k].I[i], SC.TI[k].I[i].Wm);
 
         // Setup animation tracker at the start of the animation
@@ -77,9 +63,6 @@ void Vulcano::updateDeersBridge(float deltaT) {
         if (inst->C) inst->C->setWorldMatrix(newWm); // Update physical hitbox as well
     }
 
-    // Refresh colliders guides also
-    if (player.showColliders) SC.refreshColliderVisualizer();
-
     // Conclude animation
     if (currentTime >= duration) {
         currentTime = 0.0f;
@@ -97,19 +80,16 @@ void Vulcano::printDeerText() {
     if (!world.deerBridgeMoving) {
         // Check if player is near enough for displaying the message or for
         // requesting raising/lowering the bridge (if it's not moving already).
-        if (world.deerDistance > world.minDistanceForMessage) {
-            txt.removeText(2);
-            return;
-        }
-        if (world.deerDistance > world.minDistanceForAnimation) {
+        if (world.deerDistance > world.ring2) return;
+        if (world.deerDistance > world.ring1) {
             const string dist = std::format("[{:.2f}m]", world.deerDistance);
-            printCenterBottom(txt, 2, "Talk with the deer " + dist);
+            txt.printBottomCenter("Talk with the deer " + dist);
             return;
         }
         const string req = world.deerBridgeRaised ? "lower" : "raise";
-        printCenterBottom(txt, 2, "Hi wanderer, press [E] to " + req + " the bridge");
+        txt.printBottomCenter("Hi wanderer, press [E] to " + req + " the bridge");
     } else {
         const string status = world.deerBridgeRaised ? "down" : "up";
-        printCenterBottom(txt, 2, "Bridge is going " + status);
+        txt.printBottomCenter("Bridge is going " + status);
     }
 }

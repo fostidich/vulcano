@@ -68,15 +68,21 @@ bool Vulcano::checkCollision(const vec3 &testPos) {
     return false;
 };
 
-void Vulcano::renderColliders(u32 currentImage) {
-    if (this->player.showColliders)
+void Vulcano::renderColliders(int currentImage) {
+    if (this->player.showColliders) {
         this->SC.updateColliderVisualizer(currentImage, this->ViewPrj);
+        if (this->world.currentlyAnimating > 0)
+            this->SC.refreshColliderVisualizer();
+    }
 }
 
 void Vulcano::toggleColliders() {
-    if (player.showColliders)
-        SC.refreshColliderVisualizer();
+    // Executed once when pressing H
+    if (this->player.showColliders)
+        // If activated, collider guides are reset based on objects
+        this->SC.refreshColliderVisualizer();
     else
+        // If deactivated, all collider guides are filled with empty matrix (hidden)
         for (u32 img = 0; img < this->swapChainImages.size(); ++img)
             this->SC.updateColliderVisualizer(img, glm::mat4(0.0f));
 }

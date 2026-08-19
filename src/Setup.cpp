@@ -1,3 +1,4 @@
+#include "Types.hpp"
 #include "Vulcano.hpp"
 
 void Vulcano::localInit() {
@@ -30,12 +31,14 @@ void Vulcano::loadScene() {
     );
     if (err) {
         logs::error("Error loading scene ", scenePath);
-        exit(1);
+        exit(err);
     }
 }
 
 void Vulcano::textMakerInit() {
-    this->txt.init(this, this->swapChainExtent.width, this->swapChainExtent.height);
+    const u32 w = this->swapChainExtent.width;
+    const u32 h = this->swapChainExtent.height;
+    this->txt.init(this, w, h);
 }
 
 void Vulcano::pipelinesAndDescriptorSetsInit() {

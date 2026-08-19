@@ -1,12 +1,11 @@
 #pragma once
 #include "Descriptors.hpp"
 #include "PlayerState.hpp"
-#include "Types.hpp"
+#include "SimpleTextMaker.hpp"
 #include "WorldState.hpp"
 #include "modules/Colliders.hpp"
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
-#include "modules/TextMaker.hpp"
 
 class Vulcano : public BaseProject {
   public:
@@ -116,7 +115,7 @@ class Vulcano : public BaseProject {
     // A `TextMaker` is a useful tool used for drawing text onto the screen.
     // It encapsulates all the logic required for such task, exposing just a
     // simple `print` function with which such text can be positioned and drawn.
-    TextMaker txt;
+    SimpleTextMaker txt;
 
     // Aspect ratio used for computing the correct projection matrix.
     float Ar;
@@ -159,7 +158,7 @@ class Vulcano : public BaseProject {
     void pipelinesAndDescriptorSetsCleanup() override;
 
     // Per-frame uniform buffer update hook.
-    void updateUniformBuffer(u32 currentImage) override;
+    void updateUniformBuffer(unsigned int currentImage) override;
 
     // Callback forwarding to `populateCommandBuffer`.
     static void populateCommandBufferAccess(VkCommandBuffer commandBuffer, int currentImage, void *Params);
@@ -220,8 +219,8 @@ class Vulcano : public BaseProject {
     // Initialize the textual output and show FPS count in top-left corner.
     void textMakerInit();
 
-    // Update render of all text appearing on screen each frame.
-    void textMakerUpdate();
+    // Show showcase scene on screen text, for providing further context.
+    void showcaseInfoText();
 
     // Set initial window settings, such as hide and lock mouse inside window.
     // Map each available key press event to the callback function it activates.
@@ -238,7 +237,7 @@ class Vulcano : public BaseProject {
     void cameraUpdate(float deltaT);
 
     // If key H is pressed, it toggles collider hitbox show render.
-    void renderColliders(u32 currentImage);
+    void renderColliders(int currentImage);
 
     // Compute projection matrix, view matrix from camera and combine them.
     void computeViewProj();
@@ -291,9 +290,9 @@ class Vulcano : public BaseProject {
     // Print deer's speeches for raising/lowering the bridge when near.
     void printDeerText();
 
-    //print text when approaching tent
+    // print text when approaching tent
     void printCandleText();
 
-    //lift sword from rock
+    // lift sword from rock
     void updateSword(float deltaT);
 };

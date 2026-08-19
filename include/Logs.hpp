@@ -1,5 +1,4 @@
 #pragma once
-#include "Types.hpp"
 #include <chrono>
 #include <ctime>
 #include <iomanip>
@@ -8,7 +7,7 @@
 
 namespace logs {
 template <typename... Args>
-inline void print_log(cstr level, Args &&...args) {
+inline void print_log(const std::string &level, Args &&...args) {
     auto now = std::chrono::system_clock::now();
     auto tm  = std::chrono::system_clock::to_time_t(now);
     auto ltm = *std::localtime(&tm);

@@ -1,7 +1,5 @@
 #include "Vulcano.hpp"
 
-void printCenterBottom(TextMaker &txt, int id, const string &s);
-
 void Vulcano::fireInteractions() {
     // Executed once when pressing E.
     // These are the events/callbacks fired when interacting with the world.
@@ -17,16 +15,6 @@ void Vulcano::processInteractions(float deltaT) {
         this->updateDeersBridge(deltaT);
         this->updateSword(deltaT);
     }
-
-
-}
-
-void Vulcano::printCandleText() {
-    if (world.candleDistance > world.candleAreaOn) {
-        txt.removeText(3);
-        return;
-    }
-    printCenterBottom(txt, 3, "Be careful where you look...");
 }
 
 void Vulcano::processTextOnScreen(float deltaT) {
@@ -37,7 +25,13 @@ void Vulcano::processTextOnScreen(float deltaT) {
     if (this->world.sceneID == SCENE_DEFAULT) {
         this->printDeerText();
         this->printCandleText();
-    }
+    } else if (this->world.sceneID == SCENE_SHOWCASE)
+        this->showcaseInfoText();
 }
 
+/* ------------------------------------------------------------------------- */
 
+void Vulcano::printCandleText() {
+    if (world.candleDistance > world.candleAreaOn) return;
+    txt.printBottomCenter("Be careful where you look...");
+}

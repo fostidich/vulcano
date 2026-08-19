@@ -1,3 +1,4 @@
+#include "Types.hpp"
 #include "Vulcano.hpp"
 
 void switchScene(Vulcano &app, str scene) {
