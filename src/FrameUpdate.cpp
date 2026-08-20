@@ -1,5 +1,4 @@
 #include "Types.hpp"
-#include "Utils.hpp"
 #include "Vulcano.hpp"
 
 void Vulcano::updateUniformBuffer(u32 currentImage) {

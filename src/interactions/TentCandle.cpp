@@ -7,6 +7,7 @@ void Vulcano::updateTentCandle() {
     static std::optional<PointLight> candleLight = std::nullopt;
     static bool active                           = true;
 
+    // Cache point light struct at start
     if (!candleLight.has_value()) {
         candleLight = world.pointLights[world.tentCandleID];
         world.pointLights.erase(world.tentCandleID);

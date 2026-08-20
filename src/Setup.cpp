@@ -7,6 +7,7 @@ void Vulcano::localInit() {
     this->setDSPoolSize();
     this->referencesInit();
     this->loadScene();
+    this->cacheSceneColliders();
     this->extractPointLights();
     this->commandBuffersInit();
     this->textMakerInit();
@@ -15,10 +16,19 @@ void Vulcano::localInit() {
 }
 
 void Vulcano::playerInit() {
-    this->playerCollider.initAABB(
-        -0.5f, -1.5f, -0.5f, // min (x1, y1, z1)
-        0.5f, 0.5f, 0.5f     // max (x2, y2, z2)
-    );
+    const glm::vec3 min = player.colliderAABBmin;
+    const glm::vec3 max = player.colliderAABBmax;
+    this->playerCollider.initAABB(min.x, min.y, min.z,
+                                  max.x, max.y, max.z);
+}
+
+void Vulcano::cacheSceneColliders() {
+    // Getting extents is a costly task.
+    // By caching colliders it is called once at startup, and during animations
+    // only, therefore is never called during simple frame loop.
+    this->cachedColliders.clear();
+    for (Collider *c : this->SC.GlobalColliders)
+        this->cachedColliders.push_back({c, c->getExtents()});
 }
 
 void Vulcano::loadScene() {
@@ -42,15 +52,6 @@ void Vulcano::textMakerInit() {
     this->txt.init(this, w, h);
 }
 
-void Vulcano::pipelinesAndDescriptorSetsInit() {
-    this->RP.create();
-    this->P.create(&this->RP);
-    this->DSglobal.init(this, &this->DSLglobal, {});
-    this->SC.pipelinesAndDescriptorSetsInit();
-    this->txt.pipelinesAndDescriptorSetsInit();
-    this->commandBuffersInit(); // FIXME: added to avoid crashing when resizing
-}
-
 void Vulcano::localCleanup() {
     this->DSLlocal.cleanup();
     this->DSLglobal.cleanup();
@@ -58,6 +59,15 @@ void Vulcano::localCleanup() {
     this->RP.destroy();
     this->SC.localCleanup();
     this->txt.localCleanup();
+}
+
+void Vulcano::pipelinesAndDescriptorSetsInit() {
+    this->RP.create();
+    this->P.create(&this->RP);
+    this->DSglobal.init(this, &this->DSLglobal, {});
+    this->SC.pipelinesAndDescriptorSetsInit();
+    this->txt.pipelinesAndDescriptorSetsInit();
+    this->commandBuffersInit(); // FIXME: added to avoid crashing when resizing
 }
 
 void Vulcano::pipelinesAndDescriptorSetsCleanup() {

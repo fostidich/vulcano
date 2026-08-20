@@ -7,6 +7,11 @@
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
 
+struct CachedCollider {
+    Collider *ptr;
+    AABBextents ext;
+};
+
 class Vulcano : public BaseProject {
   public:
     // Player's camera information, settings and actions state.
@@ -18,6 +23,9 @@ class Vulcano : public BaseProject {
   protected:
     // Player's collisions shape (1x1x2 rectangle with eye at h1.5)
     Collider playerCollider;
+
+    std::vector<CachedCollider> cachedColliders;
+    void cacheSceneColliders();
 
     // These objects are used to define which set/binding layouts a shader is
     // able to declare.
@@ -232,7 +240,7 @@ class Vulcano : public BaseProject {
     // These callbacks are registered once at startup.
     void keypressCallbacksInit();
 
-    // Initialization of player in the world (e.g. collision hatbox).
+    // Initialization of player in the world (e.g. collision hitbox).
     void playerInit();
 
     // Compute time delta between last frame and current.

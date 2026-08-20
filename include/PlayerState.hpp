@@ -17,6 +17,10 @@ struct PlayerState {
     const float nearPlane = 0.1f;
     const float farPlane  = 1000.f;
 
+    // Player hitbox
+    const glm::vec3 colliderAABBmin = glm::vec3(-0.5f, -1.5f, -0.5f);
+    const glm::vec3 colliderAABBmax = glm::vec3(0.5f, 0.5f, 0.5f);
+
     // Player camera and movement speed settings
     const float mouseSensitivity = glm::radians(0.1f); // rad / pixel
     const float moveSpeed        = 10.0f;              // meters / second

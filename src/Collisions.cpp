@@ -48,6 +48,7 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
 
 float Vulcano::binaryVerticalCollisionSearch(float low, float high, vec3 pos) {
     for (int i = 0; i < 5; ++i) {
+        if (high - low < 0.01f) break; // Within 1cm tolerance
         const float mid = (low + high) * 0.5f;
         if (checkCollision(vec3(pos.x, mid, pos.z)))
             low = mid;
@@ -58,15 +59,34 @@ float Vulcano::binaryVerticalCollisionSearch(float low, float high, vec3 pos) {
 }
 
 bool Vulcano::checkCollision(const vec3 &testPos) {
-    // Update player collider's world position
-    this->playerCollider.setWorldMatrix(translate(mat4(1.0f), testPos));
+    // If dynamic objects are animating, refresh colliders cache
+    if (this->world.currentlyAnimating > 0) this->cacheSceneColliders();
 
-    // Test against all colliders created by the scene
-    for (Collider *objCollider : this->SC.GlobalColliders)
-        if (objCollider && this->playerCollider.collidesWith(*objCollider))
-            return true; // Collision detected
+    // Player collider AABB world extents
+    const vec3 pMin = testPos + player.colliderAABBmin;
+    const vec3 pMax = testPos + player.colliderAABBmax;
+
+    bool playerMatrixSet = false;
+    for (const auto &item : this->cachedColliders) {
+        // Broad-phase: instant float AABB overlap test
+        const AABBextents &ext = item.ext;
+        if (pMax.x < ext.xMin || pMin.x > ext.xMax ||
+            pMax.y < ext.yMin || pMin.y > ext.yMax ||
+            pMax.z < ext.zMin || pMin.z > ext.zMax) {
+            // If player is outside the bounding box, all colliders tests are skipped
+            continue;
+        }
+
+        // Narrow-phase: matrix update and precise check
+        if (!playerMatrixSet) {
+            this->playerCollider.setWorldMatrix(translate(mat4(1.0f), testPos));
+            playerMatrixSet = true;
+        }
+        if (this->playerCollider.collidesWith(*item.ptr))
+            return true;
+    }
     return false;
-};
+}
 
 void Vulcano::renderColliders(int currentImage) {
     if (this->player.showColliders) {
