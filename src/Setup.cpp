@@ -53,9 +53,11 @@ void Vulcano::textMakerInit() {
 }
 
 void Vulcano::localCleanup() {
-    this->DSLlocal.cleanup();
+    this->DSLlocalPosUV.cleanup();
+    this->DSLlocalPos.cleanup();
     this->DSLglobal.cleanup();
-    this->P.destroy();
+    this->PsimpleObject.destroy();
+    this->Pterrain.destroy();
     this->RP.destroy();
     this->SC.localCleanup();
     this->txt.localCleanup();
@@ -63,7 +65,8 @@ void Vulcano::localCleanup() {
 
 void Vulcano::pipelinesAndDescriptorSetsInit() {
     this->RP.create();
-    this->P.create(&this->RP);
+    this->PsimpleObject.create(&this->RP);
+    this->Pterrain.create(&this->RP);
     this->DSglobal.init(this, &this->DSLglobal, {});
     this->SC.pipelinesAndDescriptorSetsInit();
     this->txt.pipelinesAndDescriptorSetsInit();
@@ -72,7 +75,8 @@ void Vulcano::pipelinesAndDescriptorSetsInit() {
 
 void Vulcano::pipelinesAndDescriptorSetsCleanup() {
     this->clearCommandBuffers(); // FIXME: added to avoid crashing when resizing
-    this->P.cleanup();
+    this->PsimpleObject.cleanup();
+    this->Pterrain.cleanup();
     this->RP.cleanup();
     this->DSglobal.cleanup();
     this->SC.pipelinesAndDescriptorSetsCleanup();

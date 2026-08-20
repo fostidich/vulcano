@@ -609,7 +609,7 @@
     ],
     "instances": [
         {
-            "technique": "BlinnPos",
+            "technique": "SimpleObject",
             "elements": [
                 {
                     "id": "deer/1",

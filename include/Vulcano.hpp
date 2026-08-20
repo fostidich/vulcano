@@ -2,15 +2,11 @@
 #include "Descriptors.hpp"
 #include "PlayerState.hpp"
 #include "SimpleTextMaker.hpp"
+#include "Utils.hpp"
 #include "WorldState.hpp"
 #include "modules/Colliders.hpp"
 #include "modules/Scene.hpp"
 #include "modules/Starter.hpp"
-
-struct CachedCollider {
-    Collider *ptr;
-    AABBextents ext;
-};
 
 class Vulcano : public BaseProject {
   public:
@@ -24,8 +20,10 @@ class Vulcano : public BaseProject {
     // Player's collisions shape (1x1x2 rectangle with eye at h1.5)
     Collider playerCollider;
 
+    // For increasing performance, colliders are extracted at startup (or during
+    // animations) and, by being cached, can be accessed faster when checking
+    // collisions.
     std::vector<CachedCollider> cachedColliders;
-    void cacheSceneColliders();
 
     // These objects are used to define which set/binding layouts a shader is
     // able to declare.
@@ -33,14 +31,14 @@ class Vulcano : public BaseProject {
     // layouts, and which shaders can use them.
     // When they call `map`, the object passed (UBO/GUBO) is transferred from
     // the CPU to the corresponding GPU layout, for shaders to use it.
-    DescriptorSetLayout DSLlocal, DSLglobal;
+    DescriptorSetLayout DSLlocalPosUV, DSLlocalPos, DSLglobal;
 
     // Vertex descriptor differs from descriptor set layouts because they are
     // used for defining the "in" location layouts of the first vertex shader,
     // instead of sets/bindings.
-    // This descriptor will define locations corresponding to attribute offsets
-    // of the Vertex struct.
-    VertexDescriptor VD;
+    // This descriptors will define locations corresponding to attribute offsets
+    // of the vertex struct.
+    VertexDescriptor VDposUV, VDpos;
 
     // A render pass is a set of pipelines, of which one is chosen for rendering
     // an object depending on its type (e.g. wooden table -> wood pipeline,
@@ -66,7 +64,7 @@ class Vulcano : public BaseProject {
     // the vertex shader (e.g. vertex descriptor), and the out-locations of the
     // fragment shaders are called attachments, which can either be used by
     // following render passes or for drawing on screen.
-    Pipeline P;
+    Pipeline PsimpleObject, Pterrain;
 
     // `DSglobal` is an instance of `DSLglobal`: since `DSLglobal` maps to a
     // GUBO describing a direct light model shared across all the scene, a
@@ -223,6 +221,9 @@ class Vulcano : public BaseProject {
     // add a point light struct to the global world state point lights map.
     // Must be called after scene has been loaded.
     void extractPointLights();
+
+    // Extract colliders from scene, and update cached colliders vector.
+    void cacheSceneColliders();
 
     // Submit command buffers: each subsystem (world render, collisions,
     // text...) can have its own command buffer, for enhanced modularity, and

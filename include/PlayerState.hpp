@@ -4,7 +4,7 @@
 // Main struct containing player specific settings and state.
 struct PlayerState {
     // Camera position and rotation state
-    glm::vec3 eyePosition = glm::vec3(0.0f, 4.0f, -10.0f);
+    glm::vec3 eyePosition = glm::vec3(0.0f, 104.0f, -10.0f);
     glm::vec3 lookAtPoint = glm::vec3(0.0f, 4.0f, 1.5f);
     glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -15,7 +15,7 @@ struct PlayerState {
     // Frustum shape
     const float FOVy      = glm::radians(60.0f);
     const float nearPlane = 0.1f;
-    const float farPlane  = 1000.f;
+    const float farPlane  = 2000.f;
 
     // Player hitbox
     const glm::vec3 colliderAABBmin = glm::vec3(-0.5f, -1.5f, -0.5f);

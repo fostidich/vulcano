@@ -1,29 +1,62 @@
 {
     "models": [
         {
-            "id": "terrain",
+            "id": "grid",
             "VD": "VDposUV",
+            "model": "assets/models/Grid128x128.obj",
+            "format": "OBJ",
+            "collider": {
+                "type": "AABB",
+                "visible": true,
+                "params": [
+                    -1,
+                    -2,
+                    -1,
+                    1,
+                    -1,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "terrain",
+            "VD": "VDpos",
             "model": "assets/models/Terrain.obj",
             "format": "OBJ"
         }
     ],
     "textures": [
         {
-            "id": "stone",
-            "texture": "assets/textures/materials/Stone.png",
+            "id": "nature2",
+            "texture": "assets/textures/palette/Blue.png",
             "format": "C"
         }
     ],
     "instances": [
         {
-            "technique": "BlinnPos",
+            "technique": "SimpleObject",
+            "elements": [
+                {
+                    "id": "water/1",
+                    "model": "grid",
+                    "texture": [
+                        "nature2"
+                    ],
+                    "scale": [
+                        8192,
+                        1,
+                        8192
+                    ]
+                }
+            ]
+        },
+        {
+            "technique": "Terrain",
             "elements": [
                 {
                     "id": "terrain/1",
                     "model": "terrain",
-                    "texture": [
-                        "stone"
-                    ]
+                    "texture": []
                 }
             ]
         }

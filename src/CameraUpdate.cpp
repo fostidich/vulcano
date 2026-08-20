@@ -44,7 +44,7 @@ void Vulcano::cameraUpdate(float deltaT) {
     } else {
         mv.y = player.gravity * (player.jumping ? -player.jumpTimer : 1.0f);
     }
-    if (player.flightMode) mv *= 5.0f;
+    if (player.flightMode) mv *= 5.0f * (player.running ? player.runMultiplier : 1.0f);
 
     // Compute current yaw and pitch
     const vec3 dir = normalize(player.lookAtPoint - player.eyePosition);
@@ -68,8 +68,8 @@ void Vulcano::cameraUpdate(float deltaT) {
     const vec3 straightUp  = vec3(0.0f, 1.0f, 0.0f);
 
     // Compute translation delta
-    const float speedMul    = (player.running ? player.runMultiplier : 1.0f) *
-                              (player.slowing ? player.sneakMultiplier : 1.0f);
+    const float speedMul = (player.running ? player.runMultiplier : 1.0f) *
+                           (player.slowing ? player.sneakMultiplier : 1.0f);
     const vec3 moveDirZ     = flatForward * -mv.z * speedMul;
     const vec3 moveDirX     = flatRight * mv.x * speedMul;
     const vec3 moveDirY     = straightUp * mv.y;

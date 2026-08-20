@@ -5,14 +5,21 @@ void Vulcano::pipelinesAndRenderPassesInit() {
     this->RP.init(this);
     this->RP.properties[0].clearValue = {0.0f, 0.0f, 0.2f, 1.0f}; // Set background
 
-    // Initialize pipeline
-    this->P.init(this,
-                 &this->VD,                          // Vertex descriptor: specify pipeline's vertex descriptor layout (locations)
-                 "shaders/SimplePos.vert.spv",       // Vertex shader: compiled shader file path
-                 "shaders/BlinnFromPos.frag.spv",    // Fragment shader: compiled shader file path
-                 {&this->DSLglobal, &this->DSLlocal} // Descriptor set layouts: ordered by set ID (set 0, set 1...)
+    // Initialize pipelines
+    this->PsimpleObject.init(this,
+                             &this->VDposUV,                          // Vertex descriptor: specify pipeline's vertex descriptor layout (locations)
+                             "shaders/SimplePosUV.vert.spv",          // Vertex shader: compiled shader file path
+                             "shaders/BlinnFromPos.frag.spv",         // Fragment shader: compiled shader file path
+                             {&this->DSLglobal, &this->DSLlocalPosUV} // Descriptor set layouts: ordered by set ID (set 0, set 1...)
     );
-    this->P.setCullMode(VK_CULL_MODE_NONE); // Enable double side rendering
+    this->PsimpleObject.setCullMode(VK_CULL_MODE_NONE); // Enable double side rendering
+    this->Pterrain.init(this,
+                        &this->VDpos,                          // Vertex descriptor: specify pipeline's vertex descriptor layout (locations)
+                        "shaders/SimplePos.vert.spv",          // Vertex shader: compiled shader file path
+                        "shaders/Terrain.frag.spv",            // Fragment shader: compiled shader file path
+                        {&this->DSLglobal, &this->DSLlocalPos} // Descriptor set layouts: ordered by set ID (set 0, set 1...)
+    );
+    this->Pterrain.setCullMode(VK_CULL_MODE_NONE); // Enable double side rendering
 }
 
 void Vulcano::populateCommandBuffer(VkCommandBuffer commandBuffer, int currentImage) {

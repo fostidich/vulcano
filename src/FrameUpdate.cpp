@@ -75,10 +75,12 @@ void Vulcano::updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT, i
 
 void Vulcano::updateSceneInstances(const GlobalUniformBufferObject &gubo, int currentImage) {
     UniformBufferObject ubo;
-    for (int instanceId = 0; instanceId < this->SC.TI[0].InstanceCount; instanceId++) {
-        ubo.mMat   = this->SC.TI[0].I[instanceId].Wm;
-        ubo.mvpMat = this->ViewPrj * ubo.mMat;
-        this->SC.TI[0].I[instanceId].DS[0][0]->map(currentImage, (void *)&gubo, 0); // Global lighting
-        this->SC.TI[0].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0);          // Camera MVP matrix
+    for (int t = 0; t < this->SC.TechniqueInstanceCount; t++) {
+        for (int instanceId = 0; instanceId < this->SC.TI[t].InstanceCount; instanceId++) {
+            ubo.mMat   = this->SC.TI[t].I[instanceId].Wm;
+            ubo.mvpMat = this->ViewPrj * ubo.mMat;
+            this->SC.TI[t].I[instanceId].DS[0][0]->map(currentImage, (void *)&gubo, 0); // Global lighting
+            this->SC.TI[t].I[instanceId].DS[0][1]->map(currentImage, &ubo, 0);          // Camera MVP matrix
+        }
     }
 }

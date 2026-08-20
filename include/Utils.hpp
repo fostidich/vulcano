@@ -1,7 +1,13 @@
 #pragma once
+#include "modules/Colliders.hpp"
 #include <format>
 #include <glm/glm.hpp>
 #include <string>
+
+struct CachedCollider {
+    Collider *ptr;
+    AABBextents ext;
+};
 
 inline void toggle(bool &b) { b = !b; }
 
