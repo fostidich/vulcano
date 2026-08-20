@@ -630,8 +630,8 @@
             "technique": "SimpleObject",
             "elements": [
                 {
-                    "id": "mineral/1",
-                    "model": "mineral",
+                    "id": "crystal/1",
+                    "model": "crystal",
                     "texture": [
                         "colors2"
                     ],

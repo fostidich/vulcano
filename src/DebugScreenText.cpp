@@ -35,7 +35,7 @@ void Vulcano::updateDebugScreen(float deltaT) {
     }
 }
 
-void Vulcano::showcaseInfoText() {
+void Vulcano::printShowcaseInfo() {
     txt.printBottomCenter("Showcase world");
 }
 

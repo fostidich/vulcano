@@ -234,7 +234,7 @@ class Vulcano : public BaseProject {
     void textMakerInit();
 
     // Show showcase scene on screen text, for providing further context.
-    void showcaseInfoText();
+    void printShowcaseInfo();
 
     // Set initial window settings, such as hide and lock mouse inside window.
     // Map each available key press event to the callback function it activates.
@@ -312,4 +312,7 @@ class Vulcano : public BaseProject {
 
     // Light up the candle when approaching tent entrance.
     void updateTentCandle();
+
+    // When going near the crystals, they turn brighter.
+    void updateCrystals();
 };

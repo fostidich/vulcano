@@ -1,9 +1,9 @@
 {
     "models": [
         {
-            "id": "Mineral",
+            "id": "crystal",
             "VD": "VDposUV",
-            "model": "assets/models/Mineral.mgcg",
+            "model": "assets/models/objects/Crystal.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -647,8 +647,8 @@
                     ]
                 },
                 {
-                    "id": "mineral/right",
-                    "model": "mineral",
+                    "id": "crystal/right",
+                    "model": "crystal",
                     "texture": [
                         "colors2"
                     ],
@@ -664,8 +664,8 @@
                     ]
                 },
                 {
-                    "id": "mineral/back",
-                    "model": "mineral",
+                    "id": "crystal/back",
+                    "model": "crystal",
                     "texture": [
                         "colors2"
                     ],
@@ -681,8 +681,8 @@
                     ]
                 },
                 {
-                    "id": "mineral/front",
-                    "model": "mineral",
+                    "id": "crystal/front",
+                    "model": "crystal",
                     "texture": [
                         "colors2"
                     ],
@@ -698,8 +698,8 @@
                     ]
                 },
                 {
-                    "id": "mineral/left",
-                    "model": "mineral",
+                    "id": "crystal/left",
+                    "model": "crystal",
                     "texture": [
                         "colors2"
                     ],

@@ -47,6 +47,11 @@ struct WorldState {
     const glm::vec3 tentCandleEntrancePos          = glm::vec3(7.95f, 1.51f, 40.05f);
     float tentCandleDistance;
 
+    // Crystal circle with bones in the middle
+    static constexpr std::string_view crystalsID[] = {"crystal/left", "crystal/right", "crystal/front", "crystal/back"};
+    const glm::vec3 crystalBonesPosition           = glm::vec3(0.0f, 0.0f, -30.0f);
+    float crystalBonesDistance;
+
     // Optimization: don't refresh colliders if nothing is moving.
     inline void animating() { currentlyAnimating++; }
 

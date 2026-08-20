@@ -15,6 +15,7 @@ void Vulcano::processInteractions(float deltaT) {
         this->updateDeersBridge(deltaT);
         this->updateSwordStone(deltaT);
         this->updateTentCandle();
+        this->updateCrystals();
     }
 }
 
@@ -27,5 +28,5 @@ void Vulcano::processTextOnScreen(float deltaT) {
         this->printDeerText();
         this->printCandleText();
     } else if (this->world.sceneID == SCENE_SHOWCASE)
-        this->showcaseInfoText();
+        this->printShowcaseInfo();
 }
