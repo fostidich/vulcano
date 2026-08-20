@@ -10,15 +10,21 @@ using namespace std;
 // light sources, for mapping those instances to their corresponding light model.
 std::optional<PointLight> initPointLight(const Instance &instance) {
     PointLight pl;
-    glm::vec3 pos = glm::vec3(instance.Wm[3]);
+    vec3 pos = glm::vec3(instance.Wm[3]);
 
     if (instance.id->starts_with("candle/")) {
         // World position: column 3 of the world matrix
         // Add a small Y offset so the light emits from the wick
-        pl.position = pos + glm::vec3(0.0f, 0.35f, 0.0f);
-        pl.color    = glm::vec3(1.0f, 0.6f, 0.2f) * 5.0f; // Linear color and intensity (warm candle flame)
-        pl.target   = 3.0f;                               // Reference target distance (g)
-        pl.decay    = 2.0f;                               // Distance Decay Exponent (beta)
+        pl.position = pos + vec3(0.0f, 0.35f, 0.0f);
+        pl.color    = vec3(1.0f, 0.6f, 0.2f) * 5.0f; // Linear color and intensity (warm candle flame)
+        pl.target   = 3.0f;                          // Reference target distance (g)
+        pl.decay    = 2.0f;                          // Distance Decay Exponent (beta)
+    }
+    if (instance.id->starts_with("mineral/")) {
+        pl.position = pos;
+        pl.color    = vec3(0.6f, 0.1f, 0.9f) * 5.0f;
+        pl.target   = 2.0f;
+        pl.decay    = 3.0f;
     }
 
     else {

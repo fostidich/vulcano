@@ -1,6 +1,24 @@
 {
     "models": [
         {
+            "id": "Mineral",
+            "VD": "VDposUV",
+            "model": "assets/models/Mineral.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true,
+                "params": [
+                    -0.3,
+                    -0.3,
+                    -0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                ]
+            }
+        },
+        {
             "id": "chair",
             "VD": "VDposUV",
             "model": "assets/models/objects/Chair.mgcg",
@@ -611,6 +629,23 @@
         {
             "technique": "SimpleObject",
             "elements": [
+                {
+                    "id": "mineral/1",
+                    "model": "mineral",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        48,
+                        0.7,
+                        32
+                    ],
+                    "scale": [
+                        2,
+                        2,
+                        2
+                    ]
+                },
                 {
                     "id": "stone/1",
                     "model": "stone",

@@ -1,6 +1,24 @@
 {
     "models": [
         {
+            "id": "Mineral",
+            "VD": "VDposUV",
+            "model": "assets/models/Mineral.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true,
+                "params": [
+                    -0.3,
+                    -0.3,
+                    -0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                ]
+            }
+        },
+        {
             "id": "chair",
             "VD": "VDposUV",
             "model": "assets/models/objects/Chair.mgcg",
@@ -611,6 +629,108 @@
         {
             "technique": "SimpleObject",
             "elements": [
+                {
+                    "id": "piled-bones/1",
+                    "model": "piled-bones",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        0,
+                        0,
+                        -30
+                    ],
+                    "scale": [
+                        2,
+                        2,
+                        2
+                    ]
+                },
+                {
+                    "id": "mineral/right",
+                    "model": "mineral",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        -5,
+                        1,
+                        -30
+                    ],
+                    "scale": [
+                        2.5,
+                        3,
+                        2.5
+                    ]
+                },
+                {
+                    "id": "mineral/back",
+                    "model": "mineral",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        0,
+                        1,
+                        -35
+                    ],
+                    "scale": [
+                        2.5,
+                        3,
+                        2.5
+                    ]
+                },
+                {
+                    "id": "mineral/front",
+                    "model": "mineral",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        0,
+                        1,
+                        -25
+                    ],
+                    "scale": [
+                        2.5,
+                        3,
+                        2.5
+                    ]
+                },
+                {
+                    "id": "mineral/left",
+                    "model": "mineral",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        5,
+                        1,
+                        -30
+                    ],
+                    "scale": [
+                        2.5,
+                        3,
+                        2.5
+                    ]
+                },
+                {
+                    "id": "watch-tower/1",
+                    "model": "watch-tower",
+                    "texture": [
+                        "building"
+                    ],
+                    "translate": [
+                        0,
+                        0,
+                        -50
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ]
+                },
                 {
                     "id": "deer/1",
                     "model": "deer",
