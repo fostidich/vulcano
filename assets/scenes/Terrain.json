@@ -27,7 +27,7 @@
     ],
     "textures": [
         {
-            "id": "nature2",
+            "id": "blue",
             "texture": "assets/textures/palette/Blue.png",
             "format": "C"
         }
@@ -40,7 +40,7 @@
                     "id": "water/1",
                     "model": "grid",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "scale": [
                         8192,

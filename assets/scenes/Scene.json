@@ -1,6 +1,12 @@
 {
     "models": [
         {
+            "id": "terrain",
+            "VD": "VDpos",
+            "model": "assets/models/Terrain.obj",
+            "format": "OBJ"
+        },
+        {
             "id": "crystal",
             "VD": "VDposUV",
             "model": "assets/models/objects/Crystal.mgcg",
@@ -560,6 +566,11 @@
     ],
     "textures": [
         {
+            "id": "blue",
+            "texture": "assets/textures/palette/Blue.png",
+            "format": "C"
+        },
+        {
             "id": "building",
             "texture": "assets/textures/palette/Building.png",
             "format": "C"
@@ -627,8 +638,30 @@
     ],
     "instances": [
         {
+            "technique": "Terrain",
+            "elements": [
+                {
+                    "id": "terrain/1",
+                    "model": "terrain",
+                    "texture": []
+                }
+            ]
+        },
+        {
             "technique": "SimpleObject",
             "elements": [
+                {
+                    "id": "water/1",
+                    "model": "grid",
+                    "texture": [
+                        "blue"
+                    ],
+                    "scale": [
+                        8192,
+                        1,
+                        8192
+                    ]
+                },
                 {
                     "id": "piled-bones/1",
                     "model": "piled-bones",
@@ -1085,6 +1118,11 @@
                     "texture": [
                         "grass"
                     ],
+                    "translate": [
+                        0,
+                        0.05,
+                        0
+                    ],
                     "scale": [
                         128,
                         128,
@@ -1099,7 +1137,7 @@
                     ],
                     "translate": [
                         0,
-                        0,
+                        0.05,
                         128
                     ],
                     "scale": [
