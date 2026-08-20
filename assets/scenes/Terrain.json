@@ -1,0 +1,31 @@
+{
+    "models": [
+        {
+            "id": "terrain",
+            "VD": "VDposUV",
+            "model": "assets/models/Terrain.obj",
+            "format": "OBJ"
+        }
+    ],
+    "textures": [
+        {
+            "id": "stone",
+            "texture": "assets/textures/materials/Stone.png",
+            "format": "C"
+        }
+    ],
+    "instances": [
+        {
+            "technique": "BlinnPos",
+            "elements": [
+                {
+                    "id": "terrain/1",
+                    "model": "terrain",
+                    "texture": [
+                        "stone"
+                    ]
+                }
+            ]
+        }
+    ]
+}

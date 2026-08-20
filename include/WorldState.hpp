@@ -7,6 +7,7 @@
 enum SceneID {
     SCENE_DEFAULT,
     SCENE_SHOWCASE,
+    SCENE_TERRAIN,
 };
 
 struct WorldState {

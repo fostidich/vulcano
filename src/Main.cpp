@@ -8,6 +8,9 @@ void switchScene(Vulcano &app, str scene) {
     } else if (scene == "showcase") {
         app.world.scenePath = "assets/scenes/Showcase.json";
         app.world.sceneID   = SCENE_SHOWCASE;
+    } else if (scene == "terrain") {
+        app.world.scenePath = "assets/scenes/Terrain.json";
+        app.world.sceneID   = SCENE_TERRAIN;
     } else
         logs::error("Unknown scene identifier: ", scene);
 }
