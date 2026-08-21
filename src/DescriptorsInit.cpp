@@ -119,7 +119,7 @@ void Vulcano::referencesInit() {
     );
 
     // Register pipeline (technique) references
-    this->PRs.resize(2);
+    this->PRs.resize(3);
     this->PRs[0].init(
         "SimpleObject", // Technique (instances) identifier matching in scene JSON
         {{
@@ -138,4 +138,13 @@ void Vulcano::referencesInit() {
         0,           // Number of textures required per instance in this technique (none)
         &this->VDpos // Vertex descriptor required by this technique
     );
+    this->PRs[2].init(
+        "SwordShine", // Technique (instances) identifier matching in scene JSON
+        {{
+        &this->PswordShine, // Pipeline implementing the technique
+            {{}, {{true, 0, {}}}} // DSL mapping (set 0, set 1 with texture at index 0)
+        }},
+        1,             // Number of textures required per instance in this technique (1, at index 0)
+        &this->VDposUV // Vertex descriptor required by this technique
+        );
 }

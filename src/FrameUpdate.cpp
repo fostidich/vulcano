@@ -69,6 +69,8 @@ void Vulcano::updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT, i
     for (const auto &[key, val] : this->world.pointLights)
         gubo.pointLights[i++] = val;
 
+    //full shine when the player enters ring1 around stone
+    gubo.swordShine = 1.0f - glm::clamp(this->world.swordStoneDistance / this->world.ring1, 0.0f, 1.0f);
     // Transfer GUBO data to GPU
     this->DSglobal.map(currentImage, &gubo, 0);
 }

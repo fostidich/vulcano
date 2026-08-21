@@ -20,6 +20,13 @@ void Vulcano::pipelinesAndRenderPassesInit() {
                         {&this->DSLglobal, &this->DSLlocalPos} // Descriptor set layouts: ordered by set ID (set 0, set 1...)
     );
     this->Pterrain.setCullMode(VK_CULL_MODE_NONE); // Enable double side rendering
+    this->PswordShine.init(this,
+                        &this->VDposUV, // Vertex descriptor: specify pipeline's vertex descriptor layout (locations)
+                        "shaders/SimplePosUV.vert.spv", // Vertex shader: compiled shader file path
+                        "shaders/SwordShine.frag.spv", // Fragment shader: compiled shader file path
+                        {&this->DSLglobal, &this->DSLlocalPosUV} // Descriptor set layouts: ordered by set ID (set 0, set 1...)
+    );
+    this->PswordShine.setCullMode(VK_CULL_MODE_NONE); // Enable double side rendering
 }
 
 void Vulcano::populateCommandBuffer(VkCommandBuffer commandBuffer, int currentImage) {

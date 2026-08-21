@@ -1514,7 +1514,12 @@
                         0.2,
                         0.2
                     ]
-                },
+                }
+            ]
+        },
+        {
+            "technique": "SwordShine",
+            "elements" : [
                 {
                     "id": "sword/1",
                     "model": "sword",

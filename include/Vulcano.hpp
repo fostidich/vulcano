@@ -64,7 +64,7 @@ class Vulcano : public BaseProject {
     // the vertex shader (e.g. vertex descriptor), and the out-locations of the
     // fragment shaders are called attachments, which can either be used by
     // following render passes or for drawing on screen.
-    Pipeline PsimpleObject, Pterrain;
+    Pipeline PsimpleObject, Pterrain, PswordShine;
 
     // `DSglobal` is an instance of `DSLglobal`: since `DSLglobal` maps to a
     // GUBO describing a direct light model shared across all the scene, a

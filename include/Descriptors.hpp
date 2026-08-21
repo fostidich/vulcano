@@ -35,6 +35,7 @@ struct GlobalUniformBufferObject {
     alignas(16) glm::vec3 eyePos;
     alignas(16) PointLight pointLights[MAX_POINT_LIGHTS];
     alignas(4) int pointLightsCount;
+    alignas(4) float swordShine;
 };
 
 // A vertex is a useful struct for storing the required data for each single
