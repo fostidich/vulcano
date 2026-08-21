@@ -2,6 +2,7 @@
 #include "Descriptors.hpp"
 #include "PlayerState.hpp"
 #include "SimpleTextMaker.hpp"
+#include "Terrain.hpp"
 #include "Utils.hpp"
 #include "WorldState.hpp"
 #include "modules/Colliders.hpp"
@@ -15,6 +16,9 @@ class Vulcano : public BaseProject {
 
     // World scene interactions and objects state.
     WorldState world;
+
+    // Terrain map used for collision check with ground.
+    Terrain terrain;
 
   protected:
     // Player's collisions shape (1x1x2 rectangle with eye at h1.5)

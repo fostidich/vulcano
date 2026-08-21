@@ -427,12 +427,20 @@
             }
         },
         {
-            "id": "grid",
+            "id": "square.water",
             "VD": "VDposUV",
-            "model": "assets/models/Grid128x128.obj",
+            "model": "assets/models/Square.obj",
             "format": "OBJ",
             "collider": {
-                "type": "OOBB"
+                "type": "OOBB",
+                "params": [
+                    -1,
+                    -2,
+                    -1,
+                    1,
+                    -1,
+                    1
+                ]
             }
         },
         {
@@ -526,24 +534,6 @@
                             -0.8
                         ]
                     }
-                ]
-            }
-        },
-        {
-            "id": "water",
-            "VD": "VDposUV",
-            "model": "assets/models/nature/Water.mgcg",
-            "format": "MGCG",
-            "collider": {
-                "type": "OOBB",
-                "visible": true,
-                "params": [
-                    -10,
-                    -10,
-                    0,
-                    10,
-                    10,
-                    -10
                 ]
             }
         },
@@ -651,8 +641,8 @@
             "technique": "SimpleObject",
             "elements": [
                 {
-                    "id": "water/1",
-                    "model": "grid",
+                    "id": "water/sea",
+                    "model": "square.water",
                     "texture": [
                         "blue"
                     ],
@@ -1113,40 +1103,6 @@
                     ]
                 },
                 {
-                    "id": "grass/1",
-                    "model": "grid",
-                    "texture": [
-                        "grass"
-                    ],
-                    "translate": [
-                        0,
-                        0.05,
-                        0
-                    ],
-                    "scale": [
-                        128,
-                        128,
-                        128
-                    ]
-                },
-                {
-                    "id": "grass/2",
-                    "model": "grid",
-                    "texture": [
-                        "grass"
-                    ],
-                    "translate": [
-                        0,
-                        0.05,
-                        128
-                    ],
-                    "scale": [
-                        128,
-                        128,
-                        128
-                    ]
-                },
-                {
                     "id": "tent/1",
                     "model": "tent",
                     "texture": [
@@ -1214,97 +1170,77 @@
                 },
                 {
                     "id": "water/back",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         0,
                         0.1,
                         95
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
                         4,
-                        0.5,
-                        0.5
+                        1,
+                        3
                     ]
                 },
                 {
                     "id": "water/front-center",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         0,
                         0.1,
                         10
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
-                        0.5,
-                        0.5,
-                        0.01
+                        4,
+                        1,
+                        3
                     ]
                 },
                 {
                     "id": "water/front-left",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         25,
                         0.1,
                         10
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
                         2,
-                        0.5,
-                        0.5
+                        1,
+                        3
                     ]
                 },
                 {
                     "id": "water/front-right",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         -25,
                         0.1,
                         10
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
                         2,
-                        0.5,
-                        0.5
+                        1,
+                        3
                     ]
                 },
                 {
                     "id": "water/left",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         -40,
@@ -1312,21 +1248,21 @@
                         52.5
                     ],
                     "eulerAngles": [
-                        90,
+                        0,
                         90,
                         0
                     ],
                     "scale": [
                         4.75,
-                        0.5,
-                        0.5
+                        1,
+                        3
                     ]
                 },
                 {
                     "id": "water/right",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         40,
@@ -1334,14 +1270,14 @@
                         52.5
                     ],
                     "eulerAngles": [
-                        90,
+                        0,
                         90,
                         0
                     ],
                     "scale": [
                         4.75,
-                        0.5,
-                        0.5
+                        1,
+                        3
                     ]
                 },
                 {
@@ -1519,7 +1455,7 @@
         },
         {
             "technique": "SwordShine",
-            "elements" : [
+            "elements": [
                 {
                     "id": "sword/1",
                     "model": "sword",

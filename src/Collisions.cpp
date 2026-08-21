@@ -6,9 +6,9 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
     const float distance = length(displacement);
     if (distance < 0.0001f) return;
 
-    const float maxStep = 0.2f;                                            // Max distance computable at a time
-    const int steps     = std::max(1, (int)std::ceil(distance / maxStep)); // Number of iterations needed to cover all distance
-    const vec3 dispStep = displacement / (float)steps;                     // Horizontal contribution of step displacement
+    const float maxStep = 0.2f;                                  // Max distance computable at a time
+    const int steps     = max(1, (int)ceil(distance / maxStep)); // Number of iterations needed to cover all distance
+    const vec3 dispStep = displacement / (float)steps;           // Horizontal contribution of step displacement
     for (int s = 0; s < steps; ++s) {
         const vec3 target   = currentPos + dispStep;  // Final position to test
         const float topY    = currentPos.y + maxStep; // Max Y reachable in the frame
@@ -35,14 +35,22 @@ void Vulcano::processCollisions(vec3 &currentPos, const vec3 &displacement) {
         else {
             const vec3 dispX = vec3(dispStep.x, 0.0f, 0.0f);
             const vec3 dispZ = vec3(0.0f, 0.0f, dispStep.z);
-            if (std::abs(dispX.x) > 0.0001f && !checkCollision(currentPos + dispX)) currentPos += dispX;
-            if (std::abs(dispZ.z) > 0.0001f && !checkCollision(currentPos + dispZ)) currentPos += dispZ;
+            if (abs(dispX.x) > 0.0001f && !checkCollision(currentPos + dispX)) currentPos += dispX;
+            if (abs(dispZ.z) > 0.0001f && !checkCollision(currentPos + dispZ)) currentPos += dispZ;
         }
 
         // Compute gravity pull down
-        if (dispStep.y == 0.0f) continue; // Stop here in flight mode
-        const vec3 targetV = currentPos + vec3(0.0f, dispStep.y, 0.0f);
-        if (!checkCollision(targetV)) currentPos = targetV;
+        if (dispStep.y != 0.0f) {
+            const vec3 targetV = currentPos + vec3(0.0f, dispStep.y, 0.0f);
+            if (!checkCollision(targetV)) currentPos = targetV;
+        }
+
+        // Keep player above terrain surface
+        if (!player.flightMode) {
+            const float groundY = this->terrain.getHeight(currentPos.x, currentPos.z);
+            const float minEyeY = groundY - player.colliderAABBmin.y;
+            if (currentPos.y < minEyeY) currentPos.y = minEyeY;
+        }
     }
 }
 
@@ -85,6 +93,10 @@ bool Vulcano::checkCollision(const vec3 &testPos) {
         if (this->playerCollider.collidesWith(*item.ptr))
             return true;
     }
+
+    float terrainY          = this->terrain.getHeight(testPos.x, testPos.z);
+    const float playerFeetY = testPos.y + player.colliderAABBmin.y;
+    if (playerFeetY < terrainY) return true; // Colliding with ground
     return false;
 }
 

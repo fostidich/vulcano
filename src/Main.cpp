@@ -5,12 +5,22 @@ void switchScene(Vulcano &app, str scene) {
     if (scene == "default") {
         app.world.scenePath = "assets/scenes/Scene.json";
         app.world.sceneID   = SCENE_DEFAULT;
+        app.terrain.load("assets/models/Terrain.obj");
+        const float spawnX = -600.0f, spawnZ = 600.0f;
+        const float spawnY     = app.terrain.getHeight(spawnX, spawnZ);
+        app.player.eyePosition = glm::vec3(spawnX, spawnY + 2.0f, spawnZ);
+        app.player.lookAtPoint = glm::vec3(spawnX, spawnY + 2.0f, spawnZ + 1.0f);
     } else if (scene == "showcase") {
         app.world.scenePath = "assets/scenes/Showcase.json";
         app.world.sceneID   = SCENE_SHOWCASE;
     } else if (scene == "terrain") {
         app.world.scenePath = "assets/scenes/Terrain.json";
         app.world.sceneID   = SCENE_TERRAIN;
+        app.terrain.load("assets/models/Terrain.obj");
+        const float spawnX = 0.0f, spawnZ = 0.0f;
+        const float spawnY     = app.terrain.getHeight(spawnX, spawnZ);
+        app.player.eyePosition = glm::vec3(spawnX, spawnY + 2.0f, spawnZ);
+        app.player.lookAtPoint = glm::vec3(spawnX, spawnY + 2.0f, spawnZ + 1.0f);
     } else
         logs::error("Unknown scene identifier: ", scene);
 }

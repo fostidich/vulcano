@@ -32,3 +32,4 @@ using f64 = double;
 using cstr   = const char *;
 using str    = std::string_view;
 using string = std::string;
+using err    = int;

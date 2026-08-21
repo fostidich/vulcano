@@ -1,12 +1,13 @@
+#pragma once
 #include <string>
 #include <vector>
 
 class Terrain {
-  protected:
-    void load(const std::string &path);
+  public:
+    int load(const std::string &path);
     float getHeight(float x, float z) const;
 
-  public:
+  protected:
     std::vector<float> xCoords;
     std::vector<float> zCoords;
     std::vector<float> heights;

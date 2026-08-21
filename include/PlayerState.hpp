@@ -4,9 +4,8 @@
 // Main struct containing player specific settings and state.
 struct PlayerState {
     // Camera position and rotation state
-    // glm::vec3 eyePosition = glm::vec3(-600.0f, 130.0f, 600.0f);
-    glm::vec3 eyePosition = glm::vec3(0.0f, 4.0f, 0.0f);
-    glm::vec3 lookAtPoint = glm::vec3(0.0f, 4.0f, 1.0f);
+    glm::vec3 eyePosition = glm::vec3(0.0f, 4.0f, 0.0f); // Default spawn point
+    glm::vec3 lookAtPoint = glm::vec3(0.0f, 4.0f, 1.0f); // Default looking direction
     glm::vec3 upVector    = glm::vec3(0.0f, 1.0f, 0.0f);
 
     // Looking directions
