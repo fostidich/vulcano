@@ -15,7 +15,7 @@ struct PlayerState {
     // Frustum shape
     const float FOVy      = glm::radians(60.0f);
     const float nearPlane = 0.1f;
-    const float farPlane  = 2000.f;
+    const float farPlane  = 2048.f;
 
     // Player hitbox
     const glm::vec3 colliderAABBmin = glm::vec3(-0.5f, -1.5f, -0.5f);

@@ -14,6 +14,7 @@ struct PointLight {
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
+    mat4 lightSpaceMat;
     vec3 lightDir; // World space
     vec4 lightColor; // Linear color space
     vec3 eyePos; // World space

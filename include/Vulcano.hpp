@@ -56,7 +56,7 @@ class Vulcano : public BaseProject {
     //    (off-screen) render passes will have to be translated to descriptor
     //    sets (set/binding layouts) that following render passes' pipelines
     //    can access.
-    RenderPass RP;
+    RenderPass RPshadow, RPmain;
 
     // A pipeline is a set of two shaders (a vertex and a fragment shader)
     // which are executed on an object.
@@ -68,7 +68,7 @@ class Vulcano : public BaseProject {
     // the vertex shader (e.g. vertex descriptor), and the out-locations of the
     // fragment shaders are called attachments, which can either be used by
     // following render passes or for drawing on screen.
-    Pipeline PsimpleObject, Pterrain, PswordShine;
+    Pipeline PshadowPosUV, PshadowPos, PsimpleObject, Pterrain, PswordShine;
 
     // `DSglobal` is an instance of `DSLglobal`: since `DSLglobal` maps to a
     // GUBO describing a direct light model shared across all the scene, a
@@ -260,9 +260,11 @@ class Vulcano : public BaseProject {
     // Compute projection matrix, view matrix from camera and combine them.
     void computeViewProj();
 
-    // Must be called after updating view matrix.
-    // Update GUBO parameters and construct new GUBO (with scene's light models).
-    void updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT, int currentImage);
+    // Update GUBO attributes and construct GUBO with scene's light models.
+    void updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT);
+
+    // Update GUBO attributes and construct GUBO with shadow attachments parameters.
+    void updateSceneShadows(GlobalUniformBufferObject &gubo);
 
     // Update UBO and GUBO for each instance.
     void updateSceneInstances(const GlobalUniformBufferObject &gubo, int currentImage);

@@ -21,6 +21,8 @@ template <typename... Args>
 inline void debug([[maybe_unused]] Args &&...args) {
 #if defined(DEBUG) && DEBUG
     print_log("DEBUG", std::forward<Args>(args)...);
+    std::fflush(stderr);
+    std::fflush(stdout);
 #endif
 }
 

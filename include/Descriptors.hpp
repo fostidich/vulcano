@@ -1,6 +1,9 @@
 #pragma once
 #include <glm/glm.hpp>
 
+// TODO: implement that in every frame update the point lights arrays gets
+// filled with the 16 nearest points, so that in the scene more than it can be
+// defined.
 constexpr int MAX_POINT_LIGHTS = 16;
 
 // Struct defining data about a point light source, which will be sent to
@@ -24,12 +27,13 @@ struct UniformBufferObject {
     alignas(16) glm::mat4 mMat;
 };
 
-// GUBO is a struct used to store a direct light model and point lights shared
-// by all the scene.
+// GUBO is a struct used to store information (such as light models or shadow
+// data) used by shaders and shared in all the scene.
 // It will be mapped to a location where fragment shaders are able to access it.
 // It also stores the frame's camera location, so that it will be possible to
 // compute specular highlights (shiny surfaces).
 struct GlobalUniformBufferObject {
+    alignas(16) glm::mat4 lightSpaceMat;
     alignas(16) glm::vec3 lightDir;
     alignas(16) glm::vec4 lightColor;
     alignas(16) glm::vec3 eyePos;

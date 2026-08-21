@@ -23,8 +23,14 @@ run *ARGS: build copy-assets
     cd build && ./{{ APP_NAME }} {{ ARGS }}
 alias r := run
 
+# Run with debug enabled
+debug-run *ARGS: copy-assets
+    @if [ ! -d build ]; then cmake --preset debug; fi
+    cmake --build --preset debug
+    cd build && DEBUG=1 ./{{ APP_NAME }} {{ ARGS }}
+
 # Update assets for the current build
-copy-assets: build
+copy-assets:
     cmake -E copy_directory_if_different assets build/assets
 alias ca := copy-assets
 

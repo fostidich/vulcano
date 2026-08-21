@@ -63,6 +63,8 @@ err Terrain::load(const string &path) {
 }
 
 float Terrain::getHeight(float x, float z) const {
+    if (heights.empty()) return -64.0f;
+
     // Clamp to terrain boundaries
     if (x <= xCoords.front()) x = xCoords.front();
     if (x >= xCoords.back()) x = xCoords.back();

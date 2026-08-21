@@ -17,12 +17,15 @@ struct PointLight {
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
+    mat4 lightSpaceMat;
     vec3 lightDir;
     vec4 lightColor;
     vec3 eyePos;
     PointLight pointLights[16];
     int pointLightsCount;
 } gubo;
+
+layout(binding = 1, set = 0) uniform sampler2D shadowMap;
 
 layout(location = 0) in vec3 fragPos;
 layout(location = 0) out vec4 outColor;
@@ -43,9 +46,11 @@ const vec3 colSnow = pow(vec3(0.85, 0.88, 0.92), vec3(2.2));
 const float maxHeight = 256.0;
 
 // Normalized height ranges defined on a 0-100 scale
-const vec2 rangeSandToGrass = vec2(0.0, 2.0);
+const vec2 rangeSandToGrass = vec2(0.0, 2.5);
 const vec2 rangeGrassToRock = vec2(30.0, 50.0);
 const vec2 rangeRockToSnow = vec2(80.0, 100.0);
+
+float computeShadow(vec3 worldPos, vec3 normal, vec3 lightDirection);
 
 void main() {
     vec3 X = dFdx(fragPos);
@@ -82,7 +87,8 @@ void main() {
 
     vec3 specular = vec3(specularStrength * pow(HdotN, shininess));
     vec3 diffuse = albedo * NdotL;
-    vec3 directLight = (diffuse + specular) * radiance;
+    float shadow = computeShadow(fragPos, N, L);
+    vec3 directLight = (diffuse + specular) * radiance * shadow;
 
     vec3 pointLight = vec3(0.0);
     for (int i = 0; i < gubo.pointLightsCount; ++i) {
@@ -106,4 +112,27 @@ void main() {
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0 / 2.2));
     outColor = vec4(color, 1.0);
+}
+
+float computeShadow(vec3 worldPos, vec3 normal, vec3 lightDirection) {
+    vec4 lightSpacePos = gubo.lightSpaceMat * vec4(worldPos, 1.0);
+    vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
+
+    vec2 shadowUV = projCoords.xy * 0.5 + 0.5;
+    float currentDepth = projCoords.z;
+    if (shadowUV.x < 0.0 || shadowUV.x > 1.0 || shadowUV.y < 0.0 || shadowUV.y > 1.0 ||
+            currentDepth > 1.0 || currentDepth < 0.0)
+        return 0.7;
+
+    float bias = max(0.0001 * (1.0 - dot(normal, lightDirection)), 0.0005);
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for (int x = -1; x <= 1; ++x) {
+        for (int y = -1; y <= 1; ++y) {
+            float closestDepth = texture(shadowMap, shadowUV + vec2(x, y) * texelSize).r;
+            shadow += (currentDepth - bias > closestDepth) ? 0.0 : 1.0;
+        }
+    }
+    return shadow / 9.0;
 }

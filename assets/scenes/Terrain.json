@@ -1,19 +1,18 @@
 {
     "models": [
         {
-            "id": "grid",
+            "id": "square.water",
             "VD": "VDposUV",
-            "model": "assets/models/Grid128x128.obj",
+            "model": "assets/models/Square.obj",
             "format": "OBJ",
             "collider": {
                 "type": "AABB",
-                "visible": true,
                 "params": [
                     -1,
                     -2,
                     -1,
                     1,
-                    -1.4,
+                    -1,
                     1
                 ]
             }
@@ -37,8 +36,8 @@
             "technique": "SimpleObject",
             "elements": [
                 {
-                    "id": "water/1",
-                    "model": "grid",
+                    "id": "water/sea",
+                    "model": "square.water",
                     "texture": [
                         "blue"
                     ],

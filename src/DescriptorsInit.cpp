@@ -40,15 +40,22 @@ void Vulcano::DSLlocalInit() {
 
 void Vulcano::DSLglobalInit() {
     // Init a set with one binding: scene's GUBO
-    this->DSLglobal.init(this,
-                         {{
-                             // Binding 0: scene's GUBO (light and camera)
-                             0,                                 // Binding number inside the set
-                             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, // Descriptor type: uniform buffer (what GUBO is)
-                             VK_SHADER_STAGE_ALL_GRAPHICS,      // Accesses by both vertex and fragment shaders
-                             sizeof(GlobalUniformBufferObject), // Size of the descriptor's object type
-                             1                                  // Count 1: not an array
-                         }});
+    this->DSLglobal.init(this, {{
+                                    // Binding 0: scene's GUBO (light and camera)
+                                    0,                                 // Binding number inside the set
+                                    VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, // Descriptor type: uniform buffer (what GUBO is)
+                                    VK_SHADER_STAGE_ALL_GRAPHICS,      // Accesses by both vertex and fragment shaders
+                                    sizeof(GlobalUniformBufferObject), // Size of the descriptor's object type
+                                    1                                  // Count 1: not an array
+                                },
+                                {
+                                    // Binding 1: scene's shadow map
+                                    1,                                         // Binding number inside the set
+                                    VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, // Descriptor type: whole texture
+                                    VK_SHADER_STAGE_FRAGMENT_BIT,              // Accesses by fragment shader only
+                                    0,                                         // Texture type placeholder: size is set by framework
+                                    1                                          // Count 1: not an array
+                                }});
 }
 
 void Vulcano::VDInit() {
@@ -96,55 +103,4 @@ void Vulcano::VDInit() {
                          sizeof(glm::vec3),          // Size of the only attribute,
                          POSITION                    // World coordinates
                      }});
-}
-
-void Vulcano::setDSPoolSize() {
-    // Sized generously to scale with scene's object count
-    // [Inherited from BaseProject: this->DPSZs]
-    this->DPSZs.uniformBlocksInPool = 256;
-    this->DPSZs.texturesInPool      = 256;
-    this->DPSZs.setsInPool          = 256;
-}
-
-void Vulcano::referencesInit() {
-    // Initialize vertex descriptor references
-    this->VDRs.resize(2);
-    this->VDRs[0].init(
-        "VDposUV",     // VD layout identifier matching in scene JSON
-        &this->VDposUV // VD layout to assign to models matching ID
-    );
-    this->VDRs[1].init(
-        "VDpos",     // VD layout identifier matching in scene JSON
-        &this->VDpos // VD layout to assign to models matching ID
-    );
-
-    // Register pipeline (technique) references
-    this->PRs.resize(3);
-    this->PRs[0].init(
-        "SimpleObject", // Technique (instances) identifier matching in scene JSON
-        {{
-            &this->PsimpleObject, // Pipeline implementing the technique
-            {{}, {{true, 0, {}}}} // DSL mapping (set 0, set 1 with texture at index 0)
-        }},
-        1,             // Number of textures required per instance in this technique (1, at index 0)
-        &this->VDposUV // Vertex descriptor required by this technique
-    );
-    this->PRs[1].init(
-        "Terrain", // Technique (instances) identifier matching in scene JSON
-        {{
-            &this->Pterrain, // Pipeline implementing the technique
-            {{}, {}}         // DSL mapping (set 0, set 1), no textures
-        }},
-        0,           // Number of textures required per instance in this technique (none)
-        &this->VDpos // Vertex descriptor required by this technique
-    );
-    this->PRs[2].init(
-        "SwordShine", // Technique (instances) identifier matching in scene JSON
-        {{
-        &this->PswordShine, // Pipeline implementing the technique
-            {{}, {{true, 0, {}}}} // DSL mapping (set 0, set 1 with texture at index 0)
-        }},
-        1,             // Number of textures required per instance in this technique (1, at index 0)
-        &this->VDposUV // Vertex descriptor required by this technique
-        );
 }

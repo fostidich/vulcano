@@ -1,5 +1,6 @@
 #include "Descriptors.hpp"
 #include "Logs.hpp"
+#include "Types.hpp"
 #include "Vulcano.hpp"
 #include <optional>
 
@@ -45,4 +46,25 @@ void Vulcano::extractPointLights() {
             if (pl.has_value()) world.pointLights[*instance.id] = pl.value();
         }
     }
+}
+
+void Vulcano::updateSceneLights(GlobalUniformBufferObject &gubo, float deltaT) {
+    gubo.eyePos = player.eyePosition;
+
+    // Construct GUBO with direct light model
+    static float dayTime    = 0.0f;
+    const float dayDuration = 5.0f * 60.0f; // 5 minutes
+    dayTime                 = mod(dayTime + deltaT, dayDuration);
+    const float rot         = radians(360.0f) * dayTime / dayDuration;
+    gubo.lightDir           = vec3(cos(rot), -1.0f, sin(rot));
+    gubo.lightColor         = vec4(1.0f, 1.0f, 0.5f, 1.0f) * 6.0f; // Warm light
+
+    // Copy point lights with GUBO
+    gubo.pointLightsCount = this->world.pointLights.size();
+    usize i               = 0;
+    for (const auto &[key, val] : this->world.pointLights)
+        gubo.pointLights[i++] = val;
+
+    // full shine when the player enters ring1 around stone
+    gubo.swordShine = 1.0f - glm::clamp(this->world.swordStoneDistance / this->world.ring1, 0.0f, 1.0f);
 }

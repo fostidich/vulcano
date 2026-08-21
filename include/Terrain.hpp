@@ -4,7 +4,7 @@
 
 class Terrain {
   public:
-    int load(const std::string &path);
+    const int load(const std::string &path);
     float getHeight(float x, float z) const;
 
   protected:
