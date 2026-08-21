@@ -20,8 +20,7 @@ std::optional<PointLight> initPointLight(const Instance &instance) {
         pl.color    = vec3(1.0f, 0.6f, 0.2f) * 5.0f; // Linear color and intensity (warm candle flame)
         pl.target   = 3.0f;                          // Reference target distance (g)
         pl.decay    = 2.0f;                          // Distance Decay Exponent (beta)
-    }
-    if (instance.id->starts_with("crystal/")) {
+    } else if (instance.id->starts_with("crystal/")) {
         pl.position = pos;
         pl.color    = vec3(0.6f, 0.1f, 0.9f) * 2.5f;
         pl.target   = 2.0f;

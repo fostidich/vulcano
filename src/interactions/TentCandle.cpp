@@ -5,7 +5,7 @@ void Vulcano::updateTentCandle() {
     world.tentCandleDistance = length(world.tentCandleEntrancePos - player.eyePosition);
 
     static std::optional<PointLight> candleLight = std::nullopt;
-    static bool active                           = true;
+    static bool active                           = false;
 
     // Cache point light struct at start
     if (!candleLight.has_value()) {
