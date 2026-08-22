@@ -1,12 +1,31 @@
+// Query max and min Y of the terrain OBJ file:
+// - cat assets/models/Terrain.obj | grep -E "^v " | cut -d" " -f 3 | sort -g | head -1
+// - cat assets/models/Terrain.obj | grep -E "^v " | cut -d" " -f 3 | sort -g | tail -1
+//
+// Query Z and X count:
+//- cat assets/models/Terrain.obj | grep -E "^v " | cut -d" " -f 2 | sort -g | uniq | wc -l
+//- cat assets/models/Terrain.obj | grep -E "^v " | cut -d" " -f 4 | sort -g | uniq | wc -l
+//
+// The logic of this file is tuned for the specific terrain OBJ file used in
+// this application.
+// Such terrain model is an exact 257x257 XZ grid, with Ys spanning between
+// about (-10, 256) meters high.
+// The grid is dense, meaning that for each X and Z found in the model, a Y is
+// always defined.
+// If the model is scaled on the XZ coordinates, such scale quantity needs to
+// be set in the header, so that the height check works properly.
+// Also, since the model is assumed to be spanning from XZ (0, 0) to XZ
+// (256, 256), the height check is done assuming also that the model was
+// translated to align with world origin, thus with XZ spanning between -128
+// and 128.
+
 #include "Terrain.hpp"
 #include "Types.hpp"
 #include <algorithm>
+#include <cmath>
 #include <fstream>
-#include <glm/glm.hpp>
-#include <map>
 #include <sstream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -14,75 +33,49 @@ err Terrain::load(const string &path) {
     std::ifstream file(path);
     if (!file.is_open()) return 1;
 
-    map<pair<int, int>, float> heightsMap;
-    vector<float> rawXs, rawZs;
+    this->nx = 257;
+    this->nz = 257;
+    this->heights.assign(nx * nz, -64.0f);
 
     string line;
+    int vertexCount = 0;
     while (getline(file, line)) {
         if (line.rfind("v ", 0) == 0) {
             std::istringstream ss(line.substr(2));
             float x, y, z;
-            ss >> x >> y >> z;
-
-            // Scale key to fixed-point integer
-            const int kx         = static_cast<int>(round(x * 100.0f));
-            const int kz         = static_cast<int>(round(z * 100.0f));
-            heightsMap[{kx, kz}] = y;
-            rawXs.push_back(x);
-            rawZs.push_back(z);
+            if (ss >> x >> y >> z) {
+                const int ix = static_cast<int>(round(x));
+                const int iz = static_cast<int>(round(z));
+                if (ix >= 0 && ix < nx && iz >= 0 && iz < nz)
+                    this->heights[ix * nz + iz] = y;
+            }
         }
     }
-    if (heightsMap.empty()) return 2;
 
-    // Extract and sort unique X and Z coordinate values
-    sort(rawXs.begin(), rawXs.end());
-    sort(rawZs.begin(), rawZs.end());
-
-    // Populate X and Y keys pruning points too close together on the same axis
-    for (float x : rawXs)
-        if (this->xCoords.empty() || abs(x - xCoords.back()) > 0.05f)
-            this->xCoords.push_back(x);
-    for (float z : rawZs)
-        if (this->zCoords.empty() || abs(z - zCoords.back()) > 0.05f)
-            this->zCoords.push_back(z);
-
-    this->nx = xCoords.size();
-    this->nz = zCoords.size();
-    this->heights.resize(nx * nz, -64.0f);
-
-    // Populate heights vector
-    for (int i = 0; i < nx; ++i) {
-        for (int j = 0; j < nz; ++j) {
-            int kx  = static_cast<int>(round(xCoords[i] * 100.0f));
-            int kz  = static_cast<int>(round(zCoords[j] * 100.0f));
-            auto it = heightsMap.find({kx, kz});
-            if (it != heightsMap.end()) heights[i * nz + j] = it->second;
-        }
-    }
+    this->loaded = true;
     return 0;
 }
 
 float Terrain::getHeight(float x, float z) const {
-    if (heights.empty()) return -64.0f;
+    if (!loaded) return -64.0f;
 
-    // Clamp to terrain boundaries
-    if (x <= xCoords.front()) x = xCoords.front();
-    if (x >= xCoords.back()) x = xCoords.back();
-    if (z <= zCoords.front()) z = zCoords.front();
-    if (z >= zCoords.back()) z = zCoords.back();
+    // Convert world coordinates to [0, 256] grid space
+    float gx = (x / scale) + 128.0f;
+    float gz = (z / scale) + 128.0f;
 
-    // Binary search for cell interval
-    auto itX = std::lower_bound(xCoords.begin(), xCoords.end(), x);
-    int i    = std::clamp(static_cast<int>(itX - xCoords.begin()) - 1, 0, nx - 2);
-    auto itZ = std::lower_bound(zCoords.begin(), zCoords.end(), z);
-    int j    = std::clamp(static_cast<int>(itZ - zCoords.begin()) - 1, 0, nz - 2);
+    // Clamp to valid grid bounds [0, nx - 1]
+    gx = std::clamp(gx, 0.0f, static_cast<float>(nx - 1));
+    gz = std::clamp(gz, 0.0f, static_cast<float>(nz - 1));
 
-    float x0 = xCoords[i], x1 = xCoords[i + 1];
-    float z0 = zCoords[j], z1 = zCoords[j + 1];
+    // Determine bottom-left cell index
+    int i = std::clamp(static_cast<int>(std::floor(gx)), 0, nx - 2);
+    int j = std::clamp(static_cast<int>(std::floor(gz)), 0, nz - 2);
 
-    float u = (x1 > x0) ? (x - x0) / (x1 - x0) : 0.0f;
-    float v = (z1 > z0) ? (z - z0) / (z1 - z0) : 0.0f;
+    // Fractional offsets within the cell [0, 1]
+    float u = gx - static_cast<float>(i);
+    float v = gz - static_cast<float>(j);
 
+    // Fetch four neighboring grid heights
     float h00 = heights[i * nz + j];
     float h10 = heights[(i + 1) * nz + j];
     float h01 = heights[i * nz + (j + 1)];

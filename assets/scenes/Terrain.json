@@ -55,7 +55,17 @@
                 {
                     "id": "terrain/1",
                     "model": "terrain",
-                    "texture": []
+                    "texture": [],
+                    "translate": [
+                        -2048,
+                        0,
+                        -2048
+                    ],
+                    "scale": [
+                        16,
+                        1,
+                        16
+                    ]
                 }
             ]
         }
