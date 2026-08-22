@@ -1,9 +1,18 @@
 {
     "models": [
         {
-            "id": "Mineral",
+            "id": "grid",
             "VD": "VDposUV",
-            "model": "assets/models/Mineral.mgcg",
+            "model": "assets/models/Grid128x128.obj",
+            "format": "OBJ",
+            "collider": {
+                "type": "OOBB"
+            }
+        },
+        {
+            "id": "crystal",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/Crystal.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -421,12 +430,21 @@
             }
         },
         {
-            "id": "grid",
+            "id": "square.water",
             "VD": "VDposUV",
-            "model": "assets/models/Grid128x128.obj",
+            "model": "assets/models/Square.obj",
             "format": "OBJ",
             "collider": {
-                "type": "OOBB"
+                "type": "OOBB",
+                "visible": true,
+                "params": [
+                    -1,
+                    -2,
+                    -1,
+                    1,
+                    -1,
+                    1
+                ]
             }
         },
         {
@@ -524,24 +542,6 @@
             }
         },
         {
-            "id": "water",
-            "VD": "VDposUV",
-            "model": "assets/models/nature/Water.mgcg",
-            "format": "MGCG",
-            "collider": {
-                "type": "OOBB",
-                "visible": true,
-                "params": [
-                    -10,
-                    -10,
-                    0,
-                    10,
-                    10,
-                    -10
-                ]
-            }
-        },
-        {
             "id": "well",
             "VD": "VDposUV",
             "model": "assets/models/structures/Well.mgcg",
@@ -620,8 +620,8 @@
             "format": "C"
         },
         {
-            "id": "water",
-            "texture": "assets/textures/materials/Water.jpg",
+            "id": "blue",
+            "texture": "assets/textures/palette/Blue.png",
             "format": "C"
         }
     ],
@@ -636,9 +636,9 @@
                         "colors2"
                     ],
                     "translate": [
-                        48,
+                        8,
                         0.7,
-                        32
+                        48
                     ],
                     "scale": [
                         2,
@@ -1046,68 +1046,53 @@
                 },
                 {
                     "id": "water/1",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         0,
                         0.1,
                         64
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
-                        0.2,
-                        0.2,
-                        0.2
+                        2,
+                        1,
+                        2
                     ]
                 },
                 {
                     "id": "water/2",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         4,
                         0.1,
                         64
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
-                        0.2,
-                        0.2,
-                        0.2
+                        2,
+                        1,
+                        2
                     ]
                 },
                 {
                     "id": "water/3",
-                    "model": "water",
+                    "model": "square.water",
                     "texture": [
-                        "nature2"
+                        "blue"
                     ],
                     "translate": [
                         -4,
                         0.1,
                         64
                     ],
-                    "eulerAngles": [
-                        90,
-                        0,
-                        0
-                    ],
                     "scale": [
-                        0.2,
-                        0.2,
-                        0.2
+                        2,
+                        1,
+                        2
                     ]
                 },
                 {

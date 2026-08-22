@@ -59,27 +59,20 @@ err Terrain::load(const string &path) {
 float Terrain::getHeight(float x, float z) const {
     if (!loaded) return -64.0f;
 
-    // Convert world coordinates to [0, 256] grid space
-    float gx = (x / scale) + 128.0f;
-    float gz = (z / scale) + 128.0f;
+    // Convert world coordinates to 0-256 grid space
+    float px = clamp((x / scale) + 128.0f, 0.0f, 256.0f);
+    float pz = clamp((z / scale) + 128.0f, 0.0f, 256.0f);
 
-    // Clamp to valid grid bounds [0, nx - 1]
-    gx = std::clamp(gx, 0.0f, static_cast<float>(nx - 1));
-    gz = std::clamp(gz, 0.0f, static_cast<float>(nz - 1));
-
-    // Determine bottom-left cell index
-    int i = std::clamp(static_cast<int>(std::floor(gx)), 0, nx - 2);
-    int j = std::clamp(static_cast<int>(std::floor(gz)), 0, nz - 2);
-
-    // Fractional offsets within the cell [0, 1]
-    float u = gx - static_cast<float>(i);
-    float v = gz - static_cast<float>(j);
+    usize gx = clamp((int)floor(px), 0, nx - 2);
+    usize gz = clamp((int)floor(pz), 0, nz - 2);
+    float u  = px - gx;
+    float v  = pz - gz;
 
     // Fetch four neighboring grid heights
-    float h00 = heights[i * nz + j];
-    float h10 = heights[(i + 1) * nz + j];
-    float h01 = heights[i * nz + (j + 1)];
-    float h11 = heights[(i + 1) * nz + (j + 1)];
+    float h00 = heights[gx * nz + gz];
+    float h10 = heights[(gx + 1) * nz + gz];
+    float h01 = heights[gx * nz + (gz + 1)];
+    float h11 = heights[(gx + 1) * nz + (gz + 1)];
 
     // Bilinear interpolation
     return (1.0f - u) * (1.0f - v) * h00 +
