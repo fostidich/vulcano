@@ -1,6 +1,36 @@
 {
     "models": [
         {
+            "id": "magic-pearl",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/MagicPearl.mgcg",
+            "format": "MGCG"
+        },
+        {
+            "id": "full-skeleton",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/FullSkeleton.mgcg",
+            "format": "MGCG"
+        },
+        {
+            "id": "wooden-plank",
+            "VD": "VDposUV",
+            "model": "assets/models/objects/WoodenPlank.mgcg",
+            "format": "MGCG",
+            "collider": {
+                "type": "OOBB",
+                "visible": true,
+                "params": [
+                    -0.1,
+                    -0.05,
+                    -1,
+                    0.1,
+                    0.05,
+                    1
+                ]
+            }
+        },
+        {
             "id": "grid",
             "VD": "VDposUV",
             "model": "assets/models/Grid128x128.obj",
@@ -12,7 +42,7 @@
         {
             "id": "crystal",
             "VD": "VDposUV",
-            "model": "assets/models/objects/Crystal.mgcg",
+            "model": "assets/models/nature/Crystal.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -560,6 +590,11 @@
     ],
     "textures": [
         {
+            "id": "stone",
+            "texture": "assets/textures/materials/Stone.png",
+            "format": "C"
+        },
+        {
             "id": "building",
             "texture": "assets/textures/palette/Building.png",
             "format": "C"
@@ -590,11 +625,6 @@
             "format": "C"
         },
         {
-            "id": "marble",
-            "texture": "assets/textures/materials/Marble.jpg",
-            "format": "C"
-        },
-        {
             "id": "nature1",
             "texture": "assets/textures/palette/Nature1.png",
             "format": "C"
@@ -602,21 +632,6 @@
         {
             "id": "nature2",
             "texture": "assets/textures/palette/Nature2.png",
-            "format": "C"
-        },
-        {
-            "id": "stone",
-            "texture": "assets/textures/materials/Stone.png",
-            "format": "C"
-        },
-        {
-            "id": "stone1",
-            "texture": "assets/textures/materials/Stone1.jpg",
-            "format": "C"
-        },
-        {
-            "id": "stone2",
-            "texture": "assets/textures/materials/Stone2.jpg",
             "format": "C"
         },
         {
@@ -629,6 +644,40 @@
         {
             "technique": "SimpleObject",
             "elements": [
+                {
+                    "id": "full-skeleton/1",
+                    "model": "full-skeleton",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        -16,
+                        1,
+                        32
+                    ],
+                    "eulerAngles": [
+                        90,
+                        180,
+                        0
+                    ]
+                },
+                {
+                    "id": "wooden-plank/1",
+                    "model": "wooden-plank",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        48,
+                        1.2,
+                        32
+                    ],
+                    "eulerAngles": [
+                        90,
+                        0,
+                        0
+                    ]
+                },
                 {
                     "id": "crystal/1",
                     "model": "crystal",
@@ -653,8 +702,8 @@
                         "nature1"
                     ],
                     "translate": [
-                        -16,
-                        0,
+                        56,
+                        -0.3,
                         32
                     ],
                     "eulerAngles": [
@@ -802,6 +851,18 @@
                         90,
                         0,
                         0
+                    ]
+                },
+                {
+                    "id": "magic-pearl/1",
+                    "model": "magic-pearl",
+                    "texture": [
+                        "colors2"
+                    ],
+                    "translate": [
+                        -8,
+                        1,
+                        48
                     ]
                 },
                 {

@@ -25,6 +25,11 @@ std::optional<PointLight> initPointLight(const Instance &instance) {
         pl.color    = vec3(0.6f, 0.1f, 0.9f) * 2.5f;
         pl.target   = 2.0f;
         pl.decay    = 3.0f;
+    } else if (instance.id->starts_with("magic-pearl/")) {
+        pl.position = pos + vec3(0.2f, 1.625f, -0.2f);
+        pl.color    = vec3(0.7f, 0.2f, 1.0f) * 5.0f;
+        pl.target   = 6.0f;
+        pl.decay    = 3.0f;
     }
 
     else {

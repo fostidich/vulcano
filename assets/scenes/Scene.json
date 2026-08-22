@@ -9,7 +9,7 @@
         {
             "id": "crystal",
             "VD": "VDposUV",
-            "model": "assets/models/objects/Crystal.mgcg",
+            "model": "assets/models/nature/Crystal.mgcg",
             "format": "MGCG",
             "collider": {
                 "type": "OOBB",
@@ -591,11 +591,6 @@
             "format": "C"
         },
         {
-            "id": "marble",
-            "texture": "assets/textures/materials/Marble.jpg",
-            "format": "C"
-        },
-        {
             "id": "nature1",
             "texture": "assets/textures/palette/Nature1.png",
             "format": "C"
@@ -608,21 +603,6 @@
         {
             "id": "stone",
             "texture": "assets/textures/materials/Stone.png",
-            "format": "C"
-        },
-        {
-            "id": "stone1",
-            "texture": "assets/textures/materials/Stone1.jpg",
-            "format": "C"
-        },
-        {
-            "id": "stone2",
-            "texture": "assets/textures/materials/Stone2.jpg",
-            "format": "C"
-        },
-        {
-            "id": "water",
-            "texture": "assets/textures/materials/Water.jpg",
             "format": "C"
         }
     ],
