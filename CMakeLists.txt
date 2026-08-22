@@ -104,7 +104,6 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/g-truc/glm.git
   GIT_TAG 1.0.1
   EXCLUDE_FROM_ALL
-
 )
 
 # Deactivate non-essential components to speed up the build
@@ -157,7 +156,7 @@ foreach(SHADER IN LISTS SHADER_FILES)
   add_custom_command(
           OUTPUT "${SPIRV}"
           COMMAND ${CMAKE_COMMAND} -E make_directory "${SHADER_BUILD_DIR}/${SHADER_REL_DIR}"
-          COMMAND "${Vulkan_GLSLC_EXECUTABLE}" -o "${SPIRV}" "${SHADER}"
+          COMMAND "${Vulkan_GLSLC_EXECUTABLE}" -I "${SHADER_SRC_DIR}" -o "${SPIRV}" "${SHADER}"
           DEPENDS "${SHADER}"
           COMMENT "Building shader: ${SHADER_REL_PATH}"
           VERBATIM

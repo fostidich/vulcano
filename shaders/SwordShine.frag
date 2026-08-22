@@ -1,33 +1,28 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-// Humans are more sensible to dark colors. Therefore displays, which use sRGB
-// (standard RGB), compress color in the high brightness range with a power
-// function with 2.2 as exponent.
-// Computations on lights require instead linear colors.
-
 struct PointLight {
-    vec3 position; // World space
-    vec3 color; // Linear space
+    vec3 position;
+    vec3 color;
     float target;
     float decay;
 };
 
 layout(binding = 0, set = 0) uniform GlobalUniformBufferObject {
     mat4 lightSpaceMat;
-    vec3 lightDir; // World space
-    vec4 lightColor; // Linear color space
-    vec3 eyePos; // World space
+    vec3 lightDir;
+    vec4 lightColor;
+    vec3 eyePos;
     PointLight pointLights[16];
     int pointLightsCount;
     float swordShine;
 } gubo;
 
-layout(binding = 1, set = 1) uniform sampler2D albedoMap; // Display color space
+layout(binding = 1, set = 1) uniform sampler2D albedoMap;
 
-layout(location = 0) in vec3 fragPos; // World space
-layout(location = 1) in vec2 fragUV; // Texture space
-layout(location = 0) out vec4 outColor; // Display color space
+layout(location = 0) in vec3 fragPos;
+layout(location = 1) in vec2 fragUV;
+layout(location = 0) out vec4 outColor;
 
 const float ambience = 0.015;
 
